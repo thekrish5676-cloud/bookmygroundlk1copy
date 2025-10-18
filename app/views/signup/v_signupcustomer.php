@@ -43,97 +43,101 @@
         <div class="auth-options">
           <p class="auth-text">Already have an account?</p>
           <div class="auth-buttons">
-            <a href="login.html" class="hero-btn primary">Sign In</a>
-            <a href="signup.html" class="hero-btn">Back to Options</a>
+            <a href="<?php echo URLROOT; ?>/auth/login" class="hero-btn primary">Sign In</a>
+            <a href="<?php echo URLROOT; ?>/auth/register" class="hero-btn">Back to Options</a>
           </div>
         </div>
       </div>
 
       <!-- Right Side - Sign Up Form -->
       <div class="signup-form-container">
-        <form class="signup-form">
+        <!-- Display General Error -->
+        <?php if(!empty($data['error'])): ?>
+          <div class="alert alert-error" style="background: #fee; border: 1px solid #fcc; padding: 15px; margin-bottom: 20px; border-radius: 5px; color: #c33;">
+            <?php echo $data['error']; ?>
+          </div>
+        <?php endif; ?>
+
+        <form class="signup-form" action="<?php echo URLROOT; ?>/auth/register/customer" method="POST">
           <h2 class="signup-heading">Create User Account</h2>
           
           <div class="form-row">
             <div class="form-group">
               <label for="first-name" class="signup-label">First Name</label>
-              <input type="text" id="first-name" name="first-name" class="signup-input" placeholder="First name" required>
+              <input type="text" id="first-name" name="first-name" class="signup-input" 
+                     placeholder="First name" 
+                     value="<?php echo $data['first_name']; ?>" 
+                     required>
+              <?php if(!empty($data['error_first_name'])): ?>
+                <span class="error-text" style="color: #c33; font-size: 12px;"><?php echo $data['error_first_name']; ?></span>
+              <?php endif; ?>
             </div>
             <div class="form-group">
               <label for="last-name" class="signup-label">Last Name</label>
-              <input type="text" id="last-name" name="last-name" class="signup-input" placeholder="Last name" required>
+              <input type="text" id="last-name" name="last-name" class="signup-input" 
+                     placeholder="Last name" 
+                     value="<?php echo $data['last_name']; ?>" 
+                     required>
+              <?php if(!empty($data['error_last_name'])): ?>
+                <span class="error-text" style="color: #c33; font-size: 12px;"><?php echo $data['error_last_name']; ?></span>
+              <?php endif; ?>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label for="email" class="signup-label">Email</label>
-              <input type="email" id="email" name="email" class="signup-input" placeholder="Your email" required>
+              <input type="email" id="email" name="email" class="signup-input" 
+                     placeholder="Your email" 
+                     value="<?php echo $data['email']; ?>" 
+                     required>
+              <?php if(!empty($data['error_email'])): ?>
+                <span class="error-text" style="color: #c33; font-size: 12px;"><?php echo $data['error_email']; ?></span>
+              <?php endif; ?>
             </div>
             <div class="form-group">
               <label for="phone" class="signup-label">Phone Number</label>
-              <input type="tel" id="phone" name="phone" class="signup-input" placeholder="Contact number" required>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="district" class="signup-label">District</label>
-              <input type="text" id="district" name="district" class="signup-input" placeholder="Your district" required>
-            </div>
-            <div class="form-group">
-              <label for="sports" class="signup-label">Preferred Sports</label>
-              <select id="sports" name="sports" class="signup-input" required>
-                <option value="" disabled selected>Select primary sport</option>
-                <option value="football">Football</option>
-                <option value="cricket">Cricket</option>
-                <option value="basketball">Badminton</option>
-                <option value="tennis">Tennis</option>
-                <option value="swimming">Other</option>
-              
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="age-group" class="signup-label">Age Group</label>
-              <select id="age-group" name="age-group" class="signup-input" required>
-                <option value="" disabled selected>Select age group</option>
-                <option value="under-18">Under 18</option>
-                <option value="18-25">18-25 years</option>
-                <option value="26-35">26-35 years</option>
-                <option value="above-35">Above 35</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="skill-level" class="signup-label">Skill Level</label>
-              <select id="skill-level" name="skill-level" class="signup-input" required>
-                <option value="" disabled selected>Select skill level</option>
-                <option value="beginner">Beginner</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="advanced">Advanced</option>
-                <option value="professional">Professional</option>
-              </select>
+              <input type="tel" id="phone" name="phone" class="signup-input" 
+                     placeholder="Contact number" 
+                     value="<?php echo $data['phone']; ?>" 
+                     required>
+              <?php if(!empty($data['error_phone'])): ?>
+                <span class="error-text" style="color: #c33; font-size: 12px;"><?php echo $data['error_phone']; ?></span>
+              <?php endif; ?>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label for="password" class="signup-label">Password</label>
-              <input type="password" id="password" name="password" class="signup-input" placeholder="Create password" required>
+              <input type="password" id="password" name="password" class="signup-input" 
+                     placeholder="Create password (min 8 characters)" 
+                     required>
+              <?php if(!empty($data['error_password'])): ?>
+                <span class="error-text" style="color: #c33; font-size: 12px;"><?php echo $data['error_password']; ?></span>
+              <?php endif; ?>
             </div>
             <div class="form-group">
               <label for="confirm-password" class="signup-label">Confirm Password</label>
-              <input type="password" id="confirm-password" name="confirm-password" class="signup-input" placeholder="Confirm password" required>
+              <input type="password" id="confirm-password" name="confirm-password" class="signup-input" 
+                     placeholder="Confirm password" 
+                     required>
+              <?php if(!empty($data['error_confirm_password'])): ?>
+                <span class="error-text" style="color: #c33; font-size: 12px;"><?php echo $data['error_confirm_password']; ?></span>
+              <?php endif; ?>
             </div>
           </div>
 
           <button type="submit" class="signup-button">Create Account</button>
+
+          <p class="signup-info">
+            By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+          </p>
         </form>
       </div>
     </div>
   </section>
 </body>
 </html>
+
 <?php require APPROOT.'/views/inc/components/footer.php'; ?>

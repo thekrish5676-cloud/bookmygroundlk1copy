@@ -10,7 +10,7 @@ define('DB_NAME', 'bookmyground');
 define('APPROOT', dirname(dirname(__FILE__)));
 
 //URL Root
-define('URLROOT', 'http://localhost/bookmygroundlk');
+define('URLROOT', 'http://localhost/bookmygroundlk1copy');
 
 //WEBSITE
 define('SITENAME', 'BookMyGround');
