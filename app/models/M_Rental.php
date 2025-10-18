@@ -7,154 +7,112 @@ class M_Rental {
     }
 
     public function getAllRentals() {
-        // For demo purposes, returning sample data
-        // In production, this would fetch from database
-        return [
-            (object)[
-                'id' => 1,
-                'store_name' => 'Pro Sports Gear',
-                'category' => 'Multi-Sport',
-                'location' => 'Colombo 03',
-                'phone' => '+94 71 234 5678',
-                'whatsapp' => '+94 71 234 5678',
-                'email' => 'contact@prosportsgear.lk',
-                'address' => '123 Galle Road, Colombo 03',
-                'rating' => 4.8,
-                'image' => 'pro-sports-gear.jpg',
-                'status' => 'Open',
-                'owner' => 'Kulassi Thathsarani',
-                'owner_status' => 'Online',
-                'equipment_types' => ['Cricket', 'Football', 'Tennis', 'Basketball'],
-                'features' => ['Home Delivery', 'Quality Guarantee', 'Online Booking'],
-                'description' => 'Complete sports equipment rental service with premium quality gear for all sports.',
-                'hours' => 'Mon-Sun: 8:00 AM - 8:00 PM',
-                'delivery' => true,
-                'experience' => '10+ years'
-            ],
-            (object)[
-                'id' => 2,
-                'store_name' => 'Cricket Zone Rentals',
-                'category' => 'Cricket',
-                'location' => 'Colombo 07',
-                'phone' => '+94 77 345 6789',
-                'whatsapp' => '+94 77 345 6789',
-                'email' => 'info@cricketzone.lk',
-                'address' => '456 Duplication Road, Colombo 07',
-                'rating' => 4.6,
-                'image' => 'cricket-zone.jpg',
-                'status' => 'Open',
-                'owner' => 'Sunil Fernando',
-                'owner_status' => 'Online',
-                'equipment_types' => ['Cricket'],
-                'features' => ['Expert Advice', 'Equipment Maintenance', 'Bulk Discounts'],
-                'description' => 'Specialized cricket equipment rental with professional grade gear.',
-                'hours' => 'Mon-Sat: 9:00 AM - 7:00 PM',
-                'delivery' => true,
-                'experience' => '8+ years'
-            ],
-            (object)[
-                'id' => 3,
-                'store_name' => 'Football Gear Hub',
-                'category' => 'Football',
-                'location' => 'Dehiwala',
-                'phone' => '+94 70 456 7890',
-                'whatsapp' => '+94 70 456 7890',
-                'email' => 'hello@footballgearhub.lk',
-                'address' => '789 Galle Road, Dehiwala',
-                'rating' => 4.9,
-                'image' => 'football-gear.jpg',
-                'status' => 'Open',
-                'owner' => 'Dinesh Silva',
-                'owner_status' => 'Away',
-                'equipment_types' => ['Football'],
-                'features' => ['Team Packages', 'Goalkeeper Gear', 'Size Fitting'],
-                'description' => 'Premium football equipment rental for players and teams.',
-                'hours' => 'Mon-Sun: 7:00 AM - 9:00 PM',
-                'delivery' => true,
-                'experience' => '12+ years'
-            ],
-            (object)[
-                'id' => 4,
-                'store_name' => 'Tennis Pro Rentals',
-                'category' => 'Tennis',
-                'location' => 'Mount Lavinia',
-                'phone' => '+94 76 567 8901',
-                'whatsapp' => '+94 76 567 8901',
-                'email' => 'rentals@tennispro.lk',
-                'address' => '321 Hotel Road, Mount Lavinia',
-                'rating' => 4.7,
-                'image' => 'tennis-pro.jpg',
-                'status' => 'Open',
-                'owner' => 'Priya Rajapaksa',
-                'owner_status' => 'Online',
-                'equipment_types' => ['Tennis'],
-                'features' => ['Racket Stringing', 'Professional Advice', 'Tournament Gear'],
-                'description' => 'High-quality tennis equipment rental with expert guidance.',
-                'hours' => 'Tue-Sun: 8:00 AM - 6:00 PM',
-                'delivery' => false,
-                'experience' => '6+ years'
-            ],
-            (object)[
-                'id' => 5,
-                'store_name' => 'All Sports Equipment',
-                'category' => 'Multi-Sport',
-                'location' => 'Nugegoda',
-                'phone' => '+94 75 678 9012',
-                'whatsapp' => '+94 75 678 9012',
-                'email' => 'info@allsportsequipment.lk',
-                'address' => '654 High Level Road, Nugegoda',
-                'rating' => 4.5,
-                'image' => 'all-sports.jpg',
-                'status' => 'Closed',
-                'owner' => 'Nimal Wickramasinghe',
-                'owner_status' => 'Offline',
-                'equipment_types' => ['Cricket', 'Football', 'Tennis', 'Basketball', 'Badminton'],
-                'features' => ['Affordable Rates', 'Student Discounts', 'Equipment Insurance'],
-                'description' => 'Wide range of sports equipment for rent at competitive prices.',
-                'hours' => 'Mon-Sat: 9:00 AM - 6:00 PM',
-                'delivery' => true,
-                'experience' => '15+ years'
-            ],
-            (object)[
-                'id' => 6,
-                'store_name' => 'Basketball Gear Store',
-                'category' => 'Basketball',
-                'location' => 'Colombo 05',
-                'phone' => '+94 74 789 0123',
-                'whatsapp' => '+94 74 789 0123',
-                'email' => 'contact@basketballgear.lk',
-                'address' => '987 Baseline Road, Colombo 05',
-                'rating' => 4.4,
-                'image' => 'basketball-gear.jpg',
-                'status' => 'Open',
-                'owner' => 'Kalana Ekanayaka Max',
-                'owner_status' => 'Online',
-                'equipment_types' => ['Basketball'],
-                'features' => ['Professional Shoes', 'Team Uniforms', 'Training Equipment'],
-                'description' => 'Complete basketball equipment rental for players and teams.',
-                'hours' => 'Mon-Sun: 10:00 AM - 8:00 PM',
-                'delivery' => true,
-                'experience' => '5+ years'
-            ]
-        ];
+        // Fetch all rental shops from database
+        $this->db->query('SELECT * FROM rental_shops ORDER BY rating DESC');
+        $rentals = $this->db->resultSet();
+        
+        // Get equipment types and features for each rental shop
+        foreach($rentals as $rental) {
+            $rental->equipment_types = $this->getRentalEquipmentTypes($rental->id);
+            $rental->features = $this->getRentalFeatures($rental->id);
+        }
+        
+        return $rentals;
+    }
+
+    private function getRentalEquipmentTypes($rental_id) {
+        $this->db->query('SELECT equipment_type FROM rental_equipment_types WHERE rental_id = :rental_id');
+        $this->db->bind(':rental_id', $rental_id);
+        $types = $this->db->resultSet();
+        
+        // Convert to simple array of equipment types
+        $typesArray = [];
+        foreach($types as $type) {
+            $typesArray[] = $type->equipment_type;
+        }
+        
+        return $typesArray;
+    }
+
+    private function getRentalFeatures($rental_id) {
+        $this->db->query('SELECT feature_name FROM rental_features WHERE rental_id = :rental_id');
+        $this->db->bind(':rental_id', $rental_id);
+        $features = $this->db->resultSet();
+        
+        // Convert to simple array of feature names
+        $featuresArray = [];
+        foreach($features as $feature) {
+            $featuresArray[] = $feature->feature_name;
+        }
+        
+        return $featuresArray;
     }
 
     public function getRentalById($id) {
-        // This would fetch single rental from database
-        $rentals = $this->getAllRentals();
+        // Fetch single rental shop from database
+        $this->db->query('SELECT * FROM rental_shops WHERE id = :id');
+        $this->db->bind(':id', $id);
+        $rental = $this->db->single();
         
-        foreach($rentals as $rental) {
-            if($rental->id == $id) {
-                return $rental;
-            }
+        if($rental) {
+            $rental->equipment_types = $this->getRentalEquipmentTypes($rental->id);
+            $rental->features = $this->getRentalFeatures($rental->id);
         }
         
-        return false;
+        return $rental;
     }
 
     public function searchRentals($filters = []) {
-        // This would implement search/filter functionality
-        // For now, return all rentals
-        return $this->getAllRentals();
+        // Build base query
+        $sql = 'SELECT * FROM rental_shops WHERE 1=1';
+        
+        // Add filters dynamically
+        if(!empty($filters['category'])) {
+            $sql .= ' AND category = :category';
+        }
+        if(!empty($filters['location'])) {
+            $sql .= ' AND location LIKE :location';
+        }
+        if(!empty($filters['status'])) {
+            $sql .= ' AND status = :status';
+        }
+        if(!empty($filters['delivery'])) {
+            $sql .= ' AND delivery = :delivery';
+        }
+        if(!empty($filters['rating'])) {
+            $sql .= ' AND rating >= :rating';
+        }
+        
+        $sql .= ' ORDER BY rating DESC';
+        
+        $this->db->query($sql);
+        
+        // Bind parameters
+        if(!empty($filters['category'])) {
+            $this->db->bind(':category', $filters['category']);
+        }
+        if(!empty($filters['location'])) {
+            $this->db->bind(':location', '%' . $filters['location'] . '%');
+        }
+        if(!empty($filters['status'])) {
+            $this->db->bind(':status', $filters['status']);
+        }
+        if(!empty($filters['delivery'])) {
+            $this->db->bind(':delivery', $filters['delivery']);
+        }
+        if(!empty($filters['rating'])) {
+            $this->db->bind(':rating', $filters['rating']);
+        }
+        
+        $rentals = $this->db->resultSet();
+        
+        // Get equipment types and features for each rental shop
+        foreach($rentals as $rental) {
+            $rental->equipment_types = $this->getRentalEquipmentTypes($rental->id);
+            $rental->features = $this->getRentalFeatures($rental->id);
+        }
+        
+        return $rentals;
     }
 }
+?>

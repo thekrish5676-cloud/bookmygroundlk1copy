@@ -252,3 +252,160 @@ UPDATE stadiums SET is_featured = TRUE WHERE id IN (1, 3, 5, 7, 9, 11);
 -- UPDATE stadiums SET is_featured = TRUE WHERE id = 11; -- Volleyball Sports Complex
 
 
+
+Rental Service Listings
+-- Create rental_shops table
+CREATE TABLE rental_shops (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    store_name VARCHAR(255) NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    whatsapp VARCHAR(20) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    address TEXT NOT NULL,
+    rating DECIMAL(2, 1) DEFAULT 0.0,
+    image VARCHAR(255) NOT NULL,
+    status ENUM('Open', 'Closed') DEFAULT 'Open',
+    owner VARCHAR(255) NOT NULL,
+    owner_status ENUM('Online', 'Away', 'Offline') DEFAULT 'Offline',
+    description TEXT,
+    hours VARCHAR(255),
+    delivery BOOLEAN DEFAULT FALSE,
+    experience VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create rental_equipment_types table
+CREATE TABLE rental_equipment_types (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    rental_id INT NOT NULL,
+    equipment_type VARCHAR(100) NOT NULL,
+    FOREIGN KEY (rental_id) REFERENCES rental_shops(id) ON DELETE CASCADE
+);
+
+-- Create rental_features table
+CREATE TABLE rental_features (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    rental_id INT NOT NULL,
+    feature_name VARCHAR(100) NOT NULL,
+    FOREIGN KEY (rental_id) REFERENCES rental_shops(id) ON DELETE CASCADE
+);
+
+
+Add Data
+-- Insert rental shops
+INSERT INTO rental_shops (store_name, category, location, phone, whatsapp, email, address, rating, image, status, owner, owner_status, description, hours, delivery, experience) VALUES
+('Pro Sports Gear', 'Multi-Sport', 'Colombo 03', '+94 71 234 5678', '+94 71 234 5678', 'contact@prosportsgear.lk', '123 Galle Road, Colombo 03', 4.8, 'pro-sports-gear.jpg', 'Open', 'Kulassi Thathsarani', 'Online', 'Complete sports equipment rental service with premium quality gear for all sports.', 'Mon-Sun: 8:00 AM - 8:00 PM', TRUE, '10+ years'),
+('Cricket Zone Rentals', 'Cricket', 'Colombo 07', '+94 77 345 6789', '+94 77 345 6789', 'info@cricketzone.lk', '456 Duplication Road, Colombo 07', 4.6, 'cricket-zone.jpg', 'Open', 'Sunil Fernando', 'Online', 'Specialized cricket equipment rental with professional grade gear.', 'Mon-Sat: 9:00 AM - 7:00 PM', TRUE, '8+ years'),
+('Football Gear Hub', 'Football', 'Dehiwala', '+94 70 456 7890', '+94 70 456 7890', 'hello@footballgearhub.lk', '789 Galle Road, Dehiwala', 4.9, 'football-gear.jpg', 'Open', 'Dinesh Silva', 'Away', 'Premium football equipment rental for players and teams.', 'Mon-Sun: 7:00 AM - 9:00 PM', TRUE, '12+ years'),
+('Tennis Pro Rentals', 'Tennis', 'Mount Lavinia', '+94 76 567 8901', '+94 76 567 8901', 'rentals@tennispro.lk', '321 Hotel Road, Mount Lavinia', 4.7, 'tennis-pro.jpg', 'Open', 'Priya Rajapaksa', 'Online', 'High-quality tennis equipment rental with expert guidance.', 'Tue-Sun: 8:00 AM - 6:00 PM', FALSE, '6+ years'),
+('All Sports Equipment', 'Multi-Sport', 'Nugegoda', '+94 75 678 9012', '+94 75 678 9012', 'info@allsportsequipment.lk', '654 High Level Road, Nugegoda', 4.5, 'all-sports.jpg', 'Closed', 'Nimal Wickramasinghe', 'Offline', 'Wide range of sports equipment for rent at competitive prices.', 'Mon-Sat: 9:00 AM - 6:00 PM', TRUE, '15+ years'),
+('Basketball Gear Store', 'Basketball', 'Colombo 05', '+94 74 789 0123', '+94 74 789 0123', 'contact@basketballgear.lk', '987 Baseline Road, Colombo 05', 4.4, 'basketball-gear.jpg', 'Open', 'Kalana Ekanayaka Max', 'Online', 'Complete basketball equipment rental for players and teams.', 'Mon-Sun: 10:00 AM - 8:00 PM', TRUE, '5+ years');
+
+-- Insert equipment types for rental shop 1 (Pro Sports Gear)
+INSERT INTO rental_equipment_types (rental_id, equipment_type) VALUES
+(1, 'Cricket'), (1, 'Football'), (1, 'Tennis'), (1, 'Basketball');
+
+-- Insert features for rental shop 1
+INSERT INTO rental_features (rental_id, feature_name) VALUES
+(1, 'Home Delivery'), (1, 'Quality Guarantee'), (1, 'Online Booking');
+
+-- Insert equipment types for rental shop 2 (Cricket Zone Rentals)
+INSERT INTO rental_equipment_types (rental_id, equipment_type) VALUES
+(2, 'Cricket');
+
+-- Insert features for rental shop 2
+INSERT INTO rental_features (rental_id, feature_name) VALUES
+(2, 'Expert Advice'), (2, 'Equipment Maintenance'), (2, 'Bulk Discounts');
+
+-- Insert equipment types for rental shop 3 (Football Gear Hub)
+INSERT INTO rental_equipment_types (rental_id, equipment_type) VALUES
+(3, 'Football');
+
+-- Insert features for rental shop 3
+INSERT INTO rental_features (rental_id, feature_name) VALUES
+(3, 'Team Packages'), (3, 'Goalkeeper Gear'), (3, 'Size Fitting');
+
+-- Insert equipment types for rental shop 4 (Tennis Pro Rentals)
+INSERT INTO rental_equipment_types (rental_id, equipment_type) VALUES
+(4, 'Tennis');
+
+-- Insert features for rental shop 4
+INSERT INTO rental_features (rental_id, feature_name) VALUES
+(4, 'Racket Stringing'), (4, 'Professional Advice'), (4, 'Tournament Gear');
+
+-- Insert equipment types for rental shop 5 (All Sports Equipment)
+INSERT INTO rental_equipment_types (rental_id, equipment_type) VALUES
+(5, 'Cricket'), (5, 'Football'), (5, 'Tennis'), (5, 'Basketball'), (5, 'Badminton');
+
+-- Insert features for rental shop 5
+INSERT INTO rental_features (rental_id, feature_name) VALUES
+(5, 'Affordable Rates'), (5, 'Student Discounts'), (5, 'Equipment Insurance');
+
+-- Insert equipment types for rental shop 6 (Basketball Gear Store)
+INSERT INTO rental_equipment_types (rental_id, equipment_type) VALUES
+(6, 'Basketball');
+
+-- Insert features for rental shop 6
+INSERT INTO rental_features (rental_id, feature_name) VALUES
+(6, 'Professional Shoes'), (6, 'Team Uniforms'), (6, 'Training Equipment');
+
+
+-- Insert 6 more rental shops
+INSERT INTO rental_shops (store_name, category, location, phone, whatsapp, email, address, rating, image, status, owner, owner_status, description, hours, delivery, experience) VALUES
+('Badminton Pro Shop', 'Badminton', 'Colombo 04', '+94 72 890 1234', '+94 72 890 1234', 'info@badmintonproshop.lk', '147 Duplication Road, Colombo 04', 4.8, 'badminton-pro.jpg', 'Open', 'Amila Jayawardena', 'Online', 'Specialized badminton equipment with professional grade rackets and shuttlecocks.', 'Mon-Sun: 9:00 AM - 7:00 PM', TRUE, '9+ years'),
+('Swimming Gear Paradise', 'Swimming', 'Wellawatte', '+94 71 901 2345', '+94 71 901 2345', 'contact@swimgearparadise.lk', '258 Galle Road, Wellawatte', 4.5, 'swimming-gear.jpg', 'Open', 'Chaminda Perera', 'Away', 'Complete swimming equipment rental including goggles, fins, and training aids.', 'Tue-Sun: 8:00 AM - 6:00 PM', FALSE, '7+ years'),
+('Rugby Equipment Center', 'Rugby', 'Colombo 07', '+94 77 012 3456', '+94 77 012 3456', 'rentals@rugbyequipment.lk', '369 Reid Avenue, Colombo 07', 4.6, 'rugby-equipment.jpg', 'Open', 'Roshan De Silva', 'Online', 'Professional rugby gear for players and teams including protective equipment.', 'Mon-Sat: 8:00 AM - 8:00 PM', TRUE, '11+ years'),
+('Volleyball Essentials', 'Volleyball', 'Dehiwala', '+94 76 123 4567', '+94 76 123 4567', 'hello@volleyballessentials.lk', '741 Station Road, Dehiwala', 4.7, 'volleyball-essentials.jpg', 'Open', 'Sanduni Fernando', 'Online', 'Quality volleyball equipment for beach and indoor courts with net systems.', 'Mon-Sun: 7:00 AM - 9:00 PM', TRUE, '8+ years'),
+('Athletic Track Rentals', 'Athletics', 'Nugegoda', '+94 75 234 5678', '+94 75 234 5678', 'info@athletictrack.lk', '852 High Level Road, Nugegoda', 4.4, 'athletic-track.jpg', 'Open', 'Kasun Bandara', 'Away', 'Track and field equipment including spikes, javelins, and training gear.', 'Mon-Fri: 9:00 AM - 6:00 PM', FALSE, '6+ years'),
+('Hockey Gear Station', 'Hockey', 'Mount Lavinia', '+94 74 345 6789', '+94 74 345 6789', 'support@hockeygearstation.lk', '963 Beach Road, Mount Lavinia', 4.9, 'hockey-gear.jpg', 'Open', 'Tharaka Wijesinghe', 'Online', 'Complete hockey equipment rental with sticks, protective gear, and balls.', 'Mon-Sun: 8:00 AM - 7:00 PM', TRUE, '13+ years');
+
+-- Insert equipment types for rental shop 7 (Badminton Pro Shop)
+INSERT INTO rental_equipment_types (rental_id, equipment_type) VALUES
+(7, 'Badminton');
+
+-- Insert features for rental shop 7
+INSERT INTO rental_features (rental_id, feature_name) VALUES
+(7, 'Professional Rackets'), (7, 'Stringing Service'), (7, 'Tournament Quality');
+
+-- Insert equipment types for rental shop 8 (Swimming Gear Paradise)
+INSERT INTO rental_equipment_types (rental_id, equipment_type) VALUES
+(8, 'Swimming');
+
+-- Insert features for rental shop 8
+INSERT INTO rental_features (rental_id, feature_name) VALUES
+(8, 'Prescription Goggles'), (8, 'Training Equipment'), (8, 'Size Fitting');
+
+-- Insert equipment types for rental shop 9 (Rugby Equipment Center)
+INSERT INTO rental_equipment_types (rental_id, equipment_type) VALUES
+(9, 'Rugby');
+
+-- Insert features for rental shop 9
+INSERT INTO rental_features (rental_id, feature_name) VALUES
+(9, 'Protective Gear'), (9, 'Team Packages'), (9, 'Custom Fitting'), (9, 'Equipment Insurance');
+
+-- Insert equipment types for rental shop 10 (Volleyball Essentials)
+INSERT INTO rental_equipment_types (rental_id, equipment_type) VALUES
+(10, 'Volleyball');
+
+-- Insert features for rental shop 10
+INSERT INTO rental_features (rental_id, feature_name) VALUES
+(10, 'Net Systems'), (10, 'Beach Volleyball'), (10, 'Indoor Equipment'), (10, 'Bulk Discounts');
+
+-- Insert equipment types for rental shop 11 (Athletic Track Rentals)
+INSERT INTO rental_equipment_types (rental_id, equipment_type) VALUES
+(11, 'Athletics');
+
+-- Insert features for rental shop 11
+INSERT INTO rental_features (rental_id, feature_name) VALUES
+(11, 'Track Spikes'), (11, 'Field Equipment'), (11, 'Training Tools');
+
+-- Insert equipment types for rental shop 12 (Hockey Gear Station)
+INSERT INTO rental_equipment_types (rental_id, equipment_type) VALUES
+(12, 'Hockey');
+
+-- Insert features for rental shop 12
+INSERT INTO rental_features (rental_id, feature_name) VALUES
+(12, 'Professional Sticks'), (12, 'Protective Gear'), (12, 'Equipment Maintenance'), (12, 'Team Discounts'), (12, 'Free Delivery');
