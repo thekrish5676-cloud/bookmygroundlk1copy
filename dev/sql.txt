@@ -199,3 +199,56 @@ INSERT INTO stadium_features (stadium_id, feature_name) VALUES
 -- Insert features for stadium 6 (Swimming Pool Complex)
 INSERT INTO stadium_features (stadium_id, feature_name) VALUES
 (6, 'Olympic Size'), (6, 'Changing Rooms'), (6, 'Lifeguard'), (6, 'Extra 1'), (6, 'Extra 2'), (6, 'Extra 3');
+
+Add New Listings
+-- Insert 6 more stadiums in Colombo
+INSERT INTO stadiums (name, type, category, price, location, rating, image, status, owner, owner_status) VALUES
+('Colombo Badminton Center', 'Badminton', 'Indoor', 2800, 'Colombo 04', 4.6, 'badminton-center.jpg', 'Available', 'Nimal Jayasinghe', 'Online'),
+('Premier Squash Courts', 'Squash', 'Indoor', 3200, 'Colombo 03', 4.7, 'squash-courts.jpg', 'Available', 'Anura Perera', 'Online'),
+('Colombo Rugby Stadium', 'Rugby', 'Outdoor', 8500, 'Colombo 07', 4.9, 'rugby-stadium.jpg', 'Available', 'Mahesh Gunasekara', 'Away'),
+('Table Tennis Academy', 'Table Tennis', 'Indoor', 1500, 'Colombo 08', 4.3, 'table-tennis.jpg', 'Available', 'Champika Silva', 'Online'),
+('Volleyball Sports Complex', 'Volleyball', 'Outdoor', 3800, 'Colombo 05', 4.5, 'volleyball-complex.jpg', 'Booked', 'Ruwan Fernando', 'Offline'),
+('Hockey Practice Ground', 'Hockey', 'Outdoor', 4500, 'Colombo 06', 4.4, 'hockey-ground.jpg', 'Available', 'Sandun Wickramasinghe', 'Online');
+
+-- Insert features for stadium 7 (Colombo Badminton Center)
+INSERT INTO stadium_features (stadium_id, feature_name) VALUES
+(7, 'Wooden Floor'), (7, 'Air Conditioning'), (7, 'Equipment Rental'), (7, 'Locker Rooms');
+
+-- Insert features for stadium 8 (Premier Squash Courts)
+INSERT INTO stadium_features (stadium_id, feature_name) VALUES
+(8, 'Glass Courts'), (8, 'Air Conditioning'), (8, 'Shower Facilities'), (8, 'Pro Shop'), (8, 'Parking');
+
+-- Insert features for stadium 9 (Colombo Rugby Stadium)
+INSERT INTO stadium_features (stadium_id, feature_name) VALUES
+(9, 'Natural Grass'), (9, 'Seating for 500'), (9, 'Floodlights'), (9, 'Parking');
+
+-- Insert features for stadium 10 (Table Tennis Academy)
+INSERT INTO stadium_features (stadium_id, feature_name) VALUES
+(10, '8 Tables'), (10, 'Air Conditioning'), (10, 'Coaching Available');
+
+-- Insert features for stadium 11 (Volleyball Sports Complex)
+INSERT INTO stadium_features (stadium_id, feature_name) VALUES
+(11, 'Sand Court'), (11, 'Beach Style'), (11, 'Lighting'), (11, 'Parking'), (11, 'Cafeteria'), (11, 'WiFi');
+
+-- Insert features for stadium 12 (Hockey Practice Ground)
+INSERT INTO stadium_features (stadium_id, feature_name) VALUES
+(12, 'Astro Turf'), (12, 'Lighting'), (12, 'Equipment Storage'), (12, 'Parking'), (12, 'Changing Rooms');
+
+
+Add Featured column
+-- Add is_featured column to stadiums table
+ALTER TABLE stadiums 
+ADD COLUMN is_featured BOOLEAN DEFAULT FALSE AFTER owner_status;
+
+-- Mark 6 stadiums as featured
+UPDATE stadiums SET is_featured = TRUE WHERE id IN (1, 3, 5, 7, 9, 11);
+
+-- Or if you want specific ones, update individually:
+-- UPDATE stadiums SET is_featured = TRUE WHERE id = 1;  -- Colombo Cricket Ground
+-- UPDATE stadiums SET is_featured = TRUE WHERE id = 3;  -- Football Arena Pro
+-- UPDATE stadiums SET is_featured = TRUE WHERE id = 5;  -- Basketball Hub Angoda
+-- UPDATE stadiums SET is_featured = TRUE WHERE id = 7;  -- Colombo Badminton Center
+-- UPDATE stadiums SET is_featured = TRUE WHERE id = 9;  -- Colombo Rugby Stadium
+-- UPDATE stadiums SET is_featured = TRUE WHERE id = 11; -- Volleyball Sports Complex
+
+
