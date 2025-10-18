@@ -864,7 +864,7 @@ body {
     gap: 20px;
 }
 
-.stadiums-grid.list-view .stadium-card {
+.stadiums-grid.list-view .stadium-card1 {
     display: grid;
     grid-template-columns: 300px 1fr;
     gap: 0;
@@ -887,7 +887,7 @@ body {
     margin-top: auto;
 }
 
-.stadium-card {
+.stadium-card1 {
     background: #fff;
     border-radius: 15px;
     overflow: hidden;
@@ -896,7 +896,7 @@ body {
     border: 1px solid #e9ecef;
 }
 
-.stadium-card:hover {
+.stadium-card1:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
     border-color: rgba(4, 255, 0, 0.3);
@@ -916,7 +916,7 @@ body {
     transition: transform 0.3s ease;
 }
 
-.stadium-card:hover .stadium-image img {
+.stadium-card1:hover .stadium-image img {
     transform: scale(1.05);
 }
 
@@ -1323,7 +1323,7 @@ body {
         gap: 20px;
     }
     
-    .stadiums-grid.list-view .stadium-card {
+    .stadiums-grid.list-view .stadium-card1 {
         grid-template-columns: 1fr;
         height: auto;
     }
@@ -2624,7 +2624,7 @@ body {
     margin-bottom: 60px;
 }
 
-.featured-stadium-card {
+.featured-stadium-card1 {
     background: #fff;
     border-radius: 15px;
     overflow: hidden;
@@ -2634,7 +2634,7 @@ body {
     position: relative;
 }
 
-.featured-stadium-card::before {
+.featured-stadium-card1::before {
     content: '';
     position: absolute;
     top: -2px;
@@ -2648,92 +2648,92 @@ body {
     z-index: -1;
 }
 
-.featured-stadium-card:hover {
+.featured-stadium-card1:hover {
     transform: translateY(-8px);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
-.featured-stadium-card:hover::before {
+.featured-stadium-card1:hover::before {
     opacity: 1;
 }
 
 /* Use all the existing stadium card styles from stadiums page */
-.featured-stadium-card .stadium-image {
+.featured-stadium-card1 .stadium-image {
     position: relative;
     height: 220px;
     overflow: hidden;
 }
 
-.featured-stadium-card .stadium-image img {
+.featured-stadium-card1 .stadium-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
 }
 
-.featured-stadium-card:hover .stadium-image img {
+.featured-stadium-card1:hover .stadium-image img {
     transform: scale(1.05);
 }
 
 /* All the existing stadium card styles apply here too */
-.featured-stadium-card .status-badge,
-.featured-stadium-card .category-badge,
-.featured-stadium-card .rating-badge,
-.featured-stadium-card .stadium-info,
-.featured-stadium-card .stadium-header,
-.featured-stadium-card .stadium-name,
-.featured-stadium-card .stadium-price,
-.featured-stadium-card .stadium-location,
-.featured-stadium-card .stadium-features,
-.featured-stadium-card .feature-tag,
-.featured-stadium-card .more-features,
-.featured-stadium-card .stadium-owner,
-.featured-stadium-card .owner-avatar,
-.featured-stadium-card .owner-info,
-.featured-stadium-card .owner-name,
-.featured-stadium-card .owner-status,
-.featured-stadium-card .status-dot,
-.featured-stadium-card .info-btn,
-.featured-stadium-card .stadium-actions,
-.featured-stadium-card .btn-contact,
-.featured-stadium-card .btn-book,
-.featured-stadium-card .btn-booked {
+.featured-stadium-card1 .status-badge,
+.featured-stadium-card1 .category-badge,
+.featured-stadium-card1 .rating-badge,
+.featured-stadium-card1 .stadium-info,
+.featured-stadium-card1 .stadium-header,
+.featured-stadium-card1 .stadium-name,
+.featured-stadium-card1 .stadium-price,
+.featured-stadium-card1 .stadium-location,
+.featured-stadium-card1 .stadium-features,
+.featured-stadium-card1 .feature-tag,
+.featured-stadium-card1 .more-features,
+.featured-stadium-card1 .stadium-owner,
+.featured-stadium-card1 .owner-avatar,
+.featured-stadium-card1 .owner-info,
+.featured-stadium-card1 .owner-name,
+.featured-stadium-card1 .owner-status,
+.featured-stadium-card1 .status-dot,
+.featured-stadium-card1 .info-btn,
+.featured-stadium-card1 .stadium-actions,
+.featured-stadium-card1 .btn-contact,
+.featured-stadium-card1 .btn-book,
+.featured-stadium-card1 .btn-booked {
     /* Inherit all styles from the existing stadium card styles in style.css */
 }
 
 /* Status badge styles */
-.featured-stadium-card .status-available {
+.featured-stadium-card1 .status-available {
     background: rgba(40, 167, 69, 0.9);
     color: white;
 }
 
-.featured-stadium-card .status-booked {
+.featured-stadium-card1 .status-booked {
     background: rgba(108, 117, 125, 0.9);
     color: white;
 }
 
 /* Owner status styles */
-.featured-stadium-card .status-online .status-dot {
+.featured-stadium-card1 .status-online .status-dot {
     background: #28a745;
 }
 
-.featured-stadium-card .status-away .status-dot {
+.featured-stadium-card1 .status-away .status-dot {
     background: #ffc107;
 }
 
-.featured-stadium-card .status-offline .status-dot {
+.featured-stadium-card1 .status-offline .status-dot {
     background: #dc3545;
 }
 
-.featured-stadium-card .status-online {
+.featured-stadium-card1 .status-online {
     color: #28a745;
 }
 
-.featured-stadium-card .status-away {
+.featured-stadium-card1 .status-away {
     color: #ffc107;
 }
 
-.featured-stadium-card .status-offline {
+.featured-stadium-card1 .status-offline {
     color: #dc3545;
 }
 
@@ -2921,7 +2921,7 @@ body {
         font-size: 20px;
     }
     
-    .featured-stadium-card .stadium-image {
+    .featured-stadium-card1 .stadium-image {
         height: 180px;
     }
     

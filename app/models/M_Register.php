@@ -53,218 +53,18 @@ class M_Register {
         $this->db->bind(':phone', $userData['phone']);
         $this->db->bind(':password', password_hash($userData['password'], PASSWORD_DEFAULT));
         $this->db->bind(':role', $userData['role']);
-        $this->db->bind(':status', 'pending'); // Default status
+        $this->db->bind(':status', 'pending'); // Default status - admin will approve
         $this->db->bind(':created_at', date('Y-m-d H:i:s'));
 
-        // Execute and return result
+        // Execute
         if ($this->db->execute()) {
-            // Get the user ID by querying with the email
-            $this->db->query('SELECT id FROM users WHERE email = :email ORDER BY id DESC LIMIT 1');
-            $this->db->bind(':email', $userData['email']);
-            $user = $this->db->single();
-            
-            return $user ? $user->id : true;
+            // Return the newly created user ID
+            return $this->db->lastInsertId();
         }
         return false;
     }
 
-    // Get all cities for dropdown
-    public function getCities() {
-        return [
-            'Colombo',
-            'Kandy',
-            'Galle',
-            'Jaffna',
-            'Negombo',
-            'Anuradhapura',
-            'Polonnaruwa',
-            'Kurunegala',
-            'Ratnapura',
-            'Batticaloa',
-            'Matara',
-            'Vavuniya',
-            'Trincomalee',
-            'Kalutara',
-            'Badulla'
-        ];
-    }
-
-    // Get sports specializations for coaches and customers
-    public function getSportsSpecializations() {
-        return [
-            'football' => 'Football',
-            'cricket' => 'Cricket',
-            'basketball' => 'Basketball',
-            'tennis' => 'Tennis',
-            'badminton' => 'Badminton',
-            'swimming' => 'Swimming',
-            'volleyball' => 'Volleyball',
-            'rugby' => 'Rugby',
-            'athletics' => 'Athletics',
-            'hockey' => 'Hockey',
-            'futsal' => 'Futsal',
-            'table_tennis' => 'Table Tennis',
-            'other' => 'Other'
-        ];
-    }
-
-    // Get certification levels for coaches
-    public function getCertificationLevels() {
-        return [
-            'basic' => 'Basic Certification',
-            'intermediate' => 'Intermediate Level',
-            'advanced' => 'Advanced Level',
-            'professional' => 'Professional License'
-        ];
-    }
-
-    // Get equipment types for rental owners
-    public function getEquipmentTypes() {
-        return [
-            'football_equipment' => 'Football Equipment',
-            'cricket_equipment' => 'Cricket Equipment',
-            'basketball_equipment' => 'Basketball Equipment',
-            'tennis_equipment' => 'Tennis Equipment',
-            'badminton_equipment' => 'Badminton Equipment',
-            'swimming_equipment' => 'Swimming Equipment',
-            'volleyball_equipment' => 'Volleyball Equipment',
-            'rugby_equipment' => 'Rugby Equipment',
-            'athletics_equipment' => 'Athletics Equipment',
-            'hockey_equipment' => 'Hockey Equipment',
-            'futsal_equipment' => 'Futsal Equipment',
-            'table_tennis_equipment' => 'Table Tennis Equipment',
-            'gym_equipment' => 'Gym Equipment',
-            'safety_gear' => 'Safety Gear'
-        ];
-    }
-
-    // Get business types for stadium owners and rental owners
-    public function getBusinessTypes() {
-        return [
-            'private_stadium' => 'Private Stadium',
-            'sports_complex' => 'Sports Complex',
-            'community_center' => 'Community Center',
-            'school_university' => 'School/University',
-            'hotel_resort' => 'Hotel/Resort',
-            'government_facility' => 'Government Facility',
-            'sports_club' => 'Sports Club',
-            'retail_chain' => 'Retail Chain',
-            'independent' => 'Independent Store',
-            'sports_shop' => 'Sports Shop',
-            'equipment_specialist' => 'Equipment Specialist',
-            'other' => 'Other'
-        ];
-    }
-
-    // Get age groups for customers
-    public function getAgeGroups() {
-        return [
-            'under_18' => 'Under 18',
-            '18_25' => '18-25 years',
-            '26_35' => '26-35 years',
-            'above_35' => 'Above 35'
-        ];
-    }
-
-    // Get skill levels for customers
-    public function getSkillLevels() {
-        return [
-            'beginner' => 'Beginner',
-            'intermediate' => 'Intermediate',
-            'advanced' => 'Advanced',
-            'professional' => 'Professional'
-        ];
-    }
-
-    // Get experience levels for coaches
-    public function getExperienceLevels() {
-        return [
-            '1_3' => '1-3 years',
-            '4_6' => '4-6 years',
-            '7_10' => '7-10 years',
-            '10_plus' => '10+ years'
-        ];
-    }
-
-    // Get coaching types
-    public function getCoachingTypes() {
-        return [
-            'individual' => 'Individual Training',
-            'group' => 'Group Sessions',
-            'both' => 'Both Individual & Group'
-        ];
-    }
-
-    // Get availability options
-    public function getAvailabilityOptions() {
-        return [
-            'full_time' => 'Full Time',
-            'part_time' => 'Part Time',
-            'weekends' => 'Weekends Only'
-        ];
-    }
-
-    // Get venue types for stadium owners
-    public function getVenueTypes() {
-        return [
-            'stadium' => 'Stadium',
-            'indoor_court' => 'Indoor Court',
-            'outdoor_court' => 'Outdoor Court',
-            'sports_complex' => 'Sports Complex',
-            'practice_nets' => 'Practice Nets'
-        ];
-    }
-
-    // Get delivery options for rental owners
-    public function getDeliveryOptions() {
-        return [
-            'yes' => 'Yes, We Deliver',
-            'no' => 'Pickup Only'
-        ];
-    }
-
-    // Send welcome email (placeholder for future implementation)
-    public function sendWelcomeEmail($email, $name, $role) {
-        // This would integrate with an email service
-        // For now, just return true
-        return true;
-    }
-
-    // Create email verification token (for future implementation)
-    public function createEmailVerification($userId, $email) {
-        $token = bin2hex(random_bytes(32));
-        $expires = date('Y-m-d H:i:s', strtotime('+24 hours'));
-
-        $this->db->query('INSERT INTO email_verifications (user_id, email, token, expires_at, created_at) 
-                         VALUES (:user_id, :email, :token, :expires_at, :created_at)');
-        
-        $this->db->bind(':user_id', $userId);
-        $this->db->bind(':email', $email);
-        $this->db->bind(':token', $token);
-        $this->db->bind(':expires_at', $expires);
-        $this->db->bind(':created_at', date('Y-m-d H:i:s'));
-
-        if ($this->db->execute()) {
-            return $token;
-        }
-        return false;
-    }
-
-    // Get registration statistics (for demo purposes)
-    public function getRegistrationStats() {
-        return [
-            'total_users' => 1250,
-            'customers' => 850,
-            'stadium_owners' => 180,
-            'coaches' => 120,
-            'rental_owners' => 100,
-            'pending_approvals' => 25,
-            'verified_users' => 1100,
-            'this_month_registrations' => 85
-        ];
-    }
-
-    // Create customer profile (for future implementation)
+    // Create customer profile
     public function createCustomerProfile($userId, $profileData) {
         $this->db->query('INSERT INTO customer_profiles (
             user_id,
@@ -292,7 +92,7 @@ class M_Register {
         return $this->db->execute();
     }
 
-    // Create stadium owner profile (for future implementation)
+    // Create stadium owner profile
     public function createStadiumOwnerProfile($userId, $profileData) {
         $this->db->query('INSERT INTO stadium_owner_profiles (
             user_id,
@@ -323,7 +123,7 @@ class M_Register {
         return $this->db->execute();
     }
 
-    // Create coach profile (for future implementation)
+    // Create coach profile
     public function createCoachProfile($userId, $profileData) {
         $this->db->query('INSERT INTO coach_profiles (
             user_id,
@@ -357,7 +157,7 @@ class M_Register {
         return $this->db->execute();
     }
 
-    // Create rental owner profile (for future implementation)
+    // Create rental owner profile
     public function createRentalOwnerProfile($userId, $profileData) {
         $this->db->query('INSERT INTO rental_owner_profiles (
             user_id,
@@ -389,5 +189,145 @@ class M_Register {
         $this->db->bind(':created_at', date('Y-m-d H:i:s'));
 
         return $this->db->execute();
+    }
+
+    // Send welcome email (placeholder)
+    public function sendWelcomeEmail($email, $name, $role) {
+        // TODO: Implement email functionality
+        // For now, just return true
+        return true;
+    }
+
+    // Get all dropdown data methods
+    public function getCities() {
+        return [
+            'Colombo', 'Kandy', 'Galle', 'Jaffna', 'Negombo',
+            'Anuradhapura', 'Polonnaruwa', 'Kurunegala', 'Ratnapura',
+            'Batticaloa', 'Matara', 'Vavuniya', 'Trincomalee',
+            'Kalutara', 'Badulla'
+        ];
+    }
+
+    public function getSportsSpecializations() {
+        return [
+            'football' => 'Football',
+            'cricket' => 'Cricket',
+            'basketball' => 'Basketball',
+            'tennis' => 'Tennis',
+            'badminton' => 'Badminton',
+            'swimming' => 'Swimming',
+            'volleyball' => 'Volleyball',
+            'rugby' => 'Rugby',
+            'athletics' => 'Athletics',
+            'hockey' => 'Hockey',
+            'futsal' => 'Futsal',
+            'table_tennis' => 'Table Tennis',
+            'other' => 'Other'
+        ];
+    }
+
+    public function getAgeGroups() {
+        return [
+            'under_18' => 'Under 18',
+            '18_25' => '18-25 years',
+            '26_35' => '26-35 years',
+            'above_35' => 'Above 35'
+        ];
+    }
+
+    public function getSkillLevels() {
+        return [
+            'beginner' => 'Beginner',
+            'intermediate' => 'Intermediate',
+            'advanced' => 'Advanced',
+            'professional' => 'Professional'
+        ];
+    }
+
+    public function getVenueTypes() {
+        return [
+            'stadium' => 'Stadium',
+            'indoor_court' => 'Indoor Court',
+            'outdoor_court' => 'Outdoor Court',
+            'sports_complex' => 'Sports Complex',
+            'practice_nets' => 'Practice Nets'
+        ];
+    }
+
+    public function getBusinessTypes() {
+        return [
+            'private_stadium' => 'Private Stadium',
+            'sports_complex' => 'Sports Complex',
+            'community_center' => 'Community Center',
+            'school_university' => 'School/University',
+            'hotel_resort' => 'Hotel/Resort',
+            'government_facility' => 'Government Facility',
+            'sports_club' => 'Sports Club',
+            'retail_chain' => 'Retail Chain',
+            'independent' => 'Independent Store',
+            'sports_shop' => 'Sports Shop',
+            'equipment_specialist' => 'Equipment Specialist',
+            'other' => 'Other'
+        ];
+    }
+
+    public function getExperienceLevels() {
+        return [
+            '1_3' => '1-3 years',
+            '4_6' => '4-6 years',
+            '7_10' => '7-10 years',
+            '10_plus' => '10+ years'
+        ];
+    }
+
+    public function getCertificationLevels() {
+        return [
+            'basic' => 'Basic Certification',
+            'intermediate' => 'Intermediate Level',
+            'advanced' => 'Advanced Level',
+            'professional' => 'Professional License'
+        ];
+    }
+
+    public function getCoachingTypes() {
+        return [
+            'individual' => 'Individual Training',
+            'group' => 'Group Sessions',
+            'both' => 'Both Individual & Group'
+        ];
+    }
+
+    public function getAvailabilityOptions() {
+        return [
+            'full_time' => 'Full Time',
+            'part_time' => 'Part Time',
+            'weekends' => 'Weekends Only'
+        ];
+    }
+
+    public function getEquipmentTypes() {
+        return [
+            'football_equipment' => 'Football Equipment',
+            'cricket_equipment' => 'Cricket Equipment',
+            'basketball_equipment' => 'Basketball Equipment',
+            'tennis_equipment' => 'Tennis Equipment',
+            'badminton_equipment' => 'Badminton Equipment',
+            'swimming_equipment' => 'Swimming Equipment',
+            'volleyball_equipment' => 'Volleyball Equipment',
+            'rugby_equipment' => 'Rugby Equipment',
+            'athletics_equipment' => 'Athletics Equipment',
+            'hockey_equipment' => 'Hockey Equipment',
+            'futsal_equipment' => 'Futsal Equipment',
+            'table_tennis_equipment' => 'Table Tennis Equipment',
+            'gym_equipment' => 'Gym Equipment',
+            'safety_gear' => 'Safety Gear'
+        ];
+    }
+
+    public function getDeliveryOptions() {
+        return [
+            'yes' => 'Yes, We Deliver',
+            'no' => 'Pickup Only'
+        ];
     }
 }

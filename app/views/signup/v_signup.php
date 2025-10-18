@@ -11,26 +11,7 @@
 </head>
 <body>
 
-  <!--Hero section-->
-  <section class="login-hero">
-  <div class="hero-text">
-    <p class="sign-in-dis">JOIN 
-      <span class="green">THE </span> GAME<br>
-      <span class="description">
-        Create Your Account to Book Stadiums, Rent Equipment,
-         Join Practice Sessions, Get Coached, or Advertise Your Services 
-      <span class="green">— All in One Place!</span>
-      </span>
-    </p>
-    <div class="hero-buttons">
-      <a href="<?php echo URLROOT; ?>/login" class="hero-btn">Sign In</a>
-      <a href="<?php echo URLROOT; ?>/register" class="hero-btn primary">Sign Up</a>
-    </div>
-  </div>
-  <div class="hero-image">
-    <img src="<?php echo URLROOT; ?>/images/login/basketball_player.png" alt="Basketball Player" id="basketball">
-  </div>
-</section>
+
 
 <!--Sign Up section-->
 <section class="sign-up-section">

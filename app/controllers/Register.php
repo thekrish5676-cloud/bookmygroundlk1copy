@@ -111,33 +111,32 @@ class Register extends Controller {
     }
 
     private function processRegistration($data, $role) {
-        // Get form data - handling both underscore and hyphen naming conventions
+        // Get form data
         $formData = [
             'role' => $role,
-            'first_name' => $_POST['first_name'] ?? $_POST['first-name'] ?? '',
-            'last_name' => $_POST['last_name'] ?? $_POST['last-name'] ?? '',
-            'email' => $_POST['email'] ?? '',
-            'phone' => $_POST['phone'] ?? '',
+            'first_name' => trim($_POST['first_name'] ?? $_POST['first-name'] ?? ''),
+            'last_name' => trim($_POST['last_name'] ?? $_POST['last-name'] ?? ''),
+            'email' => trim($_POST['email'] ?? ''),
+            'phone' => trim($_POST['phone'] ?? ''),
             'password' => $_POST['password'] ?? '',
-            'confirm_password' => $_POST['confirm_password'] ?? $_POST['confirm-password'] ?? '',
-            'agree_terms' => isset($_POST['agree_terms'])
+            'confirm_password' => $_POST['confirm_password'] ?? $_POST['confirm-password'] ?? ''
         ];
 
         // Add role-specific fields
         switch($role) {
             case 'customer':
-                $formData['district'] = $_POST['district'] ?? '';
+                $formData['district'] = trim($_POST['district'] ?? '');
                 $formData['sports'] = $_POST['sports'] ?? '';
                 $formData['age_group'] = $_POST['age_group'] ?? $_POST['age-group'] ?? '';
                 $formData['skill_level'] = $_POST['skill_level'] ?? $_POST['skill-level'] ?? '';
                 break;
 
             case 'stadium_owner':
-                $formData['owner_name'] = $_POST['owner_name'] ?? $_POST['owner-name'] ?? '';
-                $formData['business_name'] = $_POST['business_name'] ?? $_POST['business-name'] ?? '';
-                $formData['district'] = $_POST['district'] ?? '';
+                $formData['owner_name'] = trim($_POST['owner_name'] ?? $_POST['owner-name'] ?? '');
+                $formData['business_name'] = trim($_POST['business_name'] ?? $_POST['business-name'] ?? '');
+                $formData['district'] = trim($_POST['district'] ?? '');
                 $formData['venue_type'] = $_POST['venue_type'] ?? $_POST['venue-type'] ?? '';
-                $formData['business_reg'] = $_POST['business_reg'] ?? $_POST['business-reg'] ?? '';
+                $formData['business_reg'] = trim($_POST['business_reg'] ?? $_POST['business-reg'] ?? '');
                 break;
 
             case 'coach':
@@ -145,21 +144,21 @@ class Register extends Controller {
                 $formData['experience'] = $_POST['experience'] ?? '';
                 $formData['certification'] = $_POST['certification'] ?? '';
                 $formData['coaching_type'] = $_POST['coaching_type'] ?? $_POST['coaching-type'] ?? '';
-                $formData['district'] = $_POST['district'] ?? '';
+                $formData['district'] = trim($_POST['district'] ?? '');
                 $formData['availability'] = $_POST['availability'] ?? '';
                 break;
 
             case 'rental_owner':
-                $formData['owner_name'] = $_POST['owner_name'] ?? $_POST['owner-name'] ?? '';
-                $formData['business_name'] = $_POST['business_name'] ?? $_POST['business-name'] ?? '';
-                $formData['district'] = $_POST['district'] ?? '';
+                $formData['owner_name'] = trim($_POST['owner_name'] ?? $_POST['owner-name'] ?? '');
+                $formData['business_name'] = trim($_POST['business_name'] ?? $_POST['business-name'] ?? '');
+                $formData['district'] = trim($_POST['district'] ?? '');
                 $formData['business_type'] = $_POST['business_type'] ?? $_POST['business-type'] ?? '';
                 $formData['equipment_categories'] = $_POST['equipment_categories'] ?? $_POST['equipment-categories'] ?? '';
                 $formData['delivery_service'] = $_POST['delivery_service'] ?? $_POST['delivery-service'] ?? '';
                 break;
         }
 
-        // Basic validation
+        // Validate form data
         $validation = $this->validateForm($formData, $role);
         
         if (!empty($validation['errors'])) {
@@ -168,11 +167,57 @@ class Register extends Controller {
             return $data;
         }
 
-        // For now, just show success message
-        // Later this will create the actual user account
-        $data['success'] = 'Registration form submitted successfully! Account creation will be implemented later.';
-        $data['form_data'] = $formData;
+        // Check if email already exists
+        if ($this->registerModel->emailExists($formData['email'])) {
+            $data['error'] = 'An account with this email already exists.';
+            $data['form_data'] = $formData;
+            return $data;
+        }
+
+        // Check if phone already exists
+        if ($this->registerModel->phoneExists($formData['phone'])) {
+            $data['error'] = 'An account with this phone number already exists.';
+            $data['form_data'] = $formData;
+            return $data;
+        }
+
+        // Create user account
+        $userId = $this->registerModel->createUser($formData);
         
+        if ($userId) {
+            // Create role-specific profile
+            $profileCreated = false;
+            
+            switch($role) {
+                case 'customer':
+                    $profileCreated = $this->registerModel->createCustomerProfile($userId, $formData);
+                    break;
+                case 'stadium_owner':
+                    $profileCreated = $this->registerModel->createStadiumOwnerProfile($userId, $formData);
+                    break;
+                case 'coach':
+                    $profileCreated = $this->registerModel->createCoachProfile($userId, $formData);
+                    break;
+                case 'rental_owner':
+                    $profileCreated = $this->registerModel->createRentalOwnerProfile($userId, $formData);
+                    break;
+            }
+
+            if ($profileCreated) {
+                // Send welcome email (optional)
+                $this->registerModel->sendWelcomeEmail($formData['email'], $formData['first_name'], $role);
+                
+                // Redirect to success page
+                header('Location: ' . URLROOT . '/register/success');
+                exit;
+            } else {
+                $data['error'] = 'Account created but profile setup failed. Please contact support.';
+            }
+        } else {
+            $data['error'] = 'Registration failed. Please try again.';
+        }
+        
+        $data['form_data'] = $formData;
         return $data;
     }
 
@@ -196,6 +241,8 @@ class Register extends Controller {
 
         if (empty($data['phone'])) {
             $errors[] = 'Phone number is required';
+        } elseif (!preg_match('/^[\+]?[0-9\s\-\(\)]{10,}$/', $data['phone'])) {
+            $errors[] = 'Please enter a valid phone number';
         }
 
         if (empty($data['password'])) {

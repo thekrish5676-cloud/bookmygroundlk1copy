@@ -730,7 +730,7 @@ function bookStadium(id) {
             <!-- Stadium Cards Grid -->
             <div class="stadiums-grid grid-view" id="stadiumsGrid">
                 <?php foreach($data['stadiums'] as $stadium): ?>
-                <div class="stadium-card" 
+                <div class="stadium-card1" 
                      data-sport="<?php echo strtolower($stadium->type); ?>" 
                      data-category="<?php echo strtolower($stadium->category); ?>"
                      data-location="<?php echo strtolower(str_replace(' ', '-', $stadium->location)); ?>"

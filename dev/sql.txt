@@ -10,3 +10,130 @@ INSERT INTO Users(name, age) VALUES('Dinesh', 23);
 INSERT INTO Users(name, age) VALUES('Kulakshi', 22);
 INSERT INTO Users(name, age) VALUES('Kalana', 22);
 
+Authentication System(Krishna)
+
+-- Create main users table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('customer', 'stadium_owner', 'coach', 'rental_owner') NOT NULL,
+    status ENUM('pending', 'active', 'inactive', 'suspended') DEFAULT 'pending',
+    email_verified BOOLEAN DEFAULT FALSE,
+    email_verification_token VARCHAR(255) NULL,
+    reset_password_token VARCHAR(255) NULL,
+    reset_password_expires DATETIME NULL,
+    last_login DATETIME NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create customer profiles table
+CREATE TABLE customer_profiles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    district VARCHAR(100) NOT NULL,
+    sports VARCHAR(100) NOT NULL,
+    age_group ENUM('under_18', '18_25', '26_35', 'above_35') NOT NULL,
+    skill_level ENUM('beginner', 'intermediate', 'advanced', 'professional') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Create stadium owner profiles table
+CREATE TABLE stadium_owner_profiles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    owner_name VARCHAR(255) NOT NULL,
+    business_name VARCHAR(255) NOT NULL,
+    district VARCHAR(100) NOT NULL,
+    venue_type ENUM('stadium', 'indoor_court', 'outdoor_court', 'sports_complex', 'practice_nets') NOT NULL,
+    business_registration VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Create coach profiles table
+CREATE TABLE coach_profiles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    specialization VARCHAR(100) NOT NULL,
+    experience ENUM('1_3', '4_6', '7_10', '10_plus') NOT NULL,
+    certification ENUM('basic', 'intermediate', 'advanced', 'professional') NOT NULL,
+    coaching_type ENUM('individual', 'group', 'both') NOT NULL,
+    district VARCHAR(100) NOT NULL,
+    availability ENUM('full_time', 'part_time', 'weekends') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Create rental owner profiles table
+CREATE TABLE rental_owner_profiles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    owner_name VARCHAR(255) NOT NULL,
+    business_name VARCHAR(255) NOT NULL,
+    district VARCHAR(100) NOT NULL,
+    business_type VARCHAR(100) NOT NULL,
+    equipment_categories VARCHAR(255) NOT NULL,
+    delivery_service ENUM('yes', 'no') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Create admins table (separate from users)
+CREATE TABLE admins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    status ENUM('active', 'inactive') DEFAULT 'active',
+    last_login DATETIME NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create login attempts table for security
+CREATE TABLE login_attempts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    ip_address VARCHAR(45) NOT NULL,
+    attempted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_email_time (email, attempted_at)
+);
+
+-- Insert default admin account
+INSERT INTO admins (username, password, email, full_name) VALUES 
+('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@bookmyground.lk', 'System Administrator');
+
+
+DROP TABLE IF EXISTS admins;
+
+CREATE TABLE admins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    role VARCHAR(50) DEFAULT 'admin',
+    status ENUM('active', 'inactive') DEFAULT 'active',
+    last_login DATETIME NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+INSERT INTO admins (email, password, full_name, role) VALUES 
+('admin@bookmyground.lk', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'System Administrator', 'admin');
+
+
+-- Add password reset columns to admins table if they don't exist
+ALTER TABLE admins 
+ADD COLUMN reset_password_token VARCHAR(255) NULL AFTER password,
+ADD COLUMN reset_password_expires DATETIME NULL AFTER reset_password_token;

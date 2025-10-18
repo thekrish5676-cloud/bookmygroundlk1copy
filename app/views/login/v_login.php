@@ -11,25 +11,6 @@
 </head>
 <body>
 
-  <!-- Hero Section -->
-  <section class="login-hero">
-    <div class="hero-text">
-      <p class="sign-in-dis">
-        <span class="green">WELCOME BACK</span> TO THE GAME<br>
-        <span class="description">
-          Log in to access your bookings, rentals, coaching sessions,
-          and more — your sports journey <span class="green">continues here!</span>
-        </span>
-      </p>
-      <div class="hero-buttons">
-        <a href="login.html" class="hero-btn primary">Sign In</a>
-        <a href="signup-options.html" class="hero-btn">Sign Up</a>
-      </div>
-    </div>
-    <div class="hero-image">
-      <img src="<?php echo URLROOT; ?>/images/login/basketball_player.png" id="basketball" alt="Basketball Player">
-    </div>
-  </section>
 
   <!-- Login Content Section -->
   <section class="login-content-section">
@@ -65,17 +46,42 @@
 
       <!-- Right Side - Login Form -->
       <div class="login-form-container">
-        <form class="login-form">
+        <?php if(isset($data['error']) && !empty($data['error'])): ?>
+          <div class="error-message" style="background: rgba(255, 0, 0, 0.1); border: 1px solid #ff4444; color: #ff6666; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
+            <?php echo $data['error']; ?>
+          </div>
+        <?php endif; ?>
+
+        <?php if(isset($data['success']) && !empty($data['success'])): ?>
+          <div class="success-message" style="background: rgba(0, 255, 0, 0.1); border: 1px solid #28a745; color: #28a745; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
+            <?php echo $data['success']; ?>
+          </div>
+        <?php endif; ?>
+
+        <form class="login-form" method="POST" action="<?php echo URLROOT; ?>/login">
           <h2 class="login-heading">Welcome Back!</h2>
+          
+          
           
           <div class="form-group">
             <label for="email" class="login-label">Email</label>
-            <input type="email" id="email" name="email" class="login-input" placeholder="Enter your email" required>
+            <input type="email" 
+                   id="email" 
+                   name="email" 
+                   class="login-input" 
+                   placeholder="Enter your email" 
+                   value="<?php echo isset($data['email']) ? $data['email'] : ''; ?>"
+                   required>
           </div>
 
           <div class="form-group">
             <label for="password" class="login-label">Password</label>
-            <input type="password" id="password" name="password" class="login-input" placeholder="Enter your password" required>
+            <input type="password" 
+                   id="password" 
+                   name="password" 
+                   class="login-input" 
+                   placeholder="Enter your password" 
+                   required>
           </div>
 
           <div class="remember-forgot">
@@ -83,7 +89,7 @@
               <input type="checkbox" name="remember">
               Remember me
             </label>
-            <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
+            <a href="<?php echo URLROOT; ?>/login/forgot" class="forgot-link">Forgot password?</a>
           </div>
 
           <button type="submit" class="login-button">Sign In</button>
@@ -95,13 +101,50 @@
           <div class="signup-prompt">
             <p class="new-user-text">New to our community?</p>
             <div class="create-account-wrapper">
-              <a href="signup-options.html" class="create-account-button">Create an account</a>
+              <a href="<?php echo URLROOT; ?>/register" class="create-account-button">Create an account</a>
             </div>
           </div>
         </form>
       </div>
     </div>
   </section>
+
+  <style>
+    .error-message, .success-message {
+      animation: shake 0.5s ease-in-out;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    
+    .login-form-container .login-button {
+      background: linear-gradient(135deg, #03B200, #029800);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+    }
+    
+    .login-form-container .login-button:hover {
+      background: linear-gradient(135deg, #03c900, #02af00);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(3, 178, 0, 0.2);
+    }
+    
+    .login-form-container .login-button:active {
+      transform: translateY(0);
+    }
+  </style>
+
 </body>
 </html>
 

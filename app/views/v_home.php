@@ -31,7 +31,7 @@
         <!-- Featured Stadiums Grid -->
         <div class="featured-stadiums-grid">
             <?php foreach($data['featured_stadiums'] as $stadium): ?>
-            <div class="featured-stadium-card">
+            <div class="featured-stadium-card1">
                 <!-- Stadium Image -->
                 <div class="stadium-image">
                     <img src="<?php echo URLROOT; ?>/images/stadiums/<?php echo $stadium->image; ?>" 
