@@ -137,3 +137,65 @@ INSERT INTO admins (email, password, full_name, role) VALUES
 ALTER TABLE admins 
 ADD COLUMN reset_password_token VARCHAR(255) NULL AFTER password,
 ADD COLUMN reset_password_expires DATETIME NULL AFTER reset_password_token;
+
+
+
+For Stadiums Fetching From Database
+-- Create stadiums table
+CREATE TABLE stadiums (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    type VARCHAR(100) NOT NULL,
+    category ENUM('Indoor', 'Outdoor') NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    rating DECIMAL(2, 1) DEFAULT 0.0,
+    image VARCHAR(255) NOT NULL,
+    status ENUM('Available', 'Booked', 'Maintenance') DEFAULT 'Available',
+    owner VARCHAR(255) NOT NULL,
+    owner_status ENUM('Online', 'Away', 'Offline') DEFAULT 'Offline',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create stadium features table
+CREATE TABLE stadium_features (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    stadium_id INT NOT NULL,
+    feature_name VARCHAR(100) NOT NULL,
+    FOREIGN KEY (stadium_id) REFERENCES stadiums(id) ON DELETE CASCADE
+);
+
+
+-- Insert stadiums
+INSERT INTO stadiums (name, type, category, price, location, rating, image, status, owner, owner_status) VALUES
+('Colombo Cricket Ground', 'Cricket', 'Outdoor', 5000, 'Colombo 03', 4.8, 'cricket-ground.jpg', 'Available', 'Rajesh Kumar', 'Online'),
+('Indoor Sports Complex', 'Multi-Sport', 'Indoor', 3500, 'Colombo 07', 4.6, 'indoor-complex.jpg', 'Available', 'Samantha Silva', 'Away'),
+('Football Arena Pro', 'Football', 'Outdoor', 7500, 'Colombo 05', 4.9, 'football-arena.jpg', 'Booked', 'David Fernando', 'Online'),
+('Tennis Academy Courts', 'Tennis', 'Outdoor', 2500, 'Colombo 06', 4.4, 'tennis-courts.jpg', 'Available', 'Michelle Perera', 'Online'),
+('Basketball Hub Angoda', 'Basketball', 'Indoor', 4000, 'Angoda', 4.7, 'basketball-court.jpg', 'Available', 'Kevin Rodrigo', 'Online'),
+('Swimming Pool Complex', 'Swimming', 'Outdoor', 6000, 'Mount Lavinia', 4.5, 'swimming-pool.jpg', 'Available', 'Sarah Johnson', 'Away');
+
+-- Insert features for stadium 1 (Colombo Cricket Ground)
+INSERT INTO stadium_features (stadium_id, feature_name) VALUES
+(1, 'Lighting'), (1, 'Parking'), (1, 'WiFi'), (1, 'Extra Feature');
+
+-- Insert features for stadium 2 (Indoor Sports Complex)
+INSERT INTO stadium_features (stadium_id, feature_name) VALUES
+(2, 'Air Conditioning'), (2, 'Parking'), (2, 'WiFi');
+
+-- Insert features for stadium 3 (Football Arena Pro)
+INSERT INTO stadium_features (stadium_id, feature_name) VALUES
+(3, 'Professional Turf'), (3, 'Lighting'), (3, 'Parking'), (3, 'Extra Feature');
+
+-- Insert features for stadium 4 (Tennis Academy Courts)
+INSERT INTO stadium_features (stadium_id, feature_name) VALUES
+(4, 'Clay Courts'), (4, 'Lighting'), (4, 'Equipment Rental'), (4, 'Extra 1'), (4, 'Extra 2');
+
+-- Insert features for stadium 5 (Basketball Hub Angoda)
+INSERT INTO stadium_features (stadium_id, feature_name) VALUES
+(5, 'Professional Court'), (5, 'Sound System'), (5, 'Seating');
+
+-- Insert features for stadium 6 (Swimming Pool Complex)
+INSERT INTO stadium_features (stadium_id, feature_name) VALUES
+(6, 'Olympic Size'), (6, 'Changing Rooms'), (6, 'Lifeguard'), (6, 'Extra 1'), (6, 'Extra 2'), (6, 'Extra 3');
