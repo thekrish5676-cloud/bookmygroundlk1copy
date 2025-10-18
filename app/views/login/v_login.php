@@ -22,8 +22,8 @@
         </span>
       </p>
       <div class="hero-buttons">
-        <a href="<?php echo URLROOT; ?>/auth/login" class="hero-btn primary">Sign In</a>
-        <a href="<?php echo URLROOT; ?>/auth/register" class="hero-btn">Sign Up</a>
+        <a href="login.html" class="hero-btn primary">Sign In</a>
+        <a href="signup-options.html" class="hero-btn">Sign Up</a>
       </div>
     </div>
     <div class="hero-image">
@@ -65,36 +65,17 @@
 
       <!-- Right Side - Login Form -->
       <div class="login-form-container">
-        <!-- Display Error Messages -->
-        <?php if(!empty($data['error'])): ?>
-          <div class="alert alert-error" style="background: #fee; border: 1px solid #fcc; padding: 15px; margin-bottom: 20px; border-radius: 5px; color: #c33;">
-            <?php echo $data['error']; ?>
-          </div>
-        <?php endif; ?>
-
-        <!-- Display Success Messages -->
-        <?php if(!empty($data['success'])): ?>
-          <div class="alert alert-success" style="background: #efe; border: 1px solid #cfc; padding: 15px; margin-bottom: 20px; border-radius: 5px; color: #3c3;">
-            <?php echo $data['success']; ?>
-          </div>
-        <?php endif; ?>
-
-        <form class="login-form" action="<?php echo URLROOT; ?>/auth/login" method="POST">
+        <form class="login-form">
           <h2 class="login-heading">Welcome Back!</h2>
           
           <div class="form-group">
             <label for="email" class="login-label">Email</label>
-            <input type="email" id="email" name="email" class="login-input" 
-                   placeholder="Enter your email" 
-                   value="<?php echo $data['email']; ?>" 
-                   required>
+            <input type="email" id="email" name="email" class="login-input" placeholder="Enter your email" required>
           </div>
 
           <div class="form-group">
             <label for="password" class="login-label">Password</label>
-            <input type="password" id="password" name="password" class="login-input" 
-                   placeholder="Enter your password" 
-                   required>
+            <input type="password" id="password" name="password" class="login-input" placeholder="Enter your password" required>
           </div>
 
           <div class="remember-forgot">
@@ -102,7 +83,7 @@
               <input type="checkbox" name="remember">
               Remember me
             </label>
-            <a href="<?php echo URLROOT; ?>/auth/forgot" class="forgot-link">Forgot password?</a>
+            <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
           </div>
 
           <button type="submit" class="login-button">Sign In</button>
@@ -114,7 +95,7 @@
           <div class="signup-prompt">
             <p class="new-user-text">New to our community?</p>
             <div class="create-account-wrapper">
-              <a href="<?php echo URLROOT; ?>/auth/register" class="create-account-button">Create an account</a>
+              <a href="signup-options.html" class="create-account-button">Create an account</a>
             </div>
           </div>
         </form>
