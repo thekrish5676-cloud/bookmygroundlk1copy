@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/style.css">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/styledinesh.css">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/stylekalana.css">
     <title><?php echo SITENAME; ?></title>
 </head>
 <body>

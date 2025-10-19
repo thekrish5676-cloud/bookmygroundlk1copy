@@ -53,7 +53,7 @@ class M_Register {
         $this->db->bind(':phone', $userData['phone']);
         $this->db->bind(':password', password_hash($userData['password'], PASSWORD_DEFAULT));
         $this->db->bind(':role', $userData['role']);
-        $this->db->bind(':status', 'pending'); // Default status - admin will approve
+        $this->db->bind(':status', 'active'); // Set all accounts to active immediately
         $this->db->bind(':created_at', date('Y-m-d H:i:s'));
 
         // Execute
@@ -204,7 +204,9 @@ class M_Register {
             'Colombo', 'Kandy', 'Galle', 'Jaffna', 'Negombo',
             'Anuradhapura', 'Polonnaruwa', 'Kurunegala', 'Ratnapura',
             'Batticaloa', 'Matara', 'Vavuniya', 'Trincomalee',
-            'Kalutara', 'Badulla'
+            'Kalutara', 'Badulla', 'Gampaha', 'Hambantota', 'Monaragala',
+            'Nuwara Eliya', 'Puttalam', 'Kegalle', 'Ampara', 'Kilinochchi',
+            'Mannar', 'Mullaitivu'
         ];
     }
 
@@ -222,6 +224,12 @@ class M_Register {
             'hockey' => 'Hockey',
             'futsal' => 'Futsal',
             'table_tennis' => 'Table Tennis',
+            'squash' => 'Squash',
+            'boxing' => 'Boxing',
+            'martial_arts' => 'Martial Arts',
+            'cycling' => 'Cycling',
+            'golf' => 'Golf',
+            'baseball' => 'Baseball',
             'other' => 'Other'
         ];
     }
@@ -231,7 +239,8 @@ class M_Register {
             'under_18' => 'Under 18',
             '18_25' => '18-25 years',
             '26_35' => '26-35 years',
-            'above_35' => 'Above 35'
+            '36_45' => '36-45 years',
+            'above_45' => 'Above 45'
         ];
     }
 
@@ -250,7 +259,10 @@ class M_Register {
             'indoor_court' => 'Indoor Court',
             'outdoor_court' => 'Outdoor Court',
             'sports_complex' => 'Sports Complex',
-            'practice_nets' => 'Practice Nets'
+            'practice_nets' => 'Practice Nets',
+            'swimming_pool' => 'Swimming Pool',
+            'gym' => 'Gym/Fitness Center',
+            'multi_purpose' => 'Multi-Purpose Hall'
         ];
     }
 
@@ -267,6 +279,7 @@ class M_Register {
             'independent' => 'Independent Store',
             'sports_shop' => 'Sports Shop',
             'equipment_specialist' => 'Equipment Specialist',
+            'franchise' => 'Franchise',
             'other' => 'Other'
         ];
     }
@@ -276,16 +289,19 @@ class M_Register {
             '1_3' => '1-3 years',
             '4_6' => '4-6 years',
             '7_10' => '7-10 years',
-            '10_plus' => '10+ years'
+            '11_15' => '11-15 years',
+            '15_plus' => '15+ years'
         ];
     }
 
     public function getCertificationLevels() {
         return [
+            'none' => 'No Certification',
             'basic' => 'Basic Certification',
             'intermediate' => 'Intermediate Level',
             'advanced' => 'Advanced Level',
-            'professional' => 'Professional License'
+            'professional' => 'Professional License',
+            'international' => 'International Certification'
         ];
     }
 
@@ -293,7 +309,9 @@ class M_Register {
         return [
             'individual' => 'Individual Training',
             'group' => 'Group Sessions',
-            'both' => 'Both Individual & Group'
+            'team' => 'Team Training',
+            'both' => 'Both Individual & Group',
+            'all' => 'All Types'
         ];
     }
 
@@ -301,7 +319,9 @@ class M_Register {
         return [
             'full_time' => 'Full Time',
             'part_time' => 'Part Time',
-            'weekends' => 'Weekends Only'
+            'weekends' => 'Weekends Only',
+            'evenings' => 'Evenings Only',
+            'flexible' => 'Flexible Schedule'
         ];
     }
 
@@ -320,14 +340,132 @@ class M_Register {
             'futsal_equipment' => 'Futsal Equipment',
             'table_tennis_equipment' => 'Table Tennis Equipment',
             'gym_equipment' => 'Gym Equipment',
-            'safety_gear' => 'Safety Gear'
+            'safety_gear' => 'Safety Gear',
+            'fitness_equipment' => 'Fitness Equipment',
+            'outdoor_gear' => 'Outdoor Sports Gear',
+            'team_uniforms' => 'Team Uniforms',
+            'protective_gear' => 'Protective Equipment',
+            'training_equipment' => 'Training Equipment',
+            'multi_sport' => 'Multi-Sport Equipment'
         ];
     }
 
     public function getDeliveryOptions() {
         return [
             'yes' => 'Yes, We Deliver',
-            'no' => 'Pickup Only'
+            'no' => 'Pickup Only',
+            'conditional' => 'Delivery Available for Large Orders',
+            'paid' => 'Paid Delivery Service'
         ];
     }
+
+    // Additional utility methods
+
+    // Generate verification token
+    public function generateVerificationToken($userId) {
+        $token = bin2hex(random_bytes(32));
+        
+        $this->db->query('UPDATE users SET 
+            email_verification_token = :token 
+            WHERE id = :user_id');
+        
+        $this->db->bind(':token', $token);
+        $this->db->bind(':user_id', $userId);
+        
+        if ($this->db->execute()) {
+            return $token;
+        }
+        return false;
+    }
+
+    // Verify email with token
+    public function verifyEmail($token) {
+        $this->db->query('UPDATE users SET 
+            email_verified = 1,
+            email_verification_token = NULL,
+            status = "active"
+            WHERE email_verification_token = :token');
+        
+        $this->db->bind(':token', $token);
+        
+        return $this->db->execute() && $this->db->rowCount() > 0;
+    }
+
+    // Get user by verification token
+    public function getUserByVerificationToken($token) {
+        $this->db->query('SELECT * FROM users WHERE email_verification_token = :token');
+        $this->db->bind(':token', $token);
+        
+        return $this->db->single();
+    }
+
+    // Update user status
+    public function updateUserStatus($userId, $status) {
+        $this->db->query('UPDATE users SET status = :status WHERE id = :user_id');
+        $this->db->bind(':status', $status);
+        $this->db->bind(':user_id', $userId);
+        
+        return $this->db->execute();
+    }
+
+    // Get user profile by ID and role
+    public function getUserProfile($userId, $role) {
+        switch($role) {
+            case 'customer':
+                $this->db->query('SELECT u.*, cp.* FROM users u 
+                    LEFT JOIN customer_profiles cp ON u.id = cp.user_id 
+                    WHERE u.id = :user_id');
+                break;
+            case 'stadium_owner':
+                $this->db->query('SELECT u.*, sop.* FROM users u 
+                    LEFT JOIN stadium_owner_profiles sop ON u.id = sop.user_id 
+                    WHERE u.id = :user_id');
+                break;
+            case 'coach':
+                $this->db->query('SELECT u.*, cp.* FROM users u 
+                    LEFT JOIN coach_profiles cp ON u.id = cp.user_id 
+                    WHERE u.id = :user_id');
+                break;
+            case 'rental_owner':
+                $this->db->query('SELECT u.*, rop.* FROM users u 
+                    LEFT JOIN rental_owner_profiles rop ON u.id = rop.user_id 
+                    WHERE u.id = :user_id');
+                break;
+            default:
+                $this->db->query('SELECT * FROM users WHERE id = :user_id');
+                break;
+        }
+        
+        $this->db->bind(':user_id', $userId);
+        return $this->db->single();
+    }
+
+    // Check if username exists (for future use)
+    public function usernameExists($username) {
+        $this->db->query('SELECT id FROM users WHERE username = :username');
+        $this->db->bind(':username', $username);
+        $this->db->execute();
+        
+        return $this->db->rowCount() > 0;
+    }
+
+    // Get registration statistics
+    public function getRegistrationStats() {
+        $stats = [];
+        
+        // Total users by role
+        $this->db->query('SELECT role, COUNT(*) as count FROM users GROUP BY role');
+        $results = $this->db->resultSet();
+        
+        foreach($results as $result) {
+            $stats[$result->role] = $result->count;
+        }
+        
+        // Recent registrations (last 30 days)
+        $this->db->query('SELECT COUNT(*) as count FROM users WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)');
+        $stats['recent_registrations'] = $this->db->single()->count;
+        
+        return $stats;
+    }
 }
+?>

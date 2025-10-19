@@ -409,3 +409,61 @@ INSERT INTO rental_equipment_types (rental_id, equipment_type) VALUES
 -- Insert features for rental shop 12
 INSERT INTO rental_features (rental_id, feature_name) VALUES
 (12, 'Professional Sticks'), (12, 'Protective Gear'), (12, 'Equipment Maintenance'), (12, 'Team Discounts'), (12, 'Free Delivery');
+
+
+
+
+customer login_attempts-- Add test customers to the database
+-- Password for all test customers is: customer123
+
+-- Insert test customer 1
+INSERT INTO users (first_name, last_name, email, phone, password, role, status, created_at) VALUES 
+('Krishna', 'Wishvajith', 'customer@test.com', '+94 71 234 5678', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'customer', 'active', NOW());
+
+-- Get the user ID for customer profile (assuming it's 1, adjust if needed)
+INSERT INTO customer_profiles (user_id, district, sports, age_group, skill_level, created_at) VALUES 
+(LAST_INSERT_ID(), 'Colombo', 'football', '18_25', 'intermediate', NOW());
+
+-- Insert test customer 2
+INSERT INTO users (first_name, last_name, email, phone, password, role, status, created_at) VALUES 
+('Kulakshi', 'Thathsarani', 'kulakshi@test.com', '+94 77 345 6789', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'customer', 'active', NOW());
+
+INSERT INTO customer_profiles (user_id, district, sports, age_group, skill_level, created_at) VALUES 
+(LAST_INSERT_ID(), 'Kandy', 'tennis', '18_25', 'advanced', NOW());
+
+-- Insert test customer 3  
+INSERT INTO users (first_name, last_name, email, phone, password, role, status, created_at) VALUES 
+('Dinesh', 'Sulakshana', 'dinesh@test.com', '+94 70 456 7890', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'customer', 'active', NOW());
+
+INSERT INTO customer_profiles (user_id, district, sports, age_group, skill_level, created_at) VALUES 
+(LAST_INSERT_ID(), 'Galle', 'cricket', '26_35', 'professional', NOW());
+
+-- Insert test customer 4
+INSERT INTO users (first_name, last_name, email, phone, password, role, status, created_at) VALUES 
+('Kalana', 'Ekanayake', 'kalana@test.com', '+94 76 567 8901', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'customer', 'active', NOW());
+
+INSERT INTO customer_profiles (user_id, district, sports, age_group, skill_level, created_at) VALUES 
+(LAST_INSERT_ID(), 'Negombo', 'basketball', '18_25', 'beginner', NOW());
+
+-- Test credentials for login:
+-- Email: customer@test.com, Password: customer123
+-- Email: kulakshi@test.com, Password: customer123  
+-- Email: dinesh@test.com, Password: customer123
+-- Email: kalana@test.com, Password: customer123
+
+
+
+Stadium Owner:
+-- Add test stadium owner account
+-- Password: owner123
+
+INSERT INTO users (first_name, last_name, email, phone, password, role, status, created_at) VALUES 
+('Stadium', 'Owner', 'owner@test.com', '+94 71 999 8888', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'stadium_owner', 'active', NOW());
+
+-- Insert stadium owner profile (get the last inserted ID)
+INSERT INTO stadium_owner_profiles (user_id, owner_name, business_name, district, venue_type, business_registration, created_at) VALUES 
+(LAST_INSERT_ID(), 'John Stadium Owner', 'Premium Sports Complex', 'Colombo', 'sports_complex', 'BR123456789', NOW());
+
+-- Test credentials:
+-- Email: owner@test.com
+-- Password:

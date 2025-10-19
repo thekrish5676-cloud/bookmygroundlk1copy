@@ -1,15 +1,93 @@
 
 <?php require APPROOT.'/views/inc/components/header.php'; ?>
 
-<!-- Hero Section - Placeholder for later -->
-<section class="home-hero">
-    <div class="hero-container">
-        <div class="hero-content">
-            <h1>BOOK YOUR SPORT GROUND</h1>
-            <p>Your All-in-One Solution for Finding and Booking Indoor & Outdoor Stadiums</p>
-            <!-- Hero will be designed later -->
+<!-- Hero Section -->
+<section class="herohome">
+        <div class="hero-container1">
+            <div class="hero-content1">
+                <div class="hero-text1">
+                    <h1 class="hero-title1">
+                        BOOK <span class="highlight">YOUR</span><br>
+                        SPORT GROUND
+                    </h1>
+                    <p class="hero-description1">
+                        Your All-in-One Solution for Finding and Booking Indoor & Outdoor 
+                        Stadiums, Rent Sport Equipments, Attend Practise Sessions, Book 
+                        Individual Coaching Sessions & Publish Your Advertisements
+                    </p>
+                    <div class="hero-buttons1">
+                        <button class="btn btn-primary">BOOK STADIUM</button>
+                        <button class="btn btn-secondary">RENT SPORT GEARS</button>
+                    </div>
+                </div>
+                
+                <div class="search-section1">
+                    <h3 class="search-title1">Search and Book Stadiums That Fit Your Needs and Price</h3>
+                    <div class="search-form1">
+                        <div class="search-field1">
+                            <div class="field-icon1">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                            </div>
+                            <input type="text" placeholder="Location" class="search-input1">
+                        </div>
+                        
+                        <div class="search-field1">
+                            <div class="field-icon1">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M8 12l2 2 4-4"></path>
+                                </svg>
+                            </div>
+                            <select class="search-select1">
+                                <option>Sport Type</option>
+                                <option>Basketball</option>
+                                <option>Football</option>
+                                <option>Tennis</option>
+                                <option>Cricket</option>
+                            </select>
+                        </div>
+                        
+                        <div class="search-field price-field1">
+                            <div class="field-icon1">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                </svg>
+                            </div>
+                            <div class="price-content1">
+                                <span class="price-label1">Price Average</span>
+                                <div class="price-range1">
+                                    <input type="range" min="500" max="5000" value="2000" class="price-slider1">
+                                    <div class="price-values1">
+                                        <span>LKR 500</span>
+                                        <span>LKR 5000</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-find1">Find Now</button>
+                    </div>
+                </div>
+                
+                <div class="partners-section1">
+                    <h4 class="partners-title1">Our Partners</h4>
+                    <div class="partners-logos1">
+                        <div class="partner-logo1">logoipsum</div>
+                        <div class="partner-logo1">logoipsum</div>
+                        <div class="partner-logo1">logoipsum</div>
+                        <div class="partner-logo1">logoipsum</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-image1">
+                <img src="<?php echo URLROOT; ?>/images/home/basketball-player.jpg" alt="Basketball Player" class="player-image1">
+            </div>
         </div>
-    </div>
 </section>
 
 <!-- Featured Stadiums Section -->
@@ -58,7 +136,12 @@
                 <!-- Stadium Info -->
                 <div class="stadium-info">
                     <div class="stadium-header">
-                        <h3 class="stadium-name"><?php echo $stadium->name; ?></h3>
+                        <h3 class="stadium-name">
+                            <a href="<?php echo URLROOT; ?>/stadiums/single/<?php echo $stadium->id; ?>" 
+                                style="color: black; text-decoration: none;">
+                                <?php echo $stadium->name; ?>
+                            </a>
+                        </h3>
                         <div class="stadium-price">
                             <span class="currency">₹</span>
                             <span class="amount"><?php echo number_format($stadium->price); ?></span>

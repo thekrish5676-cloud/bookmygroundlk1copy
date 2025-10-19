@@ -764,7 +764,13 @@ function bookStadium(id) {
                     <!-- Stadium Info -->
                     <div class="stadium-info">
                         <div class="stadium-header">
-                            <h3 class="stadium-name"><?php echo $stadium->name; ?></h3>
+                            
+                           <h3 class="stadium-name">
+                                <a href="<?php echo URLROOT; ?>/stadiums/single/<?php echo $stadium->id; ?>" 
+                                                    style="color: black; text-decoration: none;">
+                                                <?php echo $stadium->name; ?>
+                                </a>
+                            </h3>
                             <div class="stadium-price">
                                 <span class="currency">LKR </span>
                                 <span class="amount"><?php echo number_format($stadium->price); ?></span>

@@ -26,6 +26,26 @@ class Auth {
         return $_SESSION['user_role'] ?? null;
     }
     
+    // Get current user email
+    public static function getUserEmail() {
+        return $_SESSION['user_email'] ?? null;
+    }
+    
+    // Get current user name
+    public static function getUserName() {
+        return $_SESSION['user_name'] ?? null;
+    }
+    
+    // Get current user first name
+    public static function getUserFirstName() {
+        return $_SESSION['user_first_name'] ?? null;
+    }
+    
+    // Get current user last name
+    public static function getUserLastName() {
+        return $_SESSION['user_last_name'] ?? null;
+    }
+    
     // Require login - redirect if not logged in
     public static function requireLogin() {
         if (!self::isLoggedIn()) {
@@ -37,7 +57,7 @@ class Auth {
     // Require admin - redirect if not admin
     public static function requireAdmin() {
         if (!self::isAdminLoggedIn()) {
-            header('Location: ' . URLROOT . '/admin/login');
+            header('Location: ' . URLROOT . '/login');
             exit;
         }
     }
@@ -50,8 +70,15 @@ class Auth {
         }
     }
     
-    // Check if account is active
-    public static function isAccountActive() {
-        return isset($_SESSION['user_status']) && $_SESSION['user_status'] === 'active';
+    // Debug session information
+    public static function debugSession() {
+        return [
+            'user_logged_in' => $_SESSION['user_logged_in'] ?? false,
+            'user_id' => $_SESSION['user_id'] ?? null,
+            'user_role' => $_SESSION['user_role'] ?? null,
+            'user_email' => $_SESSION['user_email'] ?? null,
+            'session_id' => session_id(),
+            'all_session' => $_SESSION
+        ];
     }
 }

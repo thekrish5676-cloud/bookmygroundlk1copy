@@ -1,521 +1,465 @@
-<?php require APPROOT.'/views/inc/components/header.php'; ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard | BookMyGround.com</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - <?php echo SITENAME; ?></title>
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/styledinesh.css?v=<?php echo time(); ?>">
 </head>
 <body>
-
-  <!-- Title Section -->
-  <section class="dashboard-title-section">
-    <div class="title-container">
-      <h1 class="dashboard-main-title">Customer Dashboard</h1>
-      <p class="dashboard-subtitle">Manage your bookings, explore stadiums, and continue your sports journey</p>
-    </div>
-  </section>
-
-  <!-- Hero Section -->
-  <section class="dashboard-hero">
-    <div class="hero-text">
-      <p class="welcome-dis">
-        <span class="green">WELCOME BACK</span> TO THE GAME<br>
-        <span class="description">
-          Manage your bookings, explore new stadiums, and continue your sports journey 
-          <span class="green">— All from your dashboard!</span>
-        </span>
-      </p>
-      <div class="hero-buttons">
-        <a href="#bookings" class="btn dashboard-btn">My Bookings</a>
-        <a href="#explore" class="btn dashboard-btn">Explore Stadiums</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Quick Stats Section -->
-  <section class="stats-section">
-    <div class="stats-container">
-      <div class="stat-card">
-        <div class="stat-icon">📅</div>
-        <div class="stat-content">
-          <h3 class="stat-number">12</h3>
-          <p class="stat-label">Active Bookings</p>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">🏟️</div>
-        <div class="stat-content">
-          <h3 class="stat-number">8</h3>
-          <p class="stat-label">Stadiums Visited</p>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">⭐</div>
-        <div class="stat-content">
-          <h3 class="stat-number">4.8</h3>
-          <p class="stat-label">Rating Given</p>
-        </div>
-      </div>
-             <div class="stat-card">
-         <div class="stat-icon">💰</div>
-         <div class="stat-content">
-           <h3 class="stat-number">LKR 2,450</h3>
-           <p class="stat-label">Total Spent</p>
-         </div>
-       </div>
-    </div>
-  </section>
-
-  <!-- Main Dashboard Content -->
-  <section class="dashboard-main">
-    <div class="dashboard-container">
-      
-             <!-- Left Sidebar -->
-       <div class="dashboard-sidebar">
-                   <nav class="sidebar-nav">
-            <a href="#overview" class="nav-item active">
-              <span class="nav-icon">🏠</span>
-              <span class="nav-text">Overview</span>
-            </a>
-            <a href="#bookings" class="nav-item">
-              <span class="nav-icon">📅</span>
-              <span class="nav-text">My Bookings</span>
-            </a>
-            <a href="#stadiums" class="nav-item">
-              <span class="nav-icon">🏟️</span>
-              <span class="nav-text">Stadiums</span>
-            </a>
-            <a href="#payments" class="nav-item">
-              <span class="nav-icon">💳</span>
-              <span class="nav-text">Payments</span>
-            </a>
-            <a href="#profile" class="nav-item">
-              <span class="nav-icon">👤</span>
-              <span class="nav-text">Profile</span>
-            </a>
-          </nav>
-       </div>
-
-      <!-- Main Content Area -->
-      <div class="dashboard-content">
-        
-                 <!-- Recent Bookings -->
-         <div class="content-section" id="overview">
-           <h2 class="section-heading">Recent Bookings</h2>
-          <div class="bookings-grid">
-            <div class="booking-card">
-              <div class="booking-header">
-                <h3 class="stadium-name">Central Football Arena</h3>
-                <span class="booking-status confirmed">Confirmed</span>
-              </div>
-                             <div class="booking-details">
-                 <p><strong>Date:</strong> Dec 25, 2025</p>
-                 <p><strong>Time:</strong> 6:00 PM - 8:00 PM</p>
-                 <p><strong>Duration:</strong> 2 hours</p>
-                 <p><strong>Amount:</strong> LKR 800</p>
-               </div>
-              <div class="booking-actions">
-                <button class="action-btn view-btn">View Details</button>
-                <button class="action-btn cancel-btn">Cancel</button>
-              </div>
+    <div class="customer-admin-layout">
+        <!-- Sidebar -->
+        <aside class="customer-sidebar">
+            <div class="customer-sidebar-header">
+                <h2>BookMyGround.lk</h2>
+                <span class="customer-badge">Customer Panel</span>
             </div>
-
-            <div class="booking-card">
-              <div class="booking-header">
-                <h3 class="stadium-name">Badminton Court Pro</h3>
-                <span class="booking-status pending">Pending</span>
-              </div>
-                             <div class="booking-details">
-                 <p><strong>Date:</strong> Dec 28, 2025</p>
-                 <p><strong>Time:</strong> 4:00 PM - 6:00 PM</p>
-                 <p><strong>Duration:</strong> 2 hours</p>
-                 <p><strong>Amount:</strong> LKR 600</p>
-               </div>
-              <div class="booking-actions">
-                <button class="action-btn view-btn">View Details</button>
-                <button class="action-btn cancel-btn">Cancel</button>
-              </div>
-            </div>
-
-            <div class="booking-card">
-              <div class="booking-header">
-                <h3 class="stadium-name">Tennis Excellence Center</h3>
-                <span class="booking-status completed">Completed</span>
-              </div>
-                             <div class="booking-details">
-                 <p><strong>Date:</strong> Dec 20, 2024</p>
-                 <p><strong>Time:</strong> 7:00 PM - 9:00 PM</p>
-                 <p><strong>Duration:</strong> 2 hours</p>
-                 <p><strong>Amount:</strong> LKR 1,200</p>
-               </div>
-              <div class="booking-actions">
-                <button class="action-btn view-btn">View Details</button>
-                <button class="action-btn rate-btn">Rate & Review</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="content-section">
-          <h2 class="section-heading">Quick Actions</h2>
-          <div class="quick-actions-grid">
-            <a href="#book-now" class="quick-action-card">
-              <div class="action-icon">📅</div>
-              <h3>Book Stadium</h3>
-              <p>Find and book available stadiums</p>
-            </a>
-            <a href="#rent-equipment" class="quick-action-card">
-              <div class="action-icon">⚽</div>
-              <h3>Rent Equipment</h3>
-              <p>Get sports equipment on rent</p>
-            </a>
-            <a href="#find-coach" class="quick-action-card">
-              <div class="action-icon">👨‍🏫</div>
-              <h3>Find Coach</h3>
-              <p>Book professional coaching sessions</p>
-            </a>
-            <a href="#invite-friends" class="quick-action-card">
-              <div class="action-icon">👥</div>
-              <h3>Invite Friends</h3>
-              <p>Share and play together</p>
-            </a>
-          </div>
-        </div>
-
-        <!-- Upcoming Events -->
-        <div class="content-section">
-          <h2 class="section-heading">Upcoming Events</h2>
-          <div class="events-list">
-            <div class="event-item">
-              <div class="event-date">
-                <span class="day">25</span>
-                <span class="month">DEC</span>
-              </div>
-              <div class="event-details">
-                <h4>Football Match - Central Arena</h4>
-                <p>6:00 PM - 8:00 PM • 2 hours</p>
-                <span class="event-type">Personal Booking</span>
-              </div>
-              <div class="event-actions">
-                <button class="event-btn">View</button>
-              </div>
-            </div>
-            <div class="event-item">
-              <div class="event-date">
-                <span class="day">28</span>
-                <span class="month">DEC</span>
-              </div>
-              <div class="event-details">
-                <h4>Badminton Practice - Court Pro</h4>
-                <p>4:00 PM - 6:00 PM • 2 hours</p>
-                <span class="event-type">Personal Booking</span>
-              </div>
-              <div class="event-actions">
-                <button class="event-btn">View</button>
-              </div>
-            </div>
-          </div>
-                 </div>
-
-         <!-- My Bookings Section -->
-         <div class="content-section" id="bookings">
-           <h2 class="section-heading">All My Bookings</h2>
-           <div class="bookings-grid">
-             <div class="booking-card">
-               <div class="booking-header">
-                 <h3 class="stadium-name">Central Football Arena</h3>
-                 <span class="booking-status confirmed">Confirmed</span>
-               </div>
-               <div class="booking-details">
-                 <p><strong>Date:</strong> Dec 25, 2024</p>
-                 <p><strong>Time:</strong> 6:00 PM - 8:00 PM</p>
-                 <p><strong>Duration:</strong> 2 hours</p>
-                 <p><strong>Amount:</strong> LKR 800</p>
-               </div>
-               <div class="booking-actions">
-                 <button class="action-btn view-btn">View Details</button>
-                 <button class="action-btn cancel-btn">Cancel</button>
-               </div>
-             </div>
-
-             <div class="booking-card">
-               <div class="booking-header">
-                 <h3 class="stadium-name">Badminton Court Pro</h3>
-                 <span class="booking-status pending">Pending</span>
-               </div>
-               <div class="booking-details">
-                 <p><strong>Date:</strong> Dec 28, 2024</p>
-                 <p><strong>Time:</strong> 4:00 PM - 6:00 PM</p>
-                 <p><strong>Duration:</strong> 2 hours</p>
-                 <p><strong>Amount:</strong> LKR 600</p>
-               </div>
-               <div class="booking-actions">
-                 <button class="action-btn view-btn">View Details</button>
-                 <button class="action-btn cancel-btn">Cancel</button>
-               </div>
-             </div>
-
-             <div class="booking-card">
-               <div class="booking-header">
-                 <h3 class="stadium-name">Tennis Excellence Center</h3>
-                 <span class="booking-status completed">Completed</span>
-               </div>
-               <div class="booking-details">
-                 <p><strong>Date:</strong> Dec 20, 2024</p>
-                 <p><strong>Time:</strong> 7:00 PM - 9:00 PM</p>
-                 <p><strong>Duration:</strong> 2 hours</p>
-                 <p><strong>Amount:</strong> LKR 1,200</p>
-               </div>
-               <div class="booking-actions">
-                 <button class="action-btn view-btn">View Details</button>
-                 <button class="action-btn rate-btn">Rate & Review</button>
-               </div>
-             </div>
-
-             <div class="booking-card">
-               <div class="booking-header">
-                 <h3 class="stadium-name">Cricket Ground Elite</h3>
-                 <span class="booking-status confirmed">Confirmed</span>
-               </div>
-               <div class="booking-details">
-                 <p><strong>Date:</strong> Jan 5, 2025</p>
-                 <p><strong>Time:</strong> 2:00 PM - 5:00 PM</p>
-                 <p><strong>Duration:</strong> 3 hours</p>
-                 <p><strong>Amount:</strong> LKR 1,500</p>
-               </div>
-               <div class="booking-actions">
-                 <button class="action-btn view-btn">View Details</button>
-                 <button class="action-btn cancel-btn">Cancel</button>
-               </div>
-             </div>
-           </div>
-         </div>
-
-         <!-- Stadiums Section -->
-         <div class="content-section" id="stadiums">
-           <h2 class="section-heading">My Stadiums</h2>
-           <div class="stadiums-grid">
-             <div class="stadium-card">
-               <div class="stadium-header">
-                 <h3 class="stadium-name">Central Football Arena</h3>
-                 <span class="stadium-rating">⭐ 4.8</span>
-               </div>
-               <div class="stadium-details">
-                 <p><strong>Location:</strong> Colombo, Sri Lanka</p>
-                 <p><strong>Last Visited:</strong> Dec 25, 2024</p>
-                 <p><strong>Total Bookings:</strong> 5 times</p>
-                 <p><strong>Favorite Sport:</strong> Football</p>
-               </div>
-               <div class="stadium-actions">
-                 <button class="action-btn book-btn">Book Again</button>
-                 <button class="action-btn view-btn">View Details</button>
-               </div>
-             </div>
-
-             <div class="stadium-card">
-               <div class="stadium-header">
-                 <h3 class="stadium-name">Badminton Court Pro</h3>
-                 <span class="stadium-rating">⭐ 4.6</span>
-               </div>
-               <div class="stadium-details">
-                 <p><strong>Location:</strong> Kandy, Sri Lanka</p>
-                 <p><strong>Last Visited:</strong> Dec 28, 2024</p>
-                 <p><strong>Total Bookings:</strong> 3 times</p>
-                 <p><strong>Favorite Sport:</strong> Basketball</p>
-               </div>
-               <div class="stadium-actions">
-                 <button class="action-btn book-btn">Book Again</button>
-                 <button class="action-btn view-btn">View Details</button>
-               </div>
-             </div>
-
-             <div class="stadium-card">
-               <div class="stadium-header">
-                 <h3 class="stadium-name">Tennis Excellence Center</h3>
-                 <span class="stadium-rating">⭐ 4.9</span>
-               </div>
-               <div class="stadium-details">
-                 <p><strong>Location:</strong> Galle, Sri Lanka</p>
-                 <p><strong>Last Visited:</strong> Dec 20, 2024</p>
-                 <p><strong>Total Bookings:</strong> 2 times</p>
-                 <p><strong>Favorite Sport:</strong> Tennis</p>
-               </div>
-               <div class="stadium-actions">
-                 <button class="action-btn book-btn">Book Again</button>
-                 <button class="action-btn view-btn">View Details</button>
-               </div>
-             </div>
-           </div>
-         </div>
-
-         <!-- Payments Section -->
-         <div class="content-section" id="payments">
-           <h2 class="section-heading">Payment History</h2>
-           <div class="payments-grid">
-             <div class="payment-card">
-               <div class="payment-header">
-                 <h3 class="payment-id">#PAY-2024-001</h3>
-                 <span class="payment-status completed">Completed</span>
-               </div>
-               <div class="payment-details">
-                 <p><strong>Date:</strong> Dec 25, 2024</p>
-                 <p><strong>Stadium:</strong> Central Football Arena</p>
-                 <p><strong>Method:</strong> Credit Card</p>
-                 <p><strong>Amount:</strong> LKR 800</p>
-               </div>
-               <div class="payment-actions">
-                 <button class="action-btn view-btn">View Receipt</button>
-                 <button class="action-btn download-btn">Download</button>
-               </div>
-             </div>
-
-             <div class="payment-card">
-               <div class="payment-header">
-                 <h3 class="payment-id">#PAY-2024-002</h3>
-                 <span class="payment-status pending">Pending</span>
-               </div>
-               <div class="payment-details">
-                 <p><strong>Date:</strong> Dec 28, 2024</p>
-                 <p><strong>Stadium:</strong> Badminton Court Pro</p>
-                 <p><strong>Method:</strong> Debit Card</p>
-                 <p><strong>Amount:</strong> LKR 600</p>
-               </div>
-               <div class="payment-actions">
-                 <button class="action-btn pay-btn">Pay Now</button>
-                 <button class="action-btn cancel-btn">Cancel</button>
-               </div>
-             </div>
-
-             <div class="payment-card">
-               <div class="payment-header">
-                 <h3 class="payment-id">#PAY-2024-003</h3>
-                 <span class="payment-status completed">Completed</span>
-               </div>
-               <div class="payment-details">
-                 <p><strong>Date:</strong> Dec 20, 2024</p>
-                 <p><strong>Stadium:</strong> Tennis Excellence Center</p>
-                 <p><strong>Method:</strong> Debit Card</p>
-                 <p><strong>Amount:</strong> LKR 1,200</p>
-               </div>
-               <div class="payment-actions">
-                 <button class="action-btn view-btn">View Receipt</button>
-                 <button class="action-btn download-btn">Download</button>
-               </div>
-             </div>
-           </div>
-         </div>
-
-         <!-- Profile Section -->
-         <div class="content-section" id="profile">
-           <h2 class="section-heading">My Profile</h2>
-           <div class="profile-container">
-             <div class="profile-info">
-               <div class="profile-avatar">
-                 <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzY2NiIgc3Ryb2tlLXdpZHRoPSIxLjUiPjxwYXRoIGQ9Ik0yMCAxOXYtMmE0IDQgMCAwMC00LTRIN2E0IDQgMCAwMC00IDR2MiIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iNyIgcj0iNCIvPjwvc3ZnPg==" alt="Profile Picture" id="profile-avatar">
-                 <button class="change-avatar-btn">Change Photo</button>
-               </div>
-                               <div class="profile-details">
-                  <div class="profile-field">
-                    <label>Full Name</label>
-                    <input type="text" placeholder="Enter your full name" class="profile-input">
-                  </div>
-                  <div class="profile-field">
-                    <label>Email</label>
-                    <input type="email" placeholder="Enter your email address" class="profile-input">
-                  </div>
-                  <div class="profile-field">
-                    <label>Phone</label>
-                    <input type="tel" placeholder="Enter your phone number" class="profile-input">
-                  </div>
-                  <div class="profile-field">
-                    <label>Location</label>
-                    <input type="text" placeholder="Enter your location" class="profile-input">
-                  </div>
-                  <div class="profile-field">
-                    <label>Favorite Sports</label>
-                    <input type="text" placeholder="Enter your favorite sports" class="profile-input">
-                  </div>
-                  <div class="profile-field">
-                    <label>Member Since</label>
-                    <input type="text" value="January 2024" class="profile-input" readonly>
-                  </div>
+            
+            <nav class="customer-sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="#overview" class="customer-nav-link active">
+                            <span class="customer-nav-icon">🏠</span>
+                            <span class="customer-nav-text">Overview</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#bookings" class="customer-nav-link">
+                            <span class="customer-nav-icon">📅</span>
+                            <span class="customer-nav-text">My Bookings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#profile" class="customer-nav-link">
+                            <span class="customer-nav-icon">👤</span>
+                            <span class="customer-nav-text">Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#emergency-contacts" class="customer-nav-link">
+                            <span class="customer-nav-icon">📞</span>
+                            <span class="customer-nav-text">Emergency Contacts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#stadiums" class="customer-nav-link">
+                            <span class="customer-nav-icon">🏟️</span>
+                            <span class="customer-nav-text">Stadiums</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#payments" class="customer-nav-link">
+                            <span class="customer-nav-icon">💳</span>
+                            <span class="customer-nav-text">Payments</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="customer-sidebar-footer">
+                <div class="customer-profile-info">
+                    <h4><?php echo $_SESSION['customer_name'] ?? 'Customer'; ?></h4>
+                    <p><?php echo $_SESSION['customer_email'] ?? ''; ?></p>
                 </div>
-             </div>
-             <div class="profile-actions">
-               <button class="action-btn save-btn">Save Changes</button>
-               <button class="action-btn reset-btn">Reset</button>
-             </div>
-           </div>
-         </div>
+                <a href="<?php echo URLROOT; ?>/customer/logout" class="customer-logout-btn">Logout</a>
+            </div>
+        </aside>
 
-       </div>
-     </div>
-   </section>
+        <!-- Main Content -->
+        <div class="customer-main-content">
+            <!-- Top Header -->
+            <div class="customer-top-header">
+                <div class="customer-header-title">
+                    <h1>Customer Dashboard</h1>
+                    <p>Manage your bookings, profile, and sports journey</p>
+                </div>
+                <div class="customer-header-actions">
+                    <a href="<?php echo URLROOT; ?>" class="customer-view-site-btn">
+                        <span>🌐</span> View Site
+                    </a>
+                </div>
+            </div>
 
-   </body>
+            <!-- Stats Grid -->
+            <div class="customer-stats-grid">
+                <div class="customer-stat-card">
+                    <div class="customer-stat-icon">📅</div>
+                    <div class="customer-stat-info">
+                        <h3><?php echo $data['stats']['active_bookings'] ?? 12; ?></h3>
+                        <p>Active Bookings</p>
+                    </div>
+                </div>
+                
+                <div class="customer-stat-card">
+                    <div class="customer-stat-icon">🏟️</div>
+                    <div class="customer-stat-info">
+                        <h3><?php echo $data['stats']['stadiums_visited'] ?? 8; ?></h3>
+                        <p>Stadiums Visited</p>
+                    </div>
+                </div>
+                
+                <div class="customer-stat-card">
+                    <div class="customer-stat-icon">⭐</div>
+                    <div class="customer-stat-info">
+                        <h3><?php echo $data['stats']['rating_given'] ?? 4.8; ?></h3>
+                        <p>Rating Given</p>
+                    </div>
+                </div>
+                
+                <div class="customer-stat-card">
+                    <div class="customer-stat-icon">💰</div>
+                    <div class="customer-stat-info">
+                        <h3>LKR <?php echo number_format($data['stats']['total_spent'] ?? 2450); ?></h3>
+                        <p>Total Spent</p>
+                    </div>
+                </div>
+            </div>
 
-  <script>
-    // Function to handle navbar highlighting based on scroll position
-    function updateActiveNavItem() {
-      const sections = document.querySelectorAll('.content-section');
-      const navItems = document.querySelectorAll('.nav-item');
-      
-      let currentSection = '';
-      
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop - 200; // Offset for better detection
-        const sectionHeight = section.offsetHeight;
-        const scrollPosition = window.scrollY;
-        
-        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-          currentSection = section.id;
-        }
-      });
-      
-      // Update active nav item
-      navItems.forEach(item => {
-        item.classList.remove('active');
-        if (item.getAttribute('href') === `#${currentSection}`) {
-          item.classList.add('active');
-        }
-      });
-      
-      // If no section is active, default to overview
-      if (!currentSection) {
-        navItems.forEach(item => {
-          item.classList.remove('active');
-          if (item.getAttribute('href') === '#overview') {
-            item.classList.add('active');
-          }
+            <!-- Dashboard Content -->
+            <div class="customer-dashboard-content">
+                
+                <!-- Recent Bookings Section -->
+                <div class="customer-content-section" id="bookings">
+                    <h2 class="customer-section-heading">Recent Bookings</h2>
+                    <div class="customer-bookings-grid">
+                        <?php if(isset($data['recent_bookings']) && count($data['recent_bookings']) > 0): ?>
+                            <?php foreach($data['recent_bookings'] as $booking): ?>
+                                <div class="customer-booking-card">
+                                    <div class="customer-booking-header">
+                                        <h3 class="customer-stadium-name"><?php echo $booking['stadium']; ?></h3>
+                                        <span class="customer-booking-status <?php echo strtolower($booking['status']); ?>">
+                                            <?php echo $booking['status']; ?>
+                                        </span>
+                                    </div>
+                                    <div class="customer-booking-details">
+                                        <p><strong>Date:</strong> <?php echo $booking['date']; ?></p>
+                                        <p><strong>Time:</strong> <?php echo $booking['time']; ?></p>
+                                        <p><strong>Duration:</strong> <?php echo $booking['duration']; ?></p>
+                                        <p><strong>Amount:</strong> LKR <?php echo number_format($booking['amount']); ?></p>
+                                    </div>
+                                    <div class="customer-booking-actions">
+                                        <button class="customer-action-btn customer-view-btn">View Details</button>
+                                        <button class="customer-action-btn customer-cancel-btn">Cancel</button>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p style="color: #888;">No bookings found.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Profile Section -->
+                <div class="customer-content-section" id="profile">
+                    <h2 class="customer-section-heading">My Profile</h2>
+                    
+                    <?php if(isset($_SESSION['success'])): ?>
+                        <div style="background: rgba(3, 178, 0, 0.1); border: 1px solid #03B200; color: #03B200; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                            <?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if(isset($_SESSION['error'])): ?>
+                        <div style="background: rgba(255, 0, 0, 0.1); border: 1px solid #ff4444; color: #ff6666; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                            <?php echo $_SESSION['error']; unset($_SESSION['error']); ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <form action="<?php echo URLROOT; ?>/customer/updateProfile" method="POST" enctype="multipart/form-data">
+                        <div class="customer-profile-container">
+                            <div class="customer-profile-avatar-section">
+                                <img src="<?php echo URLROOT; ?>/images/profiles/<?php echo $_SESSION['profile_picture'] ?? 'default-avatar.png'; ?>" alt="Profile Picture" id="profile-avatar">
+                                <input type="file" name="profile_picture" id="profile-picture-input" accept="image/*" style="display: none;">
+                                <button type="button" class="customer-change-avatar-btn" onclick="document.getElementById('profile-picture-input').click();">Change Photo</button>
+                            </div>
+                            
+                            <div class="customer-profile-details">
+                                <div class="customer-profile-field">
+                                    <label>First Name *</label>
+                                    <input type="text" name="first_name" value="<?php echo $_SESSION['customer_first_name'] ?? ''; ?>" placeholder="Enter your first name" class="customer-profile-input" required>
+                                </div>
+                                <div class="customer-profile-field">
+                                    <label>Last Name *</label>
+                                    <input type="text" name="last_name" value="<?php echo $_SESSION['customer_last_name'] ?? ''; ?>" placeholder="Enter your last name" class="customer-profile-input" required>
+                                </div>
+                                <div class="customer-profile-field">
+                                    <label>Email (Read Only)</label>
+                                    <input type="email" value="<?php echo $_SESSION['customer_email'] ?? ''; ?>" class="customer-profile-input" readonly>
+                                </div>
+                                <div class="customer-profile-field">
+                                    <label>Phone *</label>
+                                    <input type="tel" name="phone" value="<?php echo $_SESSION['customer_phone'] ?? ''; ?>" placeholder="Enter your phone number" class="customer-profile-input" required>
+                                </div>
+                                <div class="customer-profile-field">
+                                    <label>District *</label>
+                                    <input type="text" name="district" value="<?php echo $_SESSION['customer_district'] ?? ''; ?>" placeholder="Enter your district" class="customer-profile-input" required>
+                                </div>
+                                <div class="customer-profile-field">
+                                    <label>Preferred Sports *</label>
+                                    <select name="preferred_sports" class="customer-profile-select" required>
+                                        <option value="">Select primary sport</option>
+                                        <option value="football" <?php echo ($_SESSION['customer_sports'] ?? '') == 'football' ? 'selected' : ''; ?>>Football</option>
+                                        <option value="cricket" <?php echo ($_SESSION['customer_sports'] ?? '') == 'cricket' ? 'selected' : ''; ?>>Cricket</option>
+                                        <option value="badminton" <?php echo ($_SESSION['customer_sports'] ?? '') == 'badminton' ? 'selected' : ''; ?>>Badminton</option>
+                                        <option value="tennis" <?php echo ($_SESSION['customer_sports'] ?? '') == 'tennis' ? 'selected' : ''; ?>>Tennis</option>
+                                        <option value="other" <?php echo ($_SESSION['customer_sports'] ?? '') == 'other' ? 'selected' : ''; ?>>Other</option>
+                                    </select>
+                                </div>
+                                <div class="customer-profile-field">
+                                    <label>Age Group *</label>
+                                    <select name="age_group" class="customer-profile-select" required>
+                                        <option value="">Select age group</option>
+                                        <option value="under-18" <?php echo ($_SESSION['customer_age_group'] ?? '') == 'under-18' ? 'selected' : ''; ?>>Under 18</option>
+                                        <option value="18-25" <?php echo ($_SESSION['customer_age_group'] ?? '') == '18-25' ? 'selected' : ''; ?>>18-25 years</option>
+                                        <option value="26-35" <?php echo ($_SESSION['customer_age_group'] ?? '') == '26-35' ? 'selected' : ''; ?>>26-35 years</option>
+                                        <option value="above-35" <?php echo ($_SESSION['customer_age_group'] ?? '') == 'above-35' ? 'selected' : ''; ?>>Above 35</option>
+                                    </select>
+                                </div>
+                                <div class="customer-profile-field">
+                                    <label>Skill Level *</label>
+                                    <select name="skill_level" class="customer-profile-select" required>
+                                        <option value="">Select skill level</option>
+                                        <option value="beginner" <?php echo ($_SESSION['customer_skill_level'] ?? '') == 'beginner' ? 'selected' : ''; ?>>Beginner</option>
+                                        <option value="intermediate" <?php echo ($_SESSION['customer_skill_level'] ?? '') == 'intermediate' ? 'selected' : ''; ?>>Intermediate</option>
+                                        <option value="advanced" <?php echo ($_SESSION['customer_skill_level'] ?? '') == 'advanced' ? 'selected' : ''; ?>>Advanced</option>
+                                        <option value="professional" <?php echo ($_SESSION['customer_skill_level'] ?? '') == 'professional' ? 'selected' : ''; ?>>Professional</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="customer-profile-actions">
+                            <button type="submit" class="customer-save-btn">💾 Save Changes</button>
+                            <button type="reset" class="customer-reset-btn">🔄 Reset</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Emergency Contacts Section -->
+                <div class="customer-content-section" id="emergency-contacts">
+                    <h2 class="customer-section-heading">Emergency Contacts</h2>
+                    
+                    <div class="customer-emergency-form">
+                        <h3>➕ Add New Emergency Contact</h3>
+                        <form action="<?php echo URLROOT; ?>/customer/addEmergencyContact" method="POST">
+                            <div class="customer-form-grid">
+                                <div class="customer-form-field">
+                                    <label>Contact Name *</label>
+                                    <input type="text" name="contact_name" placeholder="John Doe" required>
+                                </div>
+                                <div class="customer-form-field">
+                                    <label>Relationship *</label>
+                                    <input type="text" name="relationship" placeholder="Father, Sister, etc." required>
+                                </div>
+                                <div class="customer-form-field">
+                                    <label>Phone *</label>
+                                    <input type="tel" name="phone" placeholder="+94771234567" required>
+                                </div>
+                                <div class="customer-form-field">
+                                    <label>Email</label>
+                                    <input type="email" name="email" placeholder="contact@email.com">
+                                </div>
+                            </div>
+                            <button type="submit" class="customer-add-contact-btn">➕ Add Contact</button>
+                        </form>
+                    </div>
+
+                    <div class="customer-contacts-list">
+                        <h3>📋 My Emergency Contacts</h3>
+                        <div class="customer-bookings-grid">
+                            <?php
+                            $customerModel = new M_Customer();
+                            $emergency_contacts = $customerModel->getEmergencyContacts($_SESSION['customer_id']);
+                            
+                            if($emergency_contacts && count($emergency_contacts) > 0):
+                                foreach($emergency_contacts as $contact):
+                            ?>
+                                <div class="customer-contact-card">
+                                    <div class="customer-contact-header">
+                                        <h3 class="customer-contact-name">👤 <?php echo $contact->contact_name; ?></h3>
+                                        <span class="customer-contact-relationship"><?php echo $contact->relationship; ?></span>
+                                    </div>
+                                    <div class="customer-contact-details">
+                                        <p><strong>📞 Phone:</strong> <?php echo $contact->phone; ?></p>
+                                        <p><strong>📧 Email:</strong> <?php echo $contact->email ?? 'N/A'; ?></p>
+                                        <p><strong>📅 Added:</strong> <?php echo date('M d, Y', strtotime($contact->created_at)); ?></p>
+                                    </div>
+                                    <a href="<?php echo URLROOT; ?>/customer/deleteEmergencyContact/<?php echo $contact->id; ?>" 
+                                       class="customer-delete-contact-btn" 
+                                       onclick="return confirm('Are you sure you want to delete this contact?');">
+                                        🗑️ Delete Contact
+                                    </a>
+                                </div>
+                            <?php 
+                                endforeach;
+                            else:
+                            ?>
+                                <p style="color: #888;">No emergency contacts added yet. Add your first contact above!</p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Favorite Stadiums Section -->
+                <div class="customer-content-section" id="stadiums">
+                    <h2 class="customer-section-heading">Favorite Stadiums</h2>
+                    <div class="customer-bookings-grid">
+                        <?php 
+                        $favorite_stadiums = [
+                            [
+                                'name' => 'Central Football Arena',
+                                'location' => 'Colombo, Sri Lanka',
+                                'sport' => 'Football',
+                                'rating' => 4.8,
+                                'total_bookings' => 5,
+                                'last_visited' => 'Jan 25, 2025'
+                            ],
+                            [
+                                'name' => 'Badminton Court Pro',
+                                'location' => 'Kandy, Sri Lanka',
+                                'sport' => 'Badminton',
+                                'rating' => 4.6,
+                                'total_bookings' => 3,
+                                'last_visited' => 'Jan 28, 2025'
+                            ],
+                            [
+                                'name' => 'Tennis Excellence Center',
+                                'location' => 'Galle, Sri Lanka',
+                                'sport' => 'Tennis',
+                                'rating' => 4.9,
+                                'total_bookings' => 8,
+                                'last_visited' => 'Jan 20, 2025'
+                            ]
+                        ];
+                        
+                        foreach($favorite_stadiums as $stadium):
+                        ?>
+                            <div class="customer-booking-card">
+                                <div class="customer-booking-header">
+                                    <h3 class="customer-stadium-name">🏟️ <?php echo $stadium['name']; ?></h3>
+                                    <span class="customer-booking-status confirmed">⭐ <?php echo $stadium['rating']; ?></span>
+                                </div>
+                                <div class="customer-booking-details">
+                                    <p><strong>📍 Location:</strong> <?php echo $stadium['location']; ?></p>
+                                    <p><strong>⚽ Sport:</strong> <?php echo $stadium['sport']; ?></p>
+                                    <p><strong>📅 Last Visited:</strong> <?php echo $stadium['last_visited']; ?></p>
+                                    <p><strong>🎫 Total Bookings:</strong> <?php echo $stadium['total_bookings']; ?> times</p>
+                                </div>
+                                <div class="customer-booking-actions">
+                                    <button class="customer-action-btn customer-view-btn">View Details</button>
+                                    <button class="customer-action-btn customer-view-btn">Book Again</button>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <!-- Payment History Section -->
+                <div class="customer-content-section" id="payments">
+                    <h2 class="customer-section-heading">Payment History</h2>
+                    <div class="customer-payment-table">
+                        <table class="customer-data-table">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Date</th>
+                                    <th>Stadium</th>
+                                    <th>Payment Method</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                $payments = [
+                                    [
+                                        'id' => 'TXN12345',
+                                        'date' => '2025-01-25',
+                                        'stadium' => 'Central Football Arena',
+                                        'method' => 'Credit Card',
+                                        'amount' => 800,
+                                        'status' => 'Completed'
+                                    ],
+                                    [
+                                        'id' => 'TXN12346',
+                                        'date' => '2025-01-28',
+                                        'stadium' => 'Badminton Court Pro',
+                                        'method' => 'Debit Card',
+                                        'amount' => 600,
+                                        'status' => 'Completed'
+                                    ],
+                                    [
+                                        'id' => 'TXN12347',
+                                        'date' => '2025-01-20',
+                                        'stadium' => 'Tennis Excellence Center',
+                                        'method' => 'Online Banking',
+                                        'amount' => 1200,
+                                        'status' => 'Completed'
+                                    ],
+                                    [
+                                        'id' => 'TXN12348',
+                                        'date' => '2025-01-15',
+                                        'stadium' => 'Swimming Pool Complex',
+                                        'method' => 'Credit Card',
+                                        'amount' => 450,
+                                        'status' => 'Completed'
+                                    ]
+                                ];
+                                
+                                foreach($payments as $payment):
+                                ?>
+                                    <tr>
+                                        <td><span class="payment-id">#<?php echo $payment['id']; ?></span></td>
+                                        <td><?php echo date('M d, Y', strtotime($payment['date'])); ?></td>
+                                        <td><?php echo $payment['stadium']; ?></td>
+                                        <td><?php echo $payment['method']; ?></td>
+                                        <td><strong style="color: #03B200;">LKR <?php echo number_format($payment['amount']); ?></strong></td>
+                                        <td><span class="payment-status-completed">✓ <?php echo $payment['status']; ?></span></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 20px; background: #1a1a1a; border-radius: 10px; border: 1px solid #333;">
+                        <h3 style="color: #03B200; margin-bottom: 15px;">💳 Payment Summary</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                            <div>
+                                <p style="color: #888; font-size: 14px;">Total Transactions</p>
+                                <h3 style="color: #fff; font-size: 24px;">4</h3>
+                            </div>
+                            <div>
+                                <p style="color: #888; font-size: 14px;">Total Amount Paid</p>
+                                <h3 style="color: #03B200; font-size: 24px;">LKR 3,050</h3>
+                            </div>
+                            <div>
+                                <p style="color: #888; font-size: 14px;">Last Payment</p>
+                                <h3 style="color: #fff; font-size: 24px;">Jan 28, 2025</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scroll for navigation links
+        document.querySelectorAll('.customer-nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                
+                // Update active state
+                document.querySelectorAll('.customer-nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
         });
-      }
-    }
-    
-    // Add smooth scrolling to nav items
-    document.querySelectorAll('.nav-item').forEach(item => {
-      item.addEventListener('click', function(e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href').substring(1);
-        const targetSection = document.getElementById(targetId);
-        
-        if (targetSection) {
-          targetSection.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      });
-    });
-    
-    // Listen for scroll events
-    window.addEventListener('scroll', updateActiveNavItem);
-    
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', updateActiveNavItem);
-  </script>
- </html>
+    </script>
+</body>
+</html>

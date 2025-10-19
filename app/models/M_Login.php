@@ -39,6 +39,7 @@ class M_Login {
         if($admin && password_verify($password, $admin->password)) {
             // Return admin data with role set to 'admin'
             $admin->role = 'admin';
+            $admin->full_name = $admin->full_name; // Keep admin structure
             return $admin;
         }
 

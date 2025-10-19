@@ -8,8 +8,6 @@ class Core
 
     public function __construct()
     {
-        //print_r($this->getURL());
-
         $url = $this->getURL();
 
         if (empty($url) || (isset($url[0]) && empty($url[0]))) {
@@ -22,9 +20,12 @@ class Core
             return;
         }
 
-        if (file_exists('../app/controllers/' . ucwords($url[0]) . '.php')) {
+        // Handle controller name - make sure first letter is uppercase
+        $controllerName = ucfirst(strtolower($url[0]));
+        
+        if (file_exists('../app/controllers/' . $controllerName . '.php')) {
             //if the controller exists, then load it
-            $this->currentController = ucwords($url[0]);
+            $this->currentController = $controllerName;
 
             //unset the controller in the url
             unset($url[0]);
@@ -49,6 +50,9 @@ class Core
 
             //Call method and pass the parameter list
             call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
+        } else {
+            // Controller not found - show 404 or redirect to home
+            echo "Controller '$controllerName' not found.";
         }
     }
 
@@ -61,7 +65,6 @@ class Core
 
             return $url;
         }
+        return [];
     }
 }
-
-?>

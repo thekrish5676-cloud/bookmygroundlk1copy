@@ -9,7 +9,6 @@ class Login extends Controller {
 
     public function index() {
         // Check if already logged in
-        session_start();
         if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] === true) {
             $this->redirectToDashboard($_SESSION['user_role']);
             return;
@@ -79,8 +78,7 @@ class Login extends Controller {
                 // Update last login for admin
                 $this->loginModel->updateLastLogin($user->id, true);
                 
-                // Start session and set admin session variables
-                session_start();
+                // Set admin session variables
                 $_SESSION['admin_logged_in'] = true;
                 $_SESSION['admin_id'] = $user->id;
                 $_SESSION['admin_email'] = $user->email;
@@ -96,20 +94,20 @@ class Login extends Controller {
 
             } else {
                 // Regular user login process
+                
+                // Check if user account is active
                 if ($user->status !== 'active') {
-                    $statusMsg = $user->status === 'pending' ? 'pending approval' : $user->status;
-                    $data['error'] = "Your account is currently {$statusMsg}. Please contact support if you need assistance.";
+                    $data['error'] = 'Your account is not active. Please contact support.';
                     return $data;
                 }
-
+                
                 // Clear any previous login attempts
                 $this->loginModel->clearLoginAttempts($email);
                 
                 // Update last login
                 $this->loginModel->updateLastLogin($user->id);
                 
-                // Start session and set session variables
-                session_start();
+                // Set user session variables
                 $_SESSION['user_logged_in'] = true;
                 $_SESSION['user_id'] = $user->id;
                 $_SESSION['user_email'] = $user->email;
@@ -199,9 +197,12 @@ class Login extends Controller {
     }
 
     public function logout() {
-        session_start();
-        
-        // Log the activity
+        // Start session if not already started
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Log the activity before clearing session
         if (isset($_SESSION['user_id'])) {
             $this->loginModel->logActivity($_SESSION['user_id'], 'User logged out');
         } elseif (isset($_SESSION['admin_id'])) {
@@ -209,12 +210,16 @@ class Login extends Controller {
         }
         
         // Clear session
+        session_unset();
         session_destroy();
         
         // Clear remember me cookie
         if (isset($_COOKIE['remember_token'])) {
             setcookie('remember_token', '', time() - 3600, '/');
         }
+        
+        // Start new session
+        session_start();
         
         // Redirect to login page
         header('Location: ' . URLROOT . '/login');
@@ -226,4 +231,65 @@ class Login extends Controller {
         header('Location: ' . URLROOT . '/register');
         exit;
     }
+
+    public function resetPassword($token = null) {
+        // Handle password reset with token
+        if (!$token) {
+            header('Location: ' . URLROOT . '/login/forgot');
+            exit;
+        }
+
+        $data = [
+            'title' => 'Reset Password - BookMyGround',
+            'error' => '',
+            'success' => '',
+            'token' => $token
+        ];
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $password = $_POST['password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? '';
+            $resetToken = $_POST['token'] ?? '';
+
+            // Validate inputs
+            if (empty($password) || empty($confirmPassword)) {
+                $data['error'] = 'Please fill in all fields';
+            } elseif (strlen($password) < 6) {
+                $data['error'] = 'Password must be at least 6 characters long';
+            } elseif ($password !== $confirmPassword) {
+                $data['error'] = 'Passwords do not match';
+            } elseif ($this->loginModel->resetPassword($resetToken, $password)) {
+                $data['success'] = 'Password reset successfully. You can now login with your new password.';
+                // Redirect to login after 3 seconds
+                header('refresh:3;url=' . URLROOT . '/login');
+            } else {
+                $data['error'] = 'Invalid or expired reset token. Please request a new password reset.';
+            }
+        } else {
+            // Verify token is valid
+            if (!$this->loginModel->verifyResetToken($token)) {
+                $data['error'] = 'Invalid or expired reset token. Please request a new password reset.';
+            }
+        }
+
+        $this->view('login/v_reset_password', $data);
+    }
+
+    public function verify($token = null) {
+        // Handle email verification
+        if (!$token) {
+            header('Location: ' . URLROOT . '/login');
+            exit;
+        }
+
+        if ($this->loginModel->verifyEmail($token)) {
+            $_SESSION['verification_success'] = 'Email verified successfully! You can now login.';
+        } else {
+            $_SESSION['verification_error'] = 'Invalid or expired verification token.';
+        }
+
+        header('Location: ' . URLROOT . '/login');
+        exit;
+    }
 }
+?>

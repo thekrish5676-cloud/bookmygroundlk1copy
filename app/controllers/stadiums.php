@@ -29,9 +29,25 @@ class Stadiums extends Controller {
             exit;
         }
 
+        // Get nearby stadiums (exclude current stadium)
+        $nearbyStadiums = $this->stadiumsModel->getNearbyStadiums($stadium->location, $id, 4);
+
+        // Get stadium gallery images
+        $galleryImages = $this->stadiumsModel->getStadiumGallery($id);
+
+        // Get stadium videos
+        $videos = $this->stadiumsModel->getStadiumVideos($id);
+
+        // Get stadium reviews
+        $reviews = $this->stadiumsModel->getStadiumReviews($id, 5);
+
         $data = [
             'title' => $stadium->name,
-            'stadium' => $stadium
+            'stadium' => $stadium,
+            'nearby_stadiums' => $nearbyStadiums,
+            'gallery_images' => $galleryImages,
+            'videos' => $videos,
+            'reviews' => $reviews
         ];
 
         $this->view('stadiums/v_single_stadium', $data);
