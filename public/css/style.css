@@ -27,6 +27,28 @@ body {
     padding: 0;
 }
 
+/* --- Fix: CSS arrow + vertical alignment for Pages dropdown --- */
+
+/* Ensure each top-level nav item is vertically centered */
+.nav-menu > li {
+    display: flex;
+    align-items: center;
+    height: 70px; /* matches .nav-container height so text stays centered */
+}
+
+/* Optionally hide the arrow on small screens (mobile) where we show expand behavior */
+@media (max-width: 900px) {
+    .nav-menu .dropdown-toggle::after {
+        display: none;
+    }
+
+    /* keep mobile layout rules as before — ensure nav items stack correctly */
+    .nav-menu > li {
+        height: auto;
+        padding: 12px 0;
+    }
+}
+
 .nav-container {
     max-width: 1400px;
     margin: 0 auto;
@@ -61,10 +83,7 @@ body {
     position: relative;
 }
 
-.nav-link:hover,
-.nav-link.active {
-    color: #03B200;
-}
+
 
 .nav-link:hover::after {
     width: 100%;
@@ -77,7 +96,7 @@ body {
     left: 0;
     width: 0;
     height: 2px;
-    background: #03B200;
+    background: #037c01;
     transition: width 0.3s ease;
 }
 
@@ -143,6 +162,97 @@ body {
 
 .hamburger.active span:nth-child(3) {
     transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* --- Dropdown styles for header Pages menu --- */
+
+.nav-menu .dropdown {
+    position: relative;
+}
+
+.nav-menu .dropdown-toggle {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Dropdown menu (hidden by default) */
+.nav-menu .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #0f0f0f;
+    border: 1px solid #242424;
+    min-width: 180px;
+    padding: 8px 0;
+    list-style: none;
+    display: none;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    z-index: 1200;
+    border-radius: 6px;
+}
+
+/* Links inside dropdown */
+.nav-menu .dropdown-menu li {
+    padding: 0;
+}
+
+.nav-menu .dropdown-menu .dropdown-link {
+    display: block;
+    padding: 10px 18px;
+    color: #ccc;
+    text-decoration: none;
+    font-size: 15px;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-menu .dropdown-menu .dropdown-link:hover {
+    background: #03B20010;
+    color: #03B200;
+}
+
+/* Show dropdown on hover for desktop */
+@media (min-width: 901px) {
+    .nav-menu .dropdown:hover > .dropdown-menu {
+        display: block;
+    }
+}
+
+/* When opened via JS on mobile (class open applied to .dropdown) */
+.nav-menu .dropdown.open > .dropdown-menu {
+    display: block;
+}
+
+/* Mobile adjustments: when nav-menu has .open, display items vertically */
+@media (max-width: 900px) {
+    .nav-menu {
+        position: absolute;
+        top: 70px;
+        right: 0;
+        left: 0;
+        background: #141414;
+        flex-direction: column;
+        gap: 0;
+        padding: 12px 20px;
+        display: none; /* hidden by default on mobile */
+    }
+
+    .nav-menu.open {
+        display: flex;
+    }
+
+    .nav-menu li {
+        width: 100%;
+        border-bottom: 1px solid #222;
+    }
+
+    .nav-menu .dropdown-menu {
+        position: static;
+        border: none;
+        box-shadow: none;
+        background: transparent;
+        padding-left: 12px;
+    }
 }
 
 /* Footer Styles */

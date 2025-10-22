@@ -25,7 +25,16 @@
                     <li><a href="<?php echo URLROOT; ?>/sports" class="nav-link">Sports</a></li>
                     <li><a href="<?php echo URLROOT; ?>/rental" class="nav-link">Rental Services</a></li>
                     <li><a href="<?php echo URLROOT; ?>/pricing" class="nav-link">Pricing</a></li>
-                    <li><a href="<?php echo URLROOT; ?>/pages" class="nav-link">Pages</a></li>
+
+                    <!-- Pages dropdown -->
+                    <li class="nav-item dropdown">
+                        <a href="<?php echo URLROOT; ?>/pages" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">Pages ▾</a>
+                        <ul class="dropdown-menu" aria-label="submenu">
+                            <li><a href="<?php echo URLROOT; ?>/posts" class="dropdown-link">Posts</a></li>
+                            <li><a href="<?php echo URLROOT; ?>/faq" class="dropdown-link">FAQ</a></li>
+                            <li><a href="<?php echo URLROOT; ?>/contact" class="dropdown-link">Contact</a></li>
+                        </ul>
+                    </li>
                 </ul>
 
                 <!-- Action Buttons -->
@@ -35,7 +44,7 @@
                 </div>
 
                 <!-- Mobile Menu Toggle -->
-                <div class="hamburger">
+                <div class="hamburger" id="hamburger">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -43,3 +52,48 @@
             </div>
         </nav>
     </header>
+
+    <script>
+    // Small header JS: hamburger toggle + dropdown behavior (works for desktop hover and mobile click)
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hamburger toggle (mobile)
+        var hamburger = document.getElementById('hamburger');
+        var navContainer = document.querySelector('.nav-container');
+        var navMenu = document.querySelector('.nav-menu');
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', function() {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('open'); // toggles mobile menu
+            });
+        }
+
+        // Dropdown behavior: open on click for mobile, keep hover for desktop via CSS
+        var dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        dropdownToggles.forEach(function(toggle) {
+            toggle.addEventListener('click', function(e) {
+                // On small screens, prevent navigation and toggle submenu
+                var width = window.innerWidth || document.documentElement.clientWidth;
+                if (width <= 900) {
+                    e.preventDefault();
+                    var parent = toggle.parentElement;
+                    parent.classList.toggle('open');
+                    var expanded = parent.classList.contains('open');
+                    toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                }
+                // On large screens, it's a normal link to /pages (leave default)
+            });
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            var target = e.target;
+            document.querySelectorAll('.dropdown.open').forEach(function(openDropdown) {
+                if (!openDropdown.contains(target)) {
+                    openDropdown.classList.remove('open');
+                    var t = openDropdown.querySelector('.dropdown-toggle');
+                    if (t) t.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+    });
+    </script>
