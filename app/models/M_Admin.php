@@ -35,22 +35,23 @@ class M_Admin {
     }
 
     // Get all users
+
     public function getAllUsers() {
-        $this->db->query('SELECT u.*, 
-            CASE 
-                WHEN u.role = "customer" THEN CONCAT(u.first_name, " ", u.last_name)
-                WHEN u.role = "stadium_owner" THEN COALESCE(sop.business_name, CONCAT(u.first_name, " ", u.last_name))
-                WHEN u.role = "coach" THEN CONCAT(u.first_name, " ", u.last_name)
-                WHEN u.role = "rental_owner" THEN COALESCE(rop.business_name, CONCAT(u.first_name, " ", u.last_name))
-                ELSE CONCAT(u.first_name, " ", u.last_name)
-            END as display_name
-            FROM users u
-            LEFT JOIN stadium_owner_profiles sop ON u.id = sop.user_id
-            LEFT JOIN rental_owner_profiles rop ON u.id = rop.user_id
-            ORDER BY u.created_at DESC');
-        
-        return $this->db->resultSet();
-    }
+    $this->db->query('SELECT u.*, 
+        CASE 
+            WHEN u.role = "customer" THEN u.first_name
+            WHEN u.role = "stadium_owner" THEN COALESCE(NULLIF(sop.business_name, ""), NULLIF(sop.business_name, "Not specified"), u.first_name)
+            WHEN u.role = "coach" THEN u.first_name
+            WHEN u.role = "rental_owner" THEN COALESCE(NULLIF(rop.business_name, ""), NULLIF(rop.business_name, "Not specified"), u.first_name)
+            ELSE u.first_name
+        END as display_name
+        FROM users u
+        LEFT JOIN stadium_owner_profiles sop ON u.id = sop.user_id
+        LEFT JOIN rental_owner_profiles rop ON u.id = rop.user_id
+        ORDER BY u.created_at DESC');
+    
+    return $this->db->resultSet();
+}
 
     // Get user by ID
     public function getUserById($id) {

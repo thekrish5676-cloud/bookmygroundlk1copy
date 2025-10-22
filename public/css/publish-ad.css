@@ -1,0 +1,380 @@
+/* Publish Advertisement Page Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    color: #e0e0e0;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #03B200 0%, #028a00 100%);
+    border-radius: 15px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(3, 178, 0, 0.3);
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.header p {
+    font-size: 1.1rem;
+    color: #f0f0f0;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Main Content */
+.content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+/* Pricing Cards */
+.pricing-section {
+    background: #111;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+}
+
+.pricing-section h2 {
+    font-size: 2rem;
+    color: #03B200;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.pricing-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pricing-card {
+    background: #1a1a1a;
+    padding: 25px;
+    border-radius: 12px;
+    border: 2px solid #2a2a2a;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.pricing-card:hover {
+    border-color: #03B200;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(3, 178, 0, 0.2);
+}
+
+.pricing-card.featured {
+    border-color: #03B200;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0d2e0c 100%);
+}
+
+.featured-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #03B200;
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.pricing-card h3 {
+    font-size: 1.5rem;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.price {
+    font-size: 2.5rem;
+    color: #03B200;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.price span {
+    font-size: 1rem;
+    color: #888;
+}
+
+.features-list {
+    list-style: none;
+    margin: 20px 0;
+}
+
+.features-list li {
+    padding: 10px 0;
+    color: #ccc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.features-list li:before {
+    content: "✓";
+    color: #03B200;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Form Section */
+.form-section {
+    background: #111;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+}
+
+.form-section h2 {
+    font-size: 2rem;
+    color: #03B200;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #e0e0e0;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    background: #1a1a1a;
+    border: 2px solid #2a2a2a;
+    border-radius: 8px;
+    color: #e0e0e0;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #03B200;
+    box-shadow: 0 0 0 3px rgba(3, 178, 0, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-group input[type="file"] {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.form-group small {
+    color: #888;
+    display: block;
+    margin-top: 5px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 15px 40px;
+    background: linear-gradient(135deg, #03B200 0%, #028a00 100%);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(3, 178, 0, 0.4);
+}
+
+.btn-secondary {
+    background: #2a2a2a;
+    margin-top: 10px;
+}
+
+.btn-secondary:hover {
+    background: #3a3a3a;
+    box-shadow: 0 5px 20px rgba(255, 255, 255, 0.1);
+}
+
+/* Benefits Section */
+.benefits-section {
+    background: #111;
+    padding: 40px;
+    border-radius: 15px;
+    margin-bottom: 40px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+}
+
+.benefits-section h2 {
+    font-size: 2rem;
+    color: #03B200;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.benefit-card {
+    background: #1a1a1a;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    border: 2px solid #2a2a2a;
+    transition: all 0.3s ease;
+}
+
+.benefit-card:hover {
+    border-color: #03B200;
+    transform: translateY(-5px);
+}
+
+.benefit-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.benefit-card h3 {
+    color: #fff;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+
+.benefit-card p {
+    color: #aaa;
+    line-height: 1.6;
+}
+
+/* Footer Note */
+.footer-note {
+    text-align: center;
+    padding: 30px;
+    background: #111;
+    border-radius: 15px;
+    margin-top: 40px;
+}
+
+.footer-note p {
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.footer-note a {
+    color: #03B200;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.footer-note a:hover {
+    text-decoration: underline;
+}
+
+/* Success Message */
+.success-message {
+    display: none;
+    background: linear-gradient(135deg, #03B200 0%, #028a00 100%);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #fff;
+}
+
+.success-message.show {
+    display: block;
+    animation: slideDown 0.5s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+    .content-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animation for cards */
+.pricing-card,
+.benefit-card {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+}
+
+.pricing-card.animate,
+.benefit-card.animate {
+    opacity: 1;
+    transform: translateY(0);
+}

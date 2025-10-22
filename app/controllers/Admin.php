@@ -104,125 +104,131 @@ class Admin extends Controller {
         $this->view('admin/v_add_user', $data);
     }
 
-    private function processAddUser($data) {
-        // Get and validate form data
-        $formData = [
-            'first_name' => trim($_POST['first_name'] ?? ''),
-            'last_name' => trim($_POST['last_name'] ?? ''),
-            'email' => trim($_POST['email'] ?? ''),
-            'phone' => trim($_POST['phone'] ?? ''),
-            'role' => $_POST['role'] ?? '',
-            'password' => $_POST['password'] ?? '',
-            'confirm_password' => $_POST['confirm_password'] ?? ''
-        ];
+    // In app/controllers/Admin.php, update the processAddUser method's validation section:
 
-        $data['form_data'] = $formData;
+private function processAddUser($data) {
+    // Get and validate form data
+    $formData = [
+        'first_name' => trim($_POST['first_name'] ?? ''),
+        'last_name' => trim($_POST['last_name'] ?? ''),
+        'email' => trim($_POST['email'] ?? ''),
+        'phone' => trim($_POST['phone'] ?? ''),
+        'role' => $_POST['role'] ?? '',
+        'password' => $_POST['password'] ?? '',
+        'confirm_password' => $_POST['confirm_password'] ?? ''
+    ];
 
-        // Validation
-        $errors = [];
+    $data['form_data'] = $formData;
 
-        if (empty($formData['first_name'])) {
-            $errors[] = 'First name is required';
-        }
+    // Validation
+    $errors = [];
 
-        if (empty($formData['last_name'])) {
-            $errors[] = 'Last name is required';
-        }
+    if (empty($formData['first_name'])) {
+        $errors[] = 'First name is required';
+    }
 
-        if (empty($formData['email'])) {
-            $errors[] = 'Email is required';
-        } elseif (!filter_var($formData['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors[] = 'Please enter a valid email address';
-        }
+    if (empty($formData['last_name'])) {
+        $errors[] = 'Last name is required';
+    }
 
-        if (empty($formData['phone'])) {
-            $errors[] = 'Phone number is required';
-        }
+    if (empty($formData['email'])) {
+        $errors[] = 'Email is required';
+    } elseif (!filter_var($formData['email'], FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Please enter a valid email address';
+    }
 
-        if (empty($formData['role'])) {
-            $errors[] = 'Please select a role';
-        } elseif (!in_array($formData['role'], ['customer', 'stadium_owner', 'coach', 'rental_owner'])) {
-            $errors[] = 'Invalid role selected';
-        }
+    if (empty($formData['phone'])) {
+        $errors[] = 'Phone number is required';
+    } elseif (!preg_match('/^0[0-9]{9}$/', $formData['phone'])) {
+        $errors[] = 'Phone number must start with 0 and contain exactly 10 digits';
+    }
 
-        if (empty($formData['password'])) {
-            $errors[] = 'Password is required';
-        } elseif (strlen($formData['password']) < 6) {
-            $errors[] = 'Password must be at least 6 characters long';
-        }
+    if (empty($formData['role'])) {
+        $errors[] = 'Please select a role';
+    } elseif (!in_array($formData['role'], ['customer', 'stadium_owner', 'coach', 'rental_owner'])) {
+        $errors[] = 'Invalid role selected';
+    }
 
-        if ($formData['password'] !== $formData['confirm_password']) {
-            $errors[] = 'Passwords do not match';
-        }
+    if (empty($formData['password'])) {
+        $errors[] = 'Password is required';
+    } elseif (strlen($formData['password']) < 6) {
+        $errors[] = 'Password must be at least 6 characters long';
+    }
 
-        // Check if email already exists
-        if (empty($errors) && $this->adminModel->emailExists($formData['email'])) {
-            $errors[] = 'Email address already exists';
-        }
+    if ($formData['password'] !== $formData['confirm_password']) {
+        $errors[] = 'Passwords do not match';
+    }
 
-        if (!empty($errors)) {
-            $data['error'] = implode('<br>', $errors);
-            return $data;
-        }
+    // Check if email already exists
+    if (empty($errors) && $this->adminModel->emailExists($formData['email'])) {
+        $errors[] = 'Email address already exists';
+    }
 
-        // Create user
-        $userId = $this->adminModel->createUser($formData);
-
-        if ($userId) {
-            // Create role-specific profile if needed
-            $this->createRoleProfile($userId, $formData);
-            
-            $data['success'] = 'User created successfully!';
-            $data['form_data'] = []; // Clear form data on success
-        } else {
-            $data['error'] = 'Failed to create user. Please try again.';
-        }
-
+    if (!empty($errors)) {
+        $data['error'] = implode('<br>', $errors);
         return $data;
     }
 
+    // Create user
+    $userId = $this->adminModel->createUser($formData);
+
+    if ($userId) {
+        // Create role-specific profile if needed
+        $this->createRoleProfile($userId, $formData);
+        
+        $data['success'] = 'User created successfully!';
+        $data['form_data'] = []; // Clear form data on success
+    } else {
+        $data['error'] = 'Failed to create user. Please try again.';
+    }
+
+    return $data;
+}
+
+    // In app/controllers/Admin.php, update the createRoleProfile method:
+
     private function createRoleProfile($userId, $formData) {
-        // Create basic profiles for different roles
-        // This can be expanded later with more specific fields
-        switch($formData['role']) {
-            case 'customer':
-                $this->adminModel->createCustomerProfile($userId, [
-                    'district' => 'Not specified',
-                    'sports' => 'Not specified',
-                    'age_group' => 'under_18',
-                    'skill_level' => 'beginner'
-                ]);
-                break;
-            case 'stadium_owner':
-                $this->adminModel->createStadiumOwnerProfile($userId, [
-                    'owner_name' => $formData['first_name'] . ' ' . $formData['last_name'],
-                    'business_name' => 'Not specified',
-                    'district' => 'Not specified',
-                    'venue_type' => 'stadium',
-                    'business_registration' => 'Not specified'
-                ]);
-                break;
-            case 'coach':
-                $this->adminModel->createCoachProfile($userId, [
-                    'specialization' => 'Not specified',
-                    'experience' => '1_3',
-                    'certification' => 'basic',
-                    'coaching_type' => 'individual',
-                    'district' => 'Not specified',
-                    'availability' => 'part_time'
-                ]);
-                break;
-            case 'rental_owner':
-                $this->adminModel->createRentalOwnerProfile($userId, [
-                    'owner_name' => $formData['first_name'] . ' ' . $formData['last_name'],
-                    'business_name' => 'Not specified',
-                    'district' => 'Not specified',
-                    'business_type' => 'independent',
-                    'equipment_categories' => 'Not specified',
-                    'delivery_service' => 'no'
-                ]);
-                break;
-        }
+    // Create basic profiles for different roles
+    // This can be expanded later with more specific fields
+    switch($formData['role']) {
+        case 'customer':
+            $this->adminModel->createCustomerProfile($userId, [
+                'district' => 'Not specified',
+                'sports' => 'Not specified',
+                'age_group' => 'under_18',
+                'skill_level' => 'beginner'
+            ]);
+            break;
+        case 'stadium_owner':
+            $this->adminModel->createStadiumOwnerProfile($userId, [
+                'owner_name' => $formData['first_name'] . ' ' . $formData['last_name'],
+                'business_name' => $formData['first_name'] . ' ' . $formData['last_name'], // Changed from "Not specified"
+                'district' => 'Not specified',
+                'venue_type' => 'stadium',
+                'business_registration' => 'Not specified'
+            ]);
+            break;
+        case 'coach':
+            $this->adminModel->createCoachProfile($userId, [
+                'specialization' => 'Not specified',
+                'experience' => '1_3',
+                'certification' => 'basic',
+                'coaching_type' => 'individual',
+                'district' => 'Not specified',
+                'availability' => 'part_time'
+            ]);
+            break;
+        case 'rental_owner':
+            $this->adminModel->createRentalOwnerProfile($userId, [
+                'owner_name' => $formData['first_name'] . ' ' . $formData['last_name'],
+                'business_name' => $formData['first_name'] . ' ' . $formData['last_name'], // Changed from "Not specified"
+                'district' => 'Not specified',
+                'business_type' => 'independent',
+                'equipment_categories' => 'Not specified',
+                'delivery_service' => 'no'
+            ]);
+            break;
+    }
     }
 
     public function edit_user($id = null) {

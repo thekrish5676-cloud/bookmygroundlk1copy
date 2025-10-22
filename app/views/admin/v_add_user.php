@@ -73,13 +73,16 @@
                     <div class="form-group">
                         <label for="phone">Phone Number *</label>
                         <input type="tel" 
-                               id="phone" 
-                               name="phone" 
-                               class="form-control"
-                               value="<?php echo htmlspecialchars($data['form_data']['phone'] ?? ''); ?>"
-                               placeholder="Enter phone number"
-                               required>
-                    </div>
+                            id="phone" 
+                            name="phone" 
+                            class="form-control"
+                            value="<?php echo htmlspecialchars($data['form_data']['phone'] ?? ''); ?>"
+                            placeholder="0XXXXXXXXX (e.g., 0712345678)"
+                            maxlength="10"
+                            pattern="0[0-9]{9}"
+                        required>
+                    <small class="form-help">Enter 10-digit phone number starting with 0</small>
+                </div>
                 </div>
 
                 <div class="form-group">
@@ -294,5 +297,88 @@
     }
 }
 </style>
+
+<script>
+// Phone number validation
+document.getElementById('phone').addEventListener('input', function(e) {
+    // Remove any non-digit characters
+    this.value = this.value.replace(/[^0-9]/g, '');
+    
+    // Limit to 10 digits
+    if (this.value.length > 10) {
+        this.value = this.value.slice(0, 10);
+    }
+    
+    // Validate format
+    validatePhoneNumber(this);
+});
+
+document.getElementById('phone').addEventListener('blur', function(e) {
+    validatePhoneNumber(this);
+});
+
+function validatePhoneNumber(input) {
+    const phoneNumber = input.value;
+    const errorDiv = document.getElementById('phone-error');
+    
+    // Remove existing error if present
+    if (errorDiv) {
+        errorDiv.remove();
+    }
+    
+    if (phoneNumber.length === 0) {
+        return; // Don't show error for empty field (required validation will handle it)
+    }
+    
+    if (phoneNumber.length !== 10) {
+        showPhoneError(input, 'Phone number must be exactly 10 digits');
+        input.setCustomValidity('Phone number must be exactly 10 digits');
+        return false;
+    }
+    
+    if (!phoneNumber.startsWith('0')) {
+        showPhoneError(input, 'Phone number must start with 0');
+        input.setCustomValidity('Phone number must start with 0');
+        return false;
+    }
+    
+    // Valid phone number
+    input.setCustomValidity('');
+    input.style.borderColor = '#28a745';
+    return true;
+}
+
+function showPhoneError(input, message) {
+    input.style.borderColor = '#dc3545';
+    
+    const errorDiv = document.createElement('small');
+    errorDiv.id = 'phone-error';
+    errorDiv.className = 'form-help';
+    errorDiv.style.color = '#dc3545';
+    errorDiv.textContent = message;
+    
+    input.parentNode.appendChild(errorDiv);
+}
+
+// Form submission validation
+document.querySelector('.user-form').addEventListener('submit', function(e) {
+    const phoneInput = document.getElementById('phone');
+    
+    if (!validatePhoneNumber(phoneInput)) {
+        e.preventDefault();
+        phoneInput.focus();
+        return false;
+    }
+});
+
+// Clear error styling when user starts typing again
+document.getElementById('phone').addEventListener('focus', function() {
+    this.style.borderColor = '#e1e5e9';
+    const errorDiv = document.getElementById('phone-error');
+    if (errorDiv) {
+        errorDiv.remove();
+    }
+});
+</script>
 
 <?php require APPROOT.'/views/admin/inc/footer.php'; ?>
