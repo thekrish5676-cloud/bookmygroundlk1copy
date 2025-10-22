@@ -460,6 +460,12 @@ function bookStadium(id) {
             
             <!-- Sport Type Filter -->
             <div class="filter-section">
+                <div class="filter-section">
+                    <h4>Search Stadiums</h4>
+                    <div class="filter-search">
+                    <input type="text" id="customSearchInput" class="custom-search-input" placeholder="Search by name, location, owner or feature" />
+                </div>
+            </div>
                 <h4>Sport Type</h4>
                 <div class="filter-options">
                     <label class="filter-checkbox">
@@ -970,6 +976,79 @@ document.querySelector('.search-input').addEventListener('input', function() {
 document.getElementById('loadMoreBtn').addEventListener('click', function() {
     alert('Load more stadiums functionality would fetch additional results');
 });
+
+/*
+  Custom search behaviour:
+  - matches stadium name, location, owner and visible feature tags
+  - case-insensitive
+  - works with both .stadium-card1 and .stadium-card selectors (covers existing variations)
+  Note: this script only hides/shows cards; it is intentionally minimal and doesn't modify your existing filter logic.
+*/
+(function(){
+    const input = document.getElementById('customSearchInput');
+    if(!input) return;
+
+    function updateResultsCount(visible) {
+        const countEl = document.getElementById('resultsCount') || document.querySelector('.results-count');
+        if(countEl) countEl.textContent = `${visible} stadiums found`;
+    }
+
+    input.addEventListener('input', function(){
+        const q = this.value.trim().toLowerCase();
+        const cards = document.querySelectorAll('.stadium-card1, .stadium-card');
+        let visible = 0;
+
+        cards.forEach(card => {
+            // Collect searchable text
+            const nameEl = card.querySelector('.stadium-name');
+            const name = nameEl ? nameEl.textContent.toLowerCase() : '';
+
+            const locationEl = card.querySelector('.stadium-location');
+            const location = locationEl ? locationEl.textContent.toLowerCase() : '';
+
+            const ownerEl = card.querySelector('.owner-name');
+            const owner = ownerEl ? ownerEl.textContent.toLowerCase() : '';
+
+            // features: gather visible .feature-tag texts inside this card
+            const featureEls = card.querySelectorAll('.stadium-features .feature-tag');
+            const features = Array.from(featureEls).map(f => f.textContent.toLowerCase()).join(' ');
+
+            const hay = [name, location, owner, features].join(' ');
+            const match = q === '' || hay.indexOf(q) !== -1;
+
+            /*
+              Preserve existing filter-hidden state:
+              - If the card is already hidden by other filters (computed display === 'none') and the search box is empty,
+                leave it hidden.
+              - If a search term exists, override to show matches and hide non-matches.
+            */
+            const wasHiddenByOtherFilters = window.getComputedStyle(card).display === 'none' && q === '';
+            if(wasHiddenByOtherFilters){
+                // keep as-is (hidden)
+                card.style.display = 'none';
+            } else {
+                card.style.display = match ? 'block' : 'none';
+            }
+
+            if(window.getComputedStyle(card).display !== 'none') visible++;
+        });
+
+        updateResultsCount(visible);
+    });
+})();
 </script>
+
+<style>
+/* Minimal styles — safe to include inline; adjust to match your theme if needed */
+.custom-search-input{
+    width:100%;
+    padding:8px 10px;
+    border:1px solid #ddd;
+    border-radius:6px;
+    box-sizing:border-box;
+    font-size:14px;
+}
+.filter-section h4 { margin-bottom:8px; }
+</style>
 
 <?php require APPROOT.'/views/inc/components/footer.php'; ?>
