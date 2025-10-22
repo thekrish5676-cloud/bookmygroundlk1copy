@@ -24,16 +24,23 @@
                     <li><a href="<?php echo URLROOT; ?>/coach" class="nav-link">Coaches</a></li>
                     <li><a href="<?php echo URLROOT; ?>/sports" class="nav-link">Sports</a></li>
                     <li><a href="<?php echo URLROOT; ?>/rental" class="nav-link">Rental Services</a></li>
-                    <li><a href="<?php echo URLROOT; ?>/pricing" class="nav-link">Pricing</a></li>
+                    <!-- Pricing dropdown -->
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" onclick="return false;" aria-haspopup="true" aria-expanded="false">Pricing ▾</a>
+                            <ul class="dropdown-menu" aria-label="submenu">
+                                <li><a href="<?php echo URLROOT; ?>/pricing" class="dropdown-link">Stadium Owners</a></li>
+                                <li><a href="<?php echo URLROOT; ?>/rental_packages" class="dropdown-link">Sports Gear Rental Services</a></li>
+                                </ul>
+                    </li>
 
                     <!-- Pages dropdown -->
                     <li class="nav-item dropdown">
-                        <a href="<?php echo URLROOT; ?>/pages" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">Pages ▾</a>
-                        <ul class="dropdown-menu" aria-label="submenu">
-                            <li><a href="<?php echo URLROOT; ?>/posts" class="dropdown-link">Posts</a></li>
-                            <li><a href="<?php echo URLROOT; ?>/faq" class="dropdown-link">FAQ</a></li>
-                            <li><a href="<?php echo URLROOT; ?>/contact" class="dropdown-link">Contact</a></li>
-                        </ul>
+                        <a href="#" class="nav-link dropdown-toggle" onclick="return false;" aria-haspopup="true" aria-expanded="false">Pages ▾</a>
+                            <ul class="dropdown-menu" aria-label="submenu">
+                                <li><a href="<?php echo URLROOT; ?>/posts" class="dropdown-link">Blog</a></li>
+                                <li><a href="<?php echo URLROOT; ?>/faq" class="dropdown-link">FAQ</a></li>
+                                <li><a href="<?php echo URLROOT; ?>/contact" class="dropdown-link">Contact</a></li>
+                                </ul>
                     </li>
                 </ul>
 

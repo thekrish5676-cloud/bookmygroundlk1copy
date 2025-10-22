@@ -1,5 +1,6 @@
 <?php
-class Database{
+class Database
+{
 
     private $host = DB_HOST;
     private $user = DB_USER;
@@ -29,14 +30,16 @@ class Database{
     }
 
     //Prepared statement
-    public function query($sql){
+    public function query($sql)
+    {
         $this->statement = $this->dbh->prepare($sql);
     }
 
     //Bind parameters
-    public function bind($param, $value, $type = NULL){
-        if(is_null($type)){
-            switch(true){
+    public function bind($param, $value, $type = NULL)
+    {
+        if (is_null($type)) {
+            switch (true) {
                 case is_int($value):
                     $type = PDO::PARAM_INT;
                     break;
@@ -47,36 +50,38 @@ class Database{
                     $type = PDO::PARAM_NULL;
                     break;
                 default:
-                $type = PDO::PARAM_STR;
-            
+                    $type = PDO::PARAM_STR;
             }
         }
         $this->statement->bindValue($param, $value, $type);
     }
     //Execute the prapared statement
-    public function execute(){
+    public function execute()
+    {
         return $this->statement->execute();
     }
     //Get multiple records as the result
-    public function resultSet(){
+    public function resultSet()
+    {
         $this->execute();
         return $this->statement->fetchALL(PDO::FETCH_OBJ);
     }
 
     //Get single record as the single result
-    public function single(){
+    public function single()
+    {
         $this->execute();
         return $this->statement->fetch(PDO::FETCH_OBJ);
     }
 
     //Get the row count
-    public function rowCount(){
+    public function rowCount()
+    {
         return $this->statement->rowCount();
     }
     // Get the last inserted ID
-    public function lastInsertId(){
-    return $this->dbh->lastInsertId();
+    public function lastInsertId()
+    {
+        return $this->dbh->lastInsertId();
+    }
 }
-}
-
-?>

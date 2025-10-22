@@ -83,15 +83,18 @@ class Stadium_owner extends Controller {
             
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Handle property addition
-                $propertyData = [
-                    'name' => $_POST['name'] ?? '',
-                    'type' => $_POST['type'] ?? '',
-                    'category' => $_POST['category'] ?? '',
-                    'price' => $_POST['price'] ?? '',
-                    'location' => $_POST['location'] ?? '',
-                    'description' => $_POST['description'] ?? '',
-                    'features' => $_POST['features'] ?? []
-                ];
+                // $propertyData = [
+                //     'name' => $_POST['name'] ?? '',
+                //     'type' => $_POST['type'] ?? '',
+                //     'category' => $_POST['category'] ?? '',
+                //     'price' => $_POST['price'] ?? '',
+                //     'location' => $_POST['location'] ?? '',
+                //     'description' => $_POST['description'] ?? '',
+                //     'features' => $_POST['features'] ?? [],
+
+                // ];
+
+                $propertyData = $_POST;
                 
                 if ($this->stadiumOwnerModel->addProperty($userId, $propertyData)) {
                     $data['success'] = 'Property added successfully!';
@@ -123,15 +126,8 @@ class Stadium_owner extends Controller {
             
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Handle property update
-                $propertyData = [
-                    'name' => $_POST['name'] ?? '',
-                    'type' => $_POST['type'] ?? '',
-                    'category' => $_POST['category'] ?? '',
-                    'price' => $_POST['price'] ?? '',
-                    'location' => $_POST['location'] ?? '',
-                    'description' => $_POST['description'] ?? '',
-                    'features' => $_POST['features'] ?? []
-                ];
+                $propertyData = $_POST;
+                $data['id'] = $id;
                 
                 if ($this->stadiumOwnerModel->updateProperty($userId, $id, $propertyData)) {
                     $data['success'] = 'Property updated successfully!';
@@ -273,4 +269,28 @@ class Stadium_owner extends Controller {
             die('Error in Stadium Owner logout: ' . $e->getMessage());
         }
     }
+
+    // public function delete_property($id = null) {
+    //     try {
+    //         $userId = Auth::getUserId();
+            
+    //         if (!$id) {
+    //             echo json_encode(['success' => false, 'message' => 'No property ID provided']);
+    //             return;
+    //         }
+
+    //         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    //             echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+    //             return;
+    //         }
+
+    //         $result = $this->stadiumOwnerModel->deleteProperty($userId, $id);
+            
+    //         echo json_encode($result);
+            
+    //     } catch (Exception $e) {
+    //         error_log('Stadium Owner Delete Property Error: ' . $e->getMessage());
+    //         echo json_encode(['success' => false, 'message' => 'Error deleting property']);
+    //     }
+    // }
 }

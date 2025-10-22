@@ -21,36 +21,33 @@
                 <div class="footer-section">
                     <h4>Quick Menu</h4>
                     <ul class="footer-links">
-                        <li><a href="<?php echo URLROOT; ?>">Home</a></li>
-                        <li><a href="<?php echo URLROOT; ?>/schedule">Schedule</a></li>
-                        <li><a href="<?php echo URLROOT; ?>/match">Match</a></li>
-                        <li><a href="<?php echo URLROOT; ?>/services">Services</a></li>
-                        <li><a href="<?php echo URLROOT; ?>/blog">Blog & News</a></li>
-                        <li><a href="<?php echo URLROOT; ?>/faq">FAQ</a></li>
+                        <li><a href="http://localhost/bookmygroundlk/">Home</a></li>
+                        <li><a href="http://localhost/bookmygroundlk/stadiums">Stadiums</a></li>
+                        <li><a href="http://localhost/bookmygroundlk/coach">Coaches</a></li>
+                        <li><a href="http://localhost/bookmygroundlk/rental">Rental Services</a></li>
+                        <li><a href="http://localhost/bookmygroundlk/faq">FAQ</a></li>
+                        <li><a href="http://localhost/bookmygroundlk/contact">Contact</a></li>
                     </ul>
                 </div>
 
                 <!-- Help Section -->
                 <div class="footer-section">
-                    <h4>Help</h4>
+                    <h4>Pricing</h4>
                     <ul class="footer-links">
-                        <li><a href="<?php echo URLROOT; ?>/about">About Basketball Club</a></li>
-                        <li><a href="<?php echo URLROOT; ?>/contact">Contact Support</a></li>
-                        <li><a href="<?php echo URLROOT; ?>/help">Help Center</a></li>
-                        <li><a href="<?php echo URLROOT; ?>/payment-assistance">Payment Assistance</a></li>
-                        <li><a href="<?php echo URLROOT; ?>/troubleshooting">Troubleshooting Guide</a></li>
+                        <li><a href="http://localhost/bookmygroundlk/pricing">Stadium Owners</a></li>
+                        <li><a href="http://localhost/bookmygroundlk/rental_packages">Rental Service Owners</a></li>
+                        <li><a href="http://localhost/bookmygroundlk/advertisement">For Advertisement Publishing</a></li>
                     </ul>
                 </div>
 
                 <!-- Company Section -->
                 <div class="footer-section">
-                    <h4>Company</h4>
+                    <h4>Connect With Us As:</h4>
                     <ul class="footer-links">
-                        <li><a href="#" class="highlight-link">NBA League Post</a></li>
-                        <li><a href="#">NBA 2K</a></li>
-                        <li><a href="#">NBA Store Merch</a></li>
-                        <li><a href="#">League Pass</a></li>
-                        <li><a href="#">Recruitment</a></li>
+                        <li><a href="http://localhost/bookmygroundlk/register/customer">Player</a></li>
+                        <li><a href="http://localhost/bookmygroundlk/register/stadium_owner">Stadium Owner</a></li>
+                        <li><a href="http://localhost/bookmygroundlk/register/rental_owner">Sports Gear Rental Service Owner</a></li>
+                        <li><a href="http://localhost/bookmygroundlk/register/coach">Sports Coach</a></li>
                     </ul>
                 </div>
 

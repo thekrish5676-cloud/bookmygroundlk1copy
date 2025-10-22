@@ -5,7 +5,7 @@ class M_Coaches {
             [
                 'id'=>1,
                 'title'=>'FootBall',
-                'image'=> URLROOT . '/public/images/coaches/foot.jpg',
+                'image'=> URLROOT . '/public/images/coaches/foot1.jpg',
             ],
             [
                 'id'=>2,
@@ -58,7 +58,7 @@ class M_Coaches {
             [
                 'id' => 1,
                 'name' => 'Thimira Jayasingha',
-                'image' => '',
+                'image' => URLROOT . '/public/images/coaches/feature/badmin2.jpg',
                 'gender' => 'male',
                 'availability' => 'available',
                 'rating' => '4.9',
@@ -82,7 +82,7 @@ class M_Coaches {
             [
                 'id' => 2,
                 'name' => 'Dawn Staly',
-                'image' => '',
+                'image' => URLROOT . '/public/images/coaches/feature/swimm1.jpg',
                 'gender' => 'female',
                 'availability' => 'unavailable',
                 'rating' => '2.9',
@@ -128,7 +128,7 @@ class M_Coaches {
             [
                 'id' => 4,
                 'name' => 'Jony Rukshan',
-                'image' => '',
+                'image' => URLROOT . '/public/images/coaches/feature/foot3.jpg',
                 'gender' => 'male',
                 'availability' => 'available',
                 'rating' => '4.0',
