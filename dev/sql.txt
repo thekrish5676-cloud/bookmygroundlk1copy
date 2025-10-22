@@ -531,3 +531,66 @@ CREATE TABLE IF NOT EXISTS emergency_contacts (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+
+
+
+
+------------kalana sql tables--------
+--coach card details--
+
+-- Create coach_card_details table to store extended coach profile info (bio, training style, languages, achievements, awards, availability text, hourly rate)
+CREATE TABLE IF NOT EXISTS coach_card_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    bio TEXT,
+    training_style TEXT,
+    languages VARCHAR(255), -- comma-separated list (e.g. 'Sinhala,English')
+    achievements TEXT,
+    awards TEXT,
+    availability_text VARCHAR(255), -- human readable availability description
+    hourly_rate DECIMAL(10,2) DEFAULT 0.00,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_coach_card_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+
+
+
+--coach free training session--
+
+-- Create coach_free_training table to store coaches' free training session slots
+CREATE TABLE IF NOT EXISTS coach_free_training (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    day ENUM('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday') NOT NULL,
+    time_slot VARCHAR(100) NOT NULL, -- e.g. '4:00 PM - 5:00 PM'
+    session_type VARCHAR(100) NOT NULL, -- e.g. 'Group Session'
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_coach_free_training_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+--Kulakshi Stadium Listing Crud Operation--
+
+ALTER TABLE stadiums
+ADD COLUMN contact_person varchar(255) DEFAULT NULL,
+ADD COLUMN whatsapp_number varchar(255) DEFAULT NULL,
+ADD COLUMN cancellation_policy varchar(255) DEFAULT NULL,
+ADD COLUMN special_instructions varchar(255) DEFAULT NULL,
+ADD COLUMN district varchar(255) DEFAULT NULL,
+ADD COLUMN postal_code varchar(255) DEFAULT NULL,
+ADD COLUMN description text DEFAULT NULL,
+ADD COLUMN opening_hours varchar(255) DEFAULT NULL,
+ADD COLUMN advance_booking varchar(255) DEFAULT NULL,
+ADD COLUMN minimum_duration varchar(255) DEFAULT NULL,
+ADD COLUMN contact_phone varchar(255) DEFAULT NULL,
+ADD COLUMN total_bookings varchar(255) DEFAULT NULL,
+ADD COLUMN monthly_revenue varchar(255) DEFAULT NULL,
+ADD COLUMN contact_email varchar(255) DEFAULT NULL;

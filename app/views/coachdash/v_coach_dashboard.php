@@ -3,7 +3,8 @@
     <!-- Profile Header -->
     <div class="kal-coach-profile-header">
         <h1><?php echo $data['title'] ?? 'Coach Profile Management'; ?></h1>
-        <button type="submit" form="profileForm" class="kal-profile-save-btn">Save Changes</button>
+    <!-- Edit button navigates to dedicated edit page -->
+    <button type="button" id="globalEditBtn" class="kal-profile-save-btn" onclick="window.location.href='<?php echo URLROOT; ?>/coachdash/edit'">Edit Profile</button>
     </div>
 
     <form id="profileForm" action="<?php echo URLROOT; ?>/coachdash/updateProfile" method="POST">
@@ -59,16 +60,18 @@
                     <h3>Availability</h3>
                     <div class="kal-form-group">
                         <label for="availability">Current Status</label>
-                        <select class="kal-form-control" id="availability" name="availability">
-                            <option value="available" <?php echo $data['coach']['availability'] === 'available' ? 'selected' : ''; ?>>Available</option>
-                            <option value="unavailable" <?php echo $data['coach']['availability'] === 'unavailable' ? 'selected' : ''; ?>>Unavailable</option>
-                            <option value="limited" <?php echo $data['coach']['availability'] === 'limited' ? 'selected' : ''; ?>>Limited Availability</option>
+                        <!-- Disabled on dashboard to avoid inline edits; editable from edit page -->
+                        <select class="kal-form-control" id="availability" name="availability" disabled>
+                            <option value="available" <?php echo ($data['coach']['availability_text'] ?? '') === 'available' ? 'selected' : ''; ?>>Available</option>
+                            <option value="unavailable" <?php echo ($data['coach']['availability_text'] ?? '') === 'unavailable' ? 'selected' : ''; ?>>Unavailable</option>
+                            <option value="flexibility" <?php echo ($data['coach']['availability_text'] ?? '') === 'flexibility' ? 'selected' : ''; ?>>Flexibility</option>
                         </select>
                     </div>
                     <div class="kal-form-group">
                         <label for="hourly_rate">Hourly Rate (LKR)</label>
-                        <input type="number" class="kal-form-control" id="hourly_rate" name="hourly_rate" 
-                               value="<?php echo str_replace(',', '', $data['coach']['rate']); ?>" min="0">
+                        <!-- Show hourly_rate read-only on dashboard; editable on edit page -->
+                        <input type="number" class="kal-form-control" id="hourly_rate" name="hourly_rate" readonly
+                               value="<?php echo htmlspecialchars($data['coach']['hourly_rate'] ?? str_replace(',', '', $data['coach']['rate'] ?? '')); ?>" min="0">
                     </div>
                 </div>
             </div>
@@ -79,7 +82,6 @@
                 <div class="kal-profile-section">
                     <div class="kal-section-header">
                         <h3>Basic Information</h3>
-                        <button type="button" class="kal-edit-btn" onclick="toggleEdit('basicInfo')">Edit</button>
                     </div>
                     <div class="kal-form-grid">
                         <div class="kal-form-group">
@@ -87,12 +89,22 @@
                             <input type="text" class="kal-form-control" id="full_name" name="full_name" 
                                    value="<?php echo htmlspecialchars($data['coach']['name']); ?>" readonly>
                         </div>
-                        <div class="kal-form-group">
-                            <label for="sport">Sport</label>
-                            <select class="kal-form-control" id="sport" name="sport" readonly>
-                                <option value="<?php echo $data['coach']['sport']; ?>" selected><?php echo $data['coach']['sport']; ?></option>
-                            </select>
-                        </div>
+                                <div class="kal-form-group">
+                                    <label for="sport">Sports Specialization</label>
+                                    <?php
+                                        // Display single primary sport: if specialization is array use first element, else use string
+                                        $primarySport = '';
+                                        if (!empty($data['coach']['specialization'])) {
+                                            if (is_array($data['coach']['specialization'])) {
+                                                $primarySport = $data['coach']['specialization'][0] ?? '';
+                                            } else {
+                                                $primarySport = (string)$data['coach']['specialization'];
+                                            }
+                                        }
+                                    ?>
+                                    <input type="text" class="kal-form-control" id="sport" name="sport" readonly
+                                           value="<?php echo htmlspecialchars($primarySport); ?>">
+                                </div>
                         <div class="kal-form-group">
                             <label for="mobile">Mobile Number</label>
                             <input type="tel" class="kal-form-control" id="mobile" name="mobile" 
@@ -111,7 +123,40 @@
                         <div class="kal-form-group">
                             <label for="certification">Certification</label>
                             <input type="text" class="kal-form-control" id="certification" name="certification" 
-                                   value="<?php echo htmlspecialchars($data['coach']['certification']); ?>">
+                                   value="<?php echo htmlspecialchars($data['coach']['certification'] ?? ''); ?>">
+                        </div>
+                        <div class="kal-form-group">
+                            <label for="experience">Experience</label>
+                            <input type="text" class="kal-form-control" id="experience" name="experience" 
+                                   value="<?php echo htmlspecialchars($data['coach']['experience'] ?? ''); ?>">
+                        </div>
+                        <div class="kal-form-group">
+                            <label for="coaching_type">Coaching Type</label>
+                            <input type="text" class="kal-form-control" id="coaching_type" name="coaching_type" 
+                                   value="<?php echo htmlspecialchars($data['coach']['coaching_type'] ?? ''); ?>">
+                        </div>
+                        <div class="kal-form-group">
+                            <label for="district">District</label>
+                            <input type="text" class="kal-form-control" id="district" name="district" 
+                                   value="<?php echo htmlspecialchars($data['coach']['location'] ?? $data['coach']['district'] ?? ''); ?>">
+                        </div>
+                        <div class="kal-form-group">
+                            <label for="primary_availability">Primary Availability</label>
+                            <?php
+                                // Prefer coach_profiles.availability (registration value) first, fallback to availability_text from card details
+                                $primaryAvail = $data['coach']['availability'] ?? $data['coach']['availability_text'] ?? '';
+                                // Map some common values to friendly labels
+                                $availMap = [
+                                    'weekdays' => 'Weekdays',
+                                    'weekends' => 'Weekends',
+                                    'flexible' => 'Flexible',
+                                    'full_time' => 'Full Time',
+                                    'part_time' => 'Part Time',
+                                    'evenings' => 'Evenings'
+                                ];
+                                $displayAvail = $availMap[strtolower($primaryAvail)] ?? $primaryAvail;
+                            ?>
+                            <input type="text" class="kal-form-control" id="primary_availability" name="primary_availability" readonly value="<?php echo htmlspecialchars($displayAvail); ?>">
                         </div>
                     </div>
                 </div>
@@ -120,7 +165,6 @@
                 <div class="kal-profile-section">
                     <div class="kal-section-header">
                         <h3>About Me</h3>
-                        <button type="button" class="kal-edit-btn" onclick="toggleEdit('aboutMe')">Edit</button>
                     </div>
                     <div class="kal-form-group full-width">
                         <label for="bio">Bio/Description</label>
@@ -128,49 +172,27 @@
                     </div>
                     <div class="kal-form-group full-width">
                         <label for="training_style">Training Style & Philosophy</label>
-                        <textarea class="kal-form-control" id="training_style" name="training_style" rows="3"><?php echo htmlspecialchars($data['coach']['training_style'] ?? ''); ?></textarea>
+                        <textarea class="kal-form-control" id="training_style" name="training_style" rows="3" readonly><?php echo htmlspecialchars($data['coach']['training_style'] ?? ''); ?></textarea>
                     </div>
                 </div>
 
-                <!-- Specializations Section -->
-                <div class="kal-profile-section">
-                    <div class="kal-section-header">
-                        <h3>Specializations</h3>
-                        <button type="button" class="kal-edit-btn" onclick="toggleEdit('specializations')">Edit</button>
-                    </div>
-                    <div class="kal-tags-container" id="specializationsContainer">
-                        <?php foreach($data['coach']['specialization'] as $spec): ?>
-                            <div class="kal-tag">
-                                <?php echo htmlspecialchars($spec); ?>
-                                <button type="button" class="kal-tag-remove" onclick="removeTag(this)">×</button>
-                                <input type="hidden" name="specializations[]" value="<?php echo htmlspecialchars($spec); ?>">
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                    <div class="kal-add-tag">
-                        <input type="text" class="kal-form-control" id="newSpecialization" placeholder="Add new specialization">
-                        <button type="button" class="kal-edit-btn" onclick="addSpecialization()">Add</button>
-                    </div>
-                </div>
+                <!-- Specializations removed per request -->
 
                 <!-- Languages Section -->
                 <div class="kal-profile-section">
                     <div class="kal-section-header">
                         <h3>Languages Spoken</h3>
-                        <button type="button" class="kal-edit-btn" onclick="toggleEdit('languages')">Edit</button>
                     </div>
                     <div class="kal-tags-container" id="languagesContainer">
                         <?php foreach($data['coach']['languages'] as $lang): ?>
                             <div class="kal-tag">
                                 <?php echo htmlspecialchars($lang); ?>
-                                <button type="button" class="kal-tag-remove" onclick="removeTag(this)">×</button>
-                                <input type="hidden" name="languages[]" value="<?php echo htmlspecialchars($lang); ?>">
                             </div>
                         <?php endforeach; ?>
                     </div>
                     <div class="kal-add-tag">
                         <input type="text" class="kal-form-control" id="newLanguage" placeholder="Add new language">
-                        <button type="button" class="kal-edit-btn" onclick="addLanguage()">Add</button>
+                        <button type="button" class="kal-edit-btn" data-edit-action="true" disabled onclick="addLanguage()">Add</button>
                     </div>
                 </div>
 
@@ -178,12 +200,11 @@
                 <div class="kal-profile-section">
                     <div class="kal-section-header">
                         <h3>Free Training Sessions</h3>
-                        <button type="button" class="kal-edit-btn" onclick="toggleEdit('freeSlots')">Edit</button>
                     </div>
                     <div class="kal-slot-grid" id="freeSlotsContainer">
                         <?php foreach($data['coach']['free_slots'] as $index => $slot): ?>
                             <div class="kal-slot-card">
-                                <button type="button" class="kal-slot-remove" onclick="removeSlot(this)">×</button>
+                                <button type="button" class="kal-slot-remove" data-edit-action="true" disabled onclick="removeSlot(this)">×</button>
                                 <div class="kal-slot-day"><?php echo htmlspecialchars($slot['day']); ?></div>
                                 <div class="kal-slot-time"><?php echo htmlspecialchars($slot['time']); ?></div>
                                 <div class="kal-slot-type"><?php echo htmlspecialchars($slot['type']); ?></div>
@@ -216,7 +237,7 @@
                                 <input type="text" class="kal-form-control" id="newSlotType" placeholder="e.g., Group Session">
                             </div>
                         </div>
-                        <button type="button" class="kal-edit-btn" onclick="addFreeSlot()" style="margin-top: 10px;">Add Slot</button>
+                        <button type="button" class="kal-edit-btn" data-edit-action="true" disabled onclick="addFreeSlot()" style="margin-top: 10px;">Add Slot</button>
                     </div>
                 </div>
 
@@ -224,20 +245,19 @@
                 <div class="kal-profile-section">
                     <div class="kal-section-header">
                         <h3>Achievements & Awards</h3>
-                        <button type="button" class="kal-edit-btn" onclick="toggleEdit('achievements')">Edit</button>
                     </div>
                     <ul class="kal-achievement-list" id="achievementsList">
                         <?php foreach($data['coach']['achievements'] as $index => $achievement): ?>
                             <li class="kal-achievement-item">
                                 <span class="kal-achievement-text"><?php echo htmlspecialchars($achievement); ?></span>
-                                <button type="button" class="kal-remove-btn" onclick="removeAchievement(this)">Remove</button>
+                                <button type="button" class="kal-remove-btn" data-edit-action="true" disabled onclick="removeAchievement(this)">Remove</button>
                                 <input type="hidden" name="achievements[]" value="<?php echo htmlspecialchars($achievement); ?>">
                             </li>
                         <?php endforeach; ?>
                     </ul>
                     <div class="kal-add-achievement">
                         <input type="text" class="kal-form-control" id="newAchievement" placeholder="Add new achievement">
-                        <button type="button" class="kal-edit-btn" onclick="addAchievement()">Add</button>
+                        <button type="button" class="kal-edit-btn" data-edit-action="true" disabled onclick="addAchievement()">Add</button>
                     </div>
                 </div>
             </div>
@@ -246,7 +266,7 @@
 </div>
 
 <script>
-// Toggle edit mode for sections
+// Toggle edit mode for sections (kept for compatibility but not used)
 function toggleEdit(section) {
     const inputs = document.querySelectorAll(`#${section} input, #${section} select, #${section} textarea`);
     inputs.forEach(input => {
@@ -254,6 +274,8 @@ function toggleEdit(section) {
         input.disabled = !input.disabled;
     });
 }
+
+// Editing is handled on the dedicated edit page (`coachdash/edit`).
 
 // Tag management functions
 function removeTag(button) {

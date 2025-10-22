@@ -7,6 +7,24 @@
     margin: 0 auto;
 }
 
+/*coach profile manager style - small additions*/
+.kal-form-group input[type="text"],
+.kal-form-group input[type="tel"],
+.kal-form-group input[type="email"] {
+    min-height: 44px;
+}
+
+.kal-tags-container { 
+    word-break: break-word;
+}
+
+.kal-profile-photo-img img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 .kal-coach-profile-header {
     display: flex;
     justify-content: space-between;
@@ -165,6 +183,42 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 15px;
     padding: 25px;
+}
+
+/* Hide the text caret for inputs/textarea when readonly to avoid the vertical caret line */
+input[readonly], textarea[readonly] {
+    caret-color: transparent;
+}
+
+/* Global edit/save button styling (same place as previous save button) */
+.kal-profile-save-btn {
+    background: #03B200;
+    color: #000;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.kal-profile-save-btn.editing {
+    background: #007bff; /* blue when in editing state (Save) */
+    color: #fff;
+}
+
+/* Muted look for action buttons while not in edit mode */
+button[data-edit-action="true"][disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* coach profile manager style - edit form tweaks */
+.kal-form-control.select, .kal-form-control {
+    appearance: none;
+}
+.kal-form-control select {
+    padding-right: 30px;
 }
 
 .kal-section-header {

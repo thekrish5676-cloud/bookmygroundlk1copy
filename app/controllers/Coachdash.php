@@ -19,6 +19,32 @@ class Coachdash extends Controller {
         $this->view('coachdash/v_messages', $data);
     }
 
+    public function edit() {
+        // show editable profile view
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $user_id = $_SESSION['user_id'] ?? 1;
+
+        $model = $this->model('M_Coachdash');
+        $coach = $model->getCoachByUserId($user_id);
+
+        // Load sports options from registration model so edit uses same choices as signup
+        $registerModel = $this->model('M_Register');
+        $sports = [];
+        if (method_exists($registerModel, 'getSportsSpecializations')) {
+            $sports = $registerModel->getSportsSpecializations();
+        }
+
+        $data = [
+            'title' => 'Edit Profile',
+            'coach' => $coach ?: ['id' => $user_id],
+            'sports' => $sports
+        ];
+
+        $this->view('coachdash/v_coach_dashboard_edit', $data);
+    }
+
     public function advertisment(){
         $data = [
             'title' => 'Advertisement Management',
@@ -62,7 +88,9 @@ class Coachdash extends Controller {
     }
 
     public function blog() {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         
         $data = [
             'title' => 'Blog Management',
@@ -78,44 +106,119 @@ class Coachdash extends Controller {
     public function updateProfile() {
         // Handle profile update (in real scenario, this would process form data)
         if ($_POST) {
-            // Process form data and update coach profile
-            // This would typically update the database
-            
-            // Redirect back to profile page with success message
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            $user_id = $_SESSION['user_id'] ?? $_POST['user_id'] ?? 1;
+
+            // collect fields
+            $first = trim($_POST['first_name'] ?? '');
+            $last = trim($_POST['last_name'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $phone = trim($_POST['mobile'] ?? '');
+            $district = trim($_POST['district'] ?? '');
+            $certification = trim($_POST['certification'] ?? '');
+            $experience = trim($_POST['experience'] ?? '');
+            $coaching_type = trim($_POST['coaching_type'] ?? '');
+            $bio = trim($_POST['bio'] ?? '');
+            $training_style = trim($_POST['training_style'] ?? '');
+            $languages = $_POST['languages'] ?? [];
+            $achievements = $_POST['achievements'] ?? [];
+            // current_status is the coach's current availability state (available/unavailable/flexibility)
+            $current_status = trim($_POST['current_status'] ?? '');
+            // availability is the coach's primary work window (weekdays/weekends/flexible)
+            $primary_availability = trim($_POST['availability'] ?? '');
+            $hourly_rate = trim($_POST['hourly_rate'] ?? '');
+
+            // free_slots may be submitted as an array of arrays
+            $free_slots = $_POST['free_slots'] ?? [];
+            $specializations = $_POST['specializations'] ?? null;
+            // Accept primary sport single select from edit form
+            $primarySport = $_POST['specialization'] ?? null;
+            if ($primarySport) {
+                // if specializations is array, ensure primary sport is included, otherwise set as single
+                if (is_array($specializations)) {
+                    if (!in_array($primarySport, $specializations)) {
+                        array_unshift($specializations, $primarySport);
+                    }
+                } else {
+                    $specializations = [$primarySport];
+                }
+            }
+            // if specializations is a comma-separated string (single input), convert to array
+            if (is_string($specializations) && strpos($specializations, ',') !== false) {
+                $specializations = array_map('trim', explode(',', $specializations));
+            } elseif (is_string($specializations) && trim($specializations) !== '') {
+                $specializations = [trim($specializations)];
+            }
+
+            $model = $this->model('M_Coachdash');
+            $update = $model->updateCoachByUserId($user_id, [
+                'first_name' => $first,
+                'last_name' => $last,
+                'email' => $email,
+                'phone' => $phone,
+                'district' => $district,
+                'certification' => $certification,
+                'experience' => $experience,
+                'coaching_type' => $coaching_type,
+                'bio' => $bio,
+                'specialization' => $specializations,
+                'languages' => $languages,
+                'achievements' => $achievements,
+                'training_style' => $training_style,
+                'free_slots' => $free_slots,
+                // persist current status to coach_card_details and update coach_profiles.availability with primary_availability
+                'current_status' => $current_status,
+                'primary_availability' => $primary_availability,
+                // ensure coach_profiles.availability gets updated from the edit form's availability field
+                'availability' => $primary_availability,
+                'hourly_rate' => $hourly_rate
+            ]);
+
+            // Redirect back to profile page
             header('Location: ' . URLROOT . '/coachdash');
             exit;
         }
     }
 
     private function getCoachData() {
-        // In real scenario, this would fetch from database based on logged-in coach
+        // Use the model M_Coachdash to fetch coach data
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $user_id = $_SESSION['user_id'] ?? 1; // fallback to 1 for development
+
+        $model = $this->model('M_Coachdash');
+        $coach = $model->getCoachByUserId($user_id);
+
+        if ($coach) {
+            return $coach;
+        }
+
+        // default fallback structure
         return [
-            'id' => 1,
-            'name' => 'Thimira Jayasingha',
+            'id' => $user_id,
+            'name' => '',
             'image' => '',
-            'gender' => 'male',
-            'availability' => 'available',
-            'rating' => '4.9',
-            'location' => 'Colombo 10',
-            'sport' => 'Badminton',
-            'featured' => true,
-            'mobile' => '+94711234567',
-            'bio' => 'Professional badminton coach with 8+ years of experience. Former national level player specializing in technique improvement and competitive training.',
-            'rate' => '2,500',
-            'experience' => '8 years',
-            'certification' => 'Level 3 Badminton Coach',
-            'specialization' => ['Technique Training', 'Competitive Coaching', 'Fitness Conditioning'],
-            'free_slots' => [
-                ['day' => 'Monday', 'time' => '4:00 PM - 5:00 PM', 'type' => 'Group Session'],
-                ['day' => 'Wednesday', 'time' => '5:00 PM - 6:00 PM', 'type' => 'Beginner Class'],
-                ['day' => 'Saturday', 'time' => '9:00 AM - 10:00 AM', 'type' => 'Free Trial']
-            ],
-            'achievements' => ['National Championship 2019', 'Best Coach Award 2021'],
-            'languages' => ['Sinhala', 'English'],
-            'email' => 'thimira@example.com',
-            'address' => '123 Coach Street, Colombo 10',
-            'qualifications' => ['Level 3 Coaching Certificate', 'Sports Science Diploma'],
-            'training_style' => 'Technical focus with game-based learning approach'
+            'availability' => '',
+            'rating' => '1',
+            'location' => '',
+            'sport' => '',
+            'featured' => false,
+            'mobile' => '',
+            'bio' => '',
+            'rate' => '',
+            'experience' => '',
+            'certification' => '',
+            'specialization' => [],
+            'free_slots' => [],
+            'achievements' => [],
+            'languages' => [],
+            'email' => '',
+            'address' => '',
+            'qualifications' => [],
+            'training_style' => ''
         ];
     }
 }
