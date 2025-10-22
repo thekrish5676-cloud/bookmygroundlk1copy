@@ -21,7 +21,7 @@
                 <ul class="nav-menu">
                     <li><a href="<?php echo URLROOT; ?>" class="nav-link">Home</a></li>
                     <li><a href="<?php echo URLROOT; ?>/stadiums" class="nav-link">Stadiums</a></li>
-                    <li><a href="<?php echo URLROOT; ?>/coaches" class="nav-link">Coaches</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/coach" class="nav-link">Coaches</a></li>
                     <li><a href="<?php echo URLROOT; ?>/sports" class="nav-link">Sports</a></li>
                     <li><a href="<?php echo URLROOT; ?>/rental" class="nav-link">Rental Services</a></li>
                     <li><a href="<?php echo URLROOT; ?>/pricing" class="nav-link">Pricing</a></li>

@@ -18,11 +18,9 @@ class Admin extends Controller {
         }
 
         // Dashboard data
-        $stats = $this->adminModel->getDashboardStats();
-        
         $data = [
             'title' => 'Admin Dashboard',
-            'total_users' => $stats['total_users'] ?? 1250,
+            'total_users' => $this->adminModel->getTotalUsers(),
             'total_bookings' => 340,
             'monthly_revenue' => 85000,
             'pending_payouts' => 65000,
@@ -65,8 +63,6 @@ class Admin extends Controller {
         exit;
     }
 
-    // ============= USER MANAGEMENT METHODS =============
-
     public function users() {
         session_start();
         
@@ -75,33 +71,12 @@ class Admin extends Controller {
             exit;
         }
 
-        // Get filters from GET parameters
-        $filters = [
-            'role' => $_GET['role'] ?? '',
-            'status' => $_GET['status'] ?? '',
-            'search' => $_GET['search'] ?? ''
-        ];
-
-        // Get all users with filters
-        $users = $this->adminModel->getAllUsers($filters);
-        
-        // Get stats for display
-        $stats = $this->adminModel->getDashboardStats();
+        // Get all users from database
+        $users = $this->adminModel->getAllUsers();
 
         $data = [
             'title' => 'User Management',
-            'users' => $users,
-            'filters' => $filters,
-            'stats' => [
-                'total_users' => $stats['total_users'] ?? 0,
-                'customers' => $stats['role_customer'] ?? 0,
-                'stadium_owners' => $stats['role_stadium_owner'] ?? 0,
-                'coaches' => $stats['role_coach'] ?? 0,
-                'rental_owners' => $stats['role_rental_owner'] ?? 0,
-                'active' => $stats['status_active'] ?? 0,
-                'inactive' => $stats['status_inactive'] ?? 0,
-                'suspended' => $stats['status_suspended'] ?? 0
-            ]
+            'users' => $users
         ];
 
         $this->view('admin/v_users', $data);
@@ -129,6 +104,127 @@ class Admin extends Controller {
         $this->view('admin/v_add_user', $data);
     }
 
+    private function processAddUser($data) {
+        // Get and validate form data
+        $formData = [
+            'first_name' => trim($_POST['first_name'] ?? ''),
+            'last_name' => trim($_POST['last_name'] ?? ''),
+            'email' => trim($_POST['email'] ?? ''),
+            'phone' => trim($_POST['phone'] ?? ''),
+            'role' => $_POST['role'] ?? '',
+            'password' => $_POST['password'] ?? '',
+            'confirm_password' => $_POST['confirm_password'] ?? ''
+        ];
+
+        $data['form_data'] = $formData;
+
+        // Validation
+        $errors = [];
+
+        if (empty($formData['first_name'])) {
+            $errors[] = 'First name is required';
+        }
+
+        if (empty($formData['last_name'])) {
+            $errors[] = 'Last name is required';
+        }
+
+        if (empty($formData['email'])) {
+            $errors[] = 'Email is required';
+        } elseif (!filter_var($formData['email'], FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Please enter a valid email address';
+        }
+
+        if (empty($formData['phone'])) {
+            $errors[] = 'Phone number is required';
+        }
+
+        if (empty($formData['role'])) {
+            $errors[] = 'Please select a role';
+        } elseif (!in_array($formData['role'], ['customer', 'stadium_owner', 'coach', 'rental_owner'])) {
+            $errors[] = 'Invalid role selected';
+        }
+
+        if (empty($formData['password'])) {
+            $errors[] = 'Password is required';
+        } elseif (strlen($formData['password']) < 6) {
+            $errors[] = 'Password must be at least 6 characters long';
+        }
+
+        if ($formData['password'] !== $formData['confirm_password']) {
+            $errors[] = 'Passwords do not match';
+        }
+
+        // Check if email already exists
+        if (empty($errors) && $this->adminModel->emailExists($formData['email'])) {
+            $errors[] = 'Email address already exists';
+        }
+
+        if (!empty($errors)) {
+            $data['error'] = implode('<br>', $errors);
+            return $data;
+        }
+
+        // Create user
+        $userId = $this->adminModel->createUser($formData);
+
+        if ($userId) {
+            // Create role-specific profile if needed
+            $this->createRoleProfile($userId, $formData);
+            
+            $data['success'] = 'User created successfully!';
+            $data['form_data'] = []; // Clear form data on success
+        } else {
+            $data['error'] = 'Failed to create user. Please try again.';
+        }
+
+        return $data;
+    }
+
+    private function createRoleProfile($userId, $formData) {
+        // Create basic profiles for different roles
+        // This can be expanded later with more specific fields
+        switch($formData['role']) {
+            case 'customer':
+                $this->adminModel->createCustomerProfile($userId, [
+                    'district' => 'Not specified',
+                    'sports' => 'Not specified',
+                    'age_group' => 'under_18',
+                    'skill_level' => 'beginner'
+                ]);
+                break;
+            case 'stadium_owner':
+                $this->adminModel->createStadiumOwnerProfile($userId, [
+                    'owner_name' => $formData['first_name'] . ' ' . $formData['last_name'],
+                    'business_name' => 'Not specified',
+                    'district' => 'Not specified',
+                    'venue_type' => 'stadium',
+                    'business_registration' => 'Not specified'
+                ]);
+                break;
+            case 'coach':
+                $this->adminModel->createCoachProfile($userId, [
+                    'specialization' => 'Not specified',
+                    'experience' => '1_3',
+                    'certification' => 'basic',
+                    'coaching_type' => 'individual',
+                    'district' => 'Not specified',
+                    'availability' => 'part_time'
+                ]);
+                break;
+            case 'rental_owner':
+                $this->adminModel->createRentalOwnerProfile($userId, [
+                    'owner_name' => $formData['first_name'] . ' ' . $formData['last_name'],
+                    'business_name' => 'Not specified',
+                    'district' => 'Not specified',
+                    'business_type' => 'independent',
+                    'equipment_categories' => 'Not specified',
+                    'delivery_service' => 'no'
+                ]);
+                break;
+        }
+    }
+
     public function edit_user($id = null) {
         session_start();
         
@@ -142,55 +238,106 @@ class Admin extends Controller {
             exit;
         }
 
-        $user = $this->adminModel->getUserById($id);
-        
-        if (!$user) {
-            $_SESSION['error'] = 'User not found';
+        $data = [
+            'title' => 'Edit User',
+            'error' => '',
+            'success' => '',
+            'user' => $this->adminModel->getUserById($id),
+            'form_data' => []
+        ];
+
+        if (!$data['user']) {
+            $_SESSION['admin_error'] = 'User not found.';
             header('Location: ' . URLROOT . '/admin/users');
             exit;
         }
 
-        $data = [
-            'title' => 'Edit User',
-            'user' => $user,
-            'error' => '',
-            'success' => ''
-        ];
-
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $data = $this->processEditUser($id, $data);
+            $data = $this->processEditUser($data, $id);
         }
 
         $this->view('admin/v_edit_user', $data);
     }
 
-    public function view_user($id = null) {
-        session_start();
-        
-        if (!isset($_SESSION['admin_logged_in'])) {
-            header('Location: ' . URLROOT . '/login');
-            exit;
-        }
-
-        if (!$id) {
-            header('Location: ' . URLROOT . '/admin/users');
-            exit;
-        }
-
-        $user = $this->adminModel->getUserById($id);
-        
-        if (!$user) {
-            $_SESSION['error'] = 'User not found';
-            header('Location: ' . URLROOT . '/admin/users');
-            exit;
-        }
-
-        $data = [
-            'title' => 'View User Details',
-            'user' => $user
+    private function processEditUser($data, $userId) {
+        $formData = [
+            'first_name' => trim($_POST['first_name'] ?? ''),
+            'last_name' => trim($_POST['last_name'] ?? ''),
+            'email' => trim($_POST['email'] ?? ''),
+            'phone' => trim($_POST['phone'] ?? ''),
+            'status' => $_POST['status'] ?? '',
+            'reset_password' => isset($_POST['reset_password']),
+            'new_password' => $_POST['new_password'] ?? '',
+            'confirm_password' => $_POST['confirm_password'] ?? ''
         ];
 
-        $this->view('admin/v_view_user', $data);
+        $data['form_data'] = $formData;
+
+        // Validation
+        $errors = [];
+
+        if (empty($formData['first_name'])) {
+            $errors[] = 'First name is required';
+        }
+
+        if (empty($formData['last_name'])) {
+            $errors[] = 'Last name is required';
+        }
+
+        if (empty($formData['email'])) {
+            $errors[] = 'Email is required';
+        } elseif (!filter_var($formData['email'], FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Please enter a valid email address';
+        }
+
+        if (empty($formData['phone'])) {
+            $errors[] = 'Phone number is required';
+        }
+
+        if (empty($formData['status'])) {
+            $errors[] = 'Status is required';
+        }
+
+        // Password validation only if reset_password is checked
+        if ($formData['reset_password']) {
+            if (empty($formData['new_password'])) {
+                $errors[] = 'New password is required when resetting password';
+            } elseif (strlen($formData['new_password']) < 6) {
+                $errors[] = 'Password must be at least 6 characters long';
+            }
+
+            if ($formData['new_password'] !== $formData['confirm_password']) {
+                $errors[] = 'Passwords do not match';
+            }
+        }
+
+        // Check if email exists for other users
+        if (empty($errors) && $this->adminModel->emailExistsForOtherUser($formData['email'], $userId)) {
+            $errors[] = 'Email address already exists for another user';
+        }
+
+        if (!empty($errors)) {
+            $data['error'] = implode('<br>', $errors);
+            return $data;
+        }
+
+        // Update user
+        $updateSuccess = $this->adminModel->updateUser($userId, $formData);
+        
+        // Update password if requested
+        if ($updateSuccess && $formData['reset_password']) {
+            $updateSuccess = $this->adminModel->updateUserPassword($userId, $formData['new_password']);
+        }
+
+        if ($updateSuccess) {
+            $_SESSION['admin_message'] = 'User updated successfully!';
+            header('Location: ' . URLROOT . '/admin/users');
+            exit;
+        } else {
+            $data['error'] = 'Failed to update user. Please try again.';
+        }
+
+        return $data;
     }
 
     public function delete_user($id = null) {
@@ -202,22 +349,21 @@ class Admin extends Controller {
         }
 
         if (!$id) {
-            $_SESSION['error'] = 'Invalid user ID';
             header('Location: ' . URLROOT . '/admin/users');
             exit;
         }
 
         if ($this->adminModel->deleteUser($id)) {
-            $_SESSION['success'] = 'User deleted successfully';
+            $_SESSION['admin_message'] = 'User deleted successfully!';
         } else {
-            $_SESSION['error'] = 'Failed to delete user';
+            $_SESSION['admin_error'] = 'Failed to delete user.';
         }
 
         header('Location: ' . URLROOT . '/admin/users');
         exit;
     }
 
-    public function suspend_user($id = null) {
+    public function toggle_user_status($id = null) {
         session_start();
         
         if (!isset($_SESSION['admin_logged_in'])) {
@@ -226,337 +372,19 @@ class Admin extends Controller {
         }
 
         if (!$id) {
-            $_SESSION['error'] = 'Invalid user ID';
             header('Location: ' . URLROOT . '/admin/users');
             exit;
         }
 
-        if ($this->adminModel->updateUserStatus($id, 'suspended')) {
-            $_SESSION['success'] = 'User suspended successfully';
+        if ($this->adminModel->toggleUserStatus($id)) {
+            $_SESSION['admin_message'] = 'User status updated successfully!';
         } else {
-            $_SESSION['error'] = 'Failed to suspend user';
+            $_SESSION['admin_error'] = 'Failed to update user status.';
         }
 
         header('Location: ' . URLROOT . '/admin/users');
         exit;
     }
-
-    public function activate_user($id = null) {
-        session_start();
-        
-        if (!isset($_SESSION['admin_logged_in'])) {
-            header('Location: ' . URLROOT . '/login');
-            exit;
-        }
-
-        if (!$id) {
-            $_SESSION['error'] = 'Invalid user ID';
-            header('Location: ' . URLROOT . '/admin/users');
-            exit;
-        }
-
-        if ($this->adminModel->updateUserStatus($id, 'active')) {
-            $_SESSION['success'] = 'User activated successfully';
-        } else {
-            $_SESSION['error'] = 'Failed to activate user';
-        }
-
-        header('Location: ' . URLROOT . '/admin/users');
-        exit;
-    }
-
-    // AJAX endpoints for user management
-    public function ajax_delete_user() {
-        session_start();
-        
-        if (!isset($_SESSION['admin_logged_in']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(403);
-            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-            exit;
-        }
-
-        $id = $_POST['id'] ?? null;
-        
-        if (!$id) {
-            echo json_encode(['success' => false, 'message' => 'Invalid user ID']);
-            exit;
-        }
-
-        if ($this->adminModel->deleteUser($id)) {
-            echo json_encode(['success' => true, 'message' => 'User deleted successfully']);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to delete user']);
-        }
-        exit;
-    }
-
-    public function ajax_update_status() {
-        session_start();
-        
-        if (!isset($_SESSION['admin_logged_in']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(403);
-            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
-            exit;
-        }
-
-        $id = $_POST['id'] ?? null;
-        $status = $_POST['status'] ?? null;
-        
-        if (!$id || !$status || !in_array($status, ['active', 'inactive', 'suspended'])) {
-            echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
-            exit;
-        }
-
-        if ($this->adminModel->updateUserStatus($id, $status)) {
-            echo json_encode(['success' => true, 'message' => 'User status updated successfully']);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to update user status']);
-        }
-        exit;
-    }
-
-    // ============= HELPER METHODS =============
-
-    private function processAddUser($data) {
-        // Validate input
-        $userData = [
-            'first_name' => trim($_POST['first_name'] ?? ''),
-            'last_name' => trim($_POST['last_name'] ?? ''),
-            'email' => trim($_POST['email'] ?? ''),
-            'phone' => trim($_POST['phone'] ?? ''),
-            'password' => $_POST['password'] ?? '',
-            'confirm_password' => $_POST['confirm_password'] ?? '',
-            'role' => $_POST['role'] ?? '',
-            'status' => $_POST['status'] ?? 'active'
-        ];
-
-        // Basic validation
-        $errors = [];
-
-        if (empty($userData['first_name'])) {
-            $errors[] = 'First name is required';
-        }
-
-        if (empty($userData['last_name'])) {
-            $errors[] = 'Last name is required';
-        }
-
-        if (empty($userData['email'])) {
-            $errors[] = 'Email is required';
-        } elseif (!filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors[] = 'Please enter a valid email address';
-        } elseif ($this->adminModel->emailExists($userData['email'])) {
-            $errors[] = 'Email already exists';
-        }
-
-        if (empty($userData['phone'])) {
-            $errors[] = 'Phone number is required';
-        }
-
-        if (empty($userData['password'])) {
-            $errors[] = 'Password is required';
-        } elseif (strlen($userData['password']) < 6) {
-            $errors[] = 'Password must be at least 6 characters long';
-        }
-
-        if ($userData['password'] !== $userData['confirm_password']) {
-            $errors[] = 'Passwords do not match';
-        }
-
-        if (empty($userData['role'])) {
-            $errors[] = 'User role is required';
-        } elseif (!in_array($userData['role'], ['customer', 'stadium_owner', 'coach', 'rental_owner'])) {
-            $errors[] = 'Invalid user role';
-        }
-
-        // Role-specific data validation
-        if ($userData['role'] && !empty($_POST['profile_data'])) {
-            $profileErrors = $this->validateProfileData($userData['role'], $_POST['profile_data']);
-            $errors = array_merge($errors, $profileErrors);
-            $userData[$userData['role'] . '_data'] = $_POST['profile_data'];
-        }
-
-        if (!empty($errors)) {
-            $data['error'] = implode('<br>', $errors);
-            $data['form_data'] = $userData;
-            return $data;
-        }
-
-        // Create user
-        $userId = $this->adminModel->createUser($userData);
-
-        if ($userId) {
-            $_SESSION['success'] = 'User created successfully';
-            header('Location: ' . URLROOT . '/admin/users');
-            exit;
-        } else {
-            $data['error'] = 'Failed to create user. Please try again.';
-            $data['form_data'] = $userData;
-        }
-
-        return $data;
-    }
-
-    private function processEditUser($id, $data) {
-        // Validate input
-        $userData = [
-            'first_name' => trim($_POST['first_name'] ?? ''),
-            'last_name' => trim($_POST['last_name'] ?? ''),
-            'email' => trim($_POST['email'] ?? ''),
-            'phone' => trim($_POST['phone'] ?? ''),
-            'role' => $_POST['role'] ?? '',
-            'status' => $_POST['status'] ?? 'active'
-        ];
-
-        // Basic validation
-        $errors = [];
-
-        if (empty($userData['first_name'])) {
-            $errors[] = 'First name is required';
-        }
-
-        if (empty($userData['last_name'])) {
-            $errors[] = 'Last name is required';
-        }
-
-        if (empty($userData['email'])) {
-            $errors[] = 'Email is required';
-        } elseif (!filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors[] = 'Please enter a valid email address';
-        } elseif ($this->adminModel->emailExists($userData['email'], $id)) {
-            $errors[] = 'Email already exists';
-        }
-
-        if (empty($userData['phone'])) {
-            $errors[] = 'Phone number is required';
-        }
-
-        if (empty($userData['role'])) {
-            $errors[] = 'User role is required';
-        } elseif (!in_array($userData['role'], ['customer', 'stadium_owner', 'coach', 'rental_owner'])) {
-            $errors[] = 'Invalid user role';
-        }
-
-        // Password update (optional)
-        if (!empty($_POST['new_password'])) {
-            if (strlen($_POST['new_password']) < 6) {
-                $errors[] = 'Password must be at least 6 characters long';
-            } elseif ($_POST['new_password'] !== $_POST['confirm_new_password']) {
-                $errors[] = 'Passwords do not match';
-            } else {
-                // Update password separately
-                $this->adminModel->updateUserPassword($id, $_POST['new_password']);
-            }
-        }
-
-        // Role-specific data validation
-        if ($userData['role'] && !empty($_POST['profile_data'])) {
-            $profileErrors = $this->validateProfileData($userData['role'], $_POST['profile_data']);
-            $errors = array_merge($errors, $profileErrors);
-            $userData['profile_data'] = $_POST['profile_data'];
-        }
-
-        if (!empty($errors)) {
-            $data['error'] = implode('<br>', $errors);
-            return $data;
-        }
-
-        // Update user
-        if ($this->adminModel->updateUser($id, $userData)) {
-            $_SESSION['success'] = 'User updated successfully';
-            header('Location: ' . URLROOT . '/admin/users');
-            exit;
-        } else {
-            $data['error'] = 'Failed to update user. Please try again.';
-        }
-
-        return $data;
-    }
-
-    private function validateProfileData($role, $profileData) {
-        $errors = [];
-
-        switch($role) {
-            case 'customer':
-                if (empty($profileData['district'])) {
-                    $errors[] = 'District is required for customer';
-                }
-                if (empty($profileData['sports'])) {
-                    $errors[] = 'Sports preference is required for customer';
-                }
-                if (empty($profileData['age_group'])) {
-                    $errors[] = 'Age group is required for customer';
-                }
-                if (empty($profileData['skill_level'])) {
-                    $errors[] = 'Skill level is required for customer';
-                }
-                break;
-
-            case 'stadium_owner':
-                if (empty($profileData['owner_name'])) {
-                    $errors[] = 'Owner name is required for stadium owner';
-                }
-                if (empty($profileData['business_name'])) {
-                    $errors[] = 'Business name is required for stadium owner';
-                }
-                if (empty($profileData['district'])) {
-                    $errors[] = 'District is required for stadium owner';
-                }
-                if (empty($profileData['venue_type'])) {
-                    $errors[] = 'Venue type is required for stadium owner';
-                }
-                if (empty($profileData['business_registration'])) {
-                    $errors[] = 'Business registration is required for stadium owner';
-                }
-                break;
-
-            case 'coach':
-                if (empty($profileData['specialization'])) {
-                    $errors[] = 'Specialization is required for coach';
-                }
-                if (empty($profileData['experience'])) {
-                    $errors[] = 'Experience is required for coach';
-                }
-                if (empty($profileData['certification'])) {
-                    $errors[] = 'Certification is required for coach';
-                }
-                if (empty($profileData['coaching_type'])) {
-                    $errors[] = 'Coaching type is required for coach';
-                }
-                if (empty($profileData['district'])) {
-                    $errors[] = 'District is required for coach';
-                }
-                if (empty($profileData['availability'])) {
-                    $errors[] = 'Availability is required for coach';
-                }
-                break;
-
-            case 'rental_owner':
-                if (empty($profileData['owner_name'])) {
-                    $errors[] = 'Owner name is required for rental owner';
-                }
-                if (empty($profileData['business_name'])) {
-                    $errors[] = 'Business name is required for rental owner';
-                }
-                if (empty($profileData['district'])) {
-                    $errors[] = 'District is required for rental owner';
-                }
-                if (empty($profileData['business_type'])) {
-                    $errors[] = 'Business type is required for rental owner';
-                }
-                if (empty($profileData['equipment_categories'])) {
-                    $errors[] = 'Equipment categories is required for rental owner';
-                }
-                if (empty($profileData['delivery_service'])) {
-                    $errors[] = 'Delivery service option is required for rental owner';
-                }
-                break;
-        }
-
-        return $errors;
-    }
-
-    // ============= OTHER EXISTING METHODS =============
 
     public function bookings() {
         session_start();
@@ -751,5 +579,314 @@ class Admin extends Controller {
 
         $this->view('admin/v_contact', $data);
     }
+
+    public function listings() {
+    session_start();
+    
+    if (!isset($_SESSION['admin_logged_in'])) {
+        header('Location: ' . URLROOT . '/login');
+        exit;
+    }
+
+    $data = [
+        'title' => 'Stadium Listings Management',
+        'active_listings' => [
+            ['id' => 1, 'name' => 'Colombo Cricket Ground', 'owner' => 'Rajesh Kumar', 'type' => 'Cricket', 'category' => 'Outdoor', 'price' => 5000, 'location' => 'Colombo 03', 'status' => 'Active', 'featured' => true, 'created' => '2025-01-15', 'views' => 245, 'bookings' => 12],
+            ['id' => 2, 'name' => 'Football Arena Pro', 'owner' => 'David Fernando', 'type' => 'Football', 'category' => 'Outdoor', 'price' => 7500, 'location' => 'Colombo 05', 'status' => 'Active', 'featured' => true, 'created' => '2025-01-10', 'views' => 189, 'bookings' => 8],
+            ['id' => 3, 'name' => 'Tennis Academy Courts', 'owner' => 'Michelle Perera', 'type' => 'Tennis', 'category' => 'Outdoor', 'price' => 2500, 'location' => 'Colombo 06', 'status' => 'Active', 'featured' => false, 'created' => '2025-01-08', 'views' => 156, 'bookings' => 5],
+        ],
+        'pending_listings' => [
+            ['id' => 4, 'name' => 'New Basketball Court', 'owner' => 'Kevin Rodrigo', 'type' => 'Basketball', 'category' => 'Indoor', 'price' => 4000, 'location' => 'Colombo 04', 'status' => 'Pending', 'submitted' => '2025-01-20', 'reason' => 'New listing awaiting approval'],
+            ['id' => 5, 'name' => 'Swimming Pool Complex', 'owner' => 'Sarah Johnson', 'type' => 'Swimming', 'category' => 'Outdoor', 'price' => 6000, 'location' => 'Mount Lavinia', 'status' => 'Pending', 'submitted' => '2025-01-19', 'reason' => 'Missing documentation'],
+        ],
+        'expired_listings' => [
+            ['id' => 6, 'name' => 'Old Badminton Hall', 'owner' => 'Former Owner', 'type' => 'Badminton', 'category' => 'Indoor', 'price' => 3000, 'location' => 'Colombo 02', 'status' => 'Expired', 'expired' => '2025-01-01', 'last_booking' => '2024-12-15'],
+        ],
+        'statistics' => [
+            'total_listings' => 25,
+            'active_listings' => 18,
+            'pending_approval' => 4,
+            'expired_listings' => 3,
+            'featured_listings' => 6,
+            'this_month_revenue' => 125000
+        ]
+    ];
+
+    $this->view('admin/v_listings', $data);
 }
-            '
+
+public function edit_listing($id = null) {
+    session_start();
+    
+    if (!isset($_SESSION['admin_logged_in'])) {
+        header('Location: ' . URLROOT . '/login');
+        exit;
+    }
+
+    if (!$id) {
+        header('Location: ' . URLROOT . '/admin/listings');
+        exit;
+    }
+
+    // Sample data - replace with actual database query
+    $data = [
+        'title' => 'Edit Stadium Listing',
+        'listing' => [
+            'id' => $id,
+            'name' => 'Colombo Cricket Ground',
+            'owner' => 'Rajesh Kumar',
+            'owner_email' => 'rajesh@email.com',
+            'type' => 'Cricket',
+            'category' => 'Outdoor',
+            'price' => 5000,
+            'location' => 'Colombo 03',
+            'address' => '123 Cricket Street, Colombo 03',
+            'description' => 'Professional cricket ground with modern facilities',
+            'features' => ['Lighting', 'Parking', 'WiFi', 'Changing Rooms'],
+            'status' => 'Active',
+            'featured' => true,
+            'images' => ['cricket-ground-1.jpg', 'cricket-ground-2.jpg'],
+            'created' => '2025-01-15',
+            'views' => 245,
+            'bookings' => 12
+        ]
+    ];
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        // Handle form submission
+        $data['success'] = 'Listing updated successfully!';
+    }
+
+    $this->view('admin/v_edit_listing', $data);
+}
+
+public function packages() {
+    session_start();
+    
+    if (!isset($_SESSION['admin_logged_in'])) {
+        header('Location: ' . URLROOT . '/login');
+        exit;
+    }
+
+    // Sample package data - later you can fetch from database
+    $data = [
+        'title' => 'Package Management',
+        'packages' => [
+            'basic' => [
+                'id' => 1,
+                'name' => 'Basic',
+                'monthly_fee' => 0,
+                'commission_rate' => 8,
+                'stadium_limit' => 3,
+                'photos_limit' => 3,
+                'videos_limit' => 3,
+                'featured_limit' => 0,
+                'support_level' => 'email',
+                'features' => [
+                    'booking_management' => true,
+                    'payment_processing' => true,
+                    'advanced_analytics' => false,
+                    'marketing_tools' => false,
+                    'api_access' => false
+                ],
+                'description' => 'Perfect for getting started with stadium rentals',
+                'status' => 'active',
+                'users_count' => 25
+            ],
+            'standard' => [
+                'id' => 2,
+                'name' => 'Standard',
+                'monthly_fee' => 0,
+                'commission_rate' => 12,
+                'stadium_limit' => 6,
+                'photos_limit' => 5,
+                'videos_limit' => 5,
+                'featured_limit' => 3,
+                'support_level' => 'phone',
+                'features' => [
+                    'booking_management' => true,
+                    'payment_processing' => true,
+                    'advanced_analytics' => true,
+                    'marketing_tools' => true,
+                    'api_access' => false
+                ],
+                'description' => 'Ideal for growing stadium businesses',
+                'status' => 'active',
+                'users_count' => 15,
+                'popular' => true
+            ],
+            'gold' => [
+                'id' => 3,
+                'name' => 'Gold',
+                'monthly_fee' => 0,
+                'commission_rate' => 20,
+                'stadium_limit' => 999, // unlimited
+                'photos_limit' => 10,
+                'videos_limit' => 5,
+                'featured_limit' => 5,
+                'support_level' => 'priority',
+                'features' => [
+                    'booking_management' => true,
+                    'payment_processing' => true,
+                    'advanced_analytics' => true,
+                    'marketing_tools' => true,
+                    'api_access' => true,
+                    'dedicated_manager' => true
+                ],
+                'description' => 'For established stadium owners who want maximum exposure',
+                'status' => 'active',
+                'users_count' => 5,
+                'premium' => true
+            ]
+        ],
+        'statistics' => [
+            'total_packages' => 3,
+            'active_packages' => 3,
+            'total_users' => 45,
+            'monthly_revenue' => 125000,
+            'avg_commission_rate' => 13.3
+        ]
+    ];
+
+    $this->view('admin/v_packages', $data);
+}
+
+public function reviews() {
+    session_start();
+    
+    if (!isset($_SESSION['admin_logged_in'])) {
+        header('Location: ' . URLROOT . '/login');
+        exit;
+    }
+
+    // Sample review data - in production this would come from database
+    $data = [
+        'title' => 'Stadium Reviews Management',
+        'reviews' => [
+            [
+                'id' => 1,
+                'stadium_name' => 'Colombo Cricket Ground',
+                'stadium_id' => 1,
+                'customer_name' => 'Krishna Wishvajith',
+                'customer_email' => 'krishna@email.com',
+                'rating' => 5,
+                'review_text' => 'Excellent facilities and well-maintained ground. The lighting system is perfect for evening matches. Highly recommend for cricket tournaments.',
+                'date' => '2025-01-20',
+                'status' => 'Published',
+                'verified_booking' => true,
+                'helpful_votes' => 15,
+                'reported' => false
+            ],
+            [
+                'id' => 2,
+                'stadium_name' => 'Football Arena Pro',
+                'stadium_id' => 3,
+                'customer_name' => 'Kulakshi Thathsarani',
+                'customer_email' => 'kulakshi@email.com',
+                'rating' => 4,
+                'review_text' => 'Great stadium with good parking facilities. Only minor issue was the changing room could be cleaner. Overall good experience.',
+                'date' => '2025-01-18',
+                'status' => 'Published',
+                'verified_booking' => true,
+                'helpful_votes' => 8,
+                'reported' => false
+            ],
+            [
+                'id' => 3,
+                'stadium_name' => 'Tennis Academy Courts',
+                'stadium_id' => 4,
+                'customer_name' => 'Dinesh Sulakshana',
+                'customer_email' => 'dinesh@email.com',
+                'rating' => 5,
+                'review_text' => 'Professional quality courts and excellent customer service. The coaching staff is very helpful and knowledgeable.',
+                'date' => '2025-01-17',
+                'status' => 'Published',
+                'verified_booking' => true,
+                'helpful_votes' => 22,
+                'reported' => false
+            ],
+            [
+                'id' => 4,
+                'stadium_name' => 'Basketball Hub Angoda',
+                'stadium_id' => 5,
+                'customer_name' => 'Kalana Ekanayake',
+                'customer_email' => 'kalana@email.com',
+                'rating' => 4,
+                'review_text' => 'Good value for money. The court quality is excellent and perfect for competitive games.',
+                'date' => '2025-01-15',
+                'status' => 'Published',
+                'verified_booking' => true,
+                'helpful_votes' => 6,
+                'reported' => false
+            ],
+            [
+                'id' => 5,
+                'stadium_name' => 'Indoor Sports Complex',
+                'stadium_id' => 2,
+                'customer_name' => 'Sarah Johnson',
+                'customer_email' => 'sarah@email.com',
+                'rating' => 2,
+                'review_text' => 'Very disappointing experience. The facility was not clean and staff was unprofessional. Would not recommend.',
+                'date' => '2025-01-14',
+                'status' => 'Flagged',
+                'verified_booking' => true,
+                'helpful_votes' => 3,
+                'reported' => true
+            ],
+            [
+                'id' => 6,
+                'stadium_name' => 'Swimming Pool Complex',
+                'stadium_id' => 6,
+                'customer_name' => 'Mike Wilson',
+                'customer_email' => 'mike@email.com',
+                'rating' => 5,
+                'review_text' => 'Amazing swimming facility with clean water and excellent maintenance. The Olympic-size pool is perfect for serious training.',
+                'date' => '2025-01-12',
+                'status' => 'Published',
+                'verified_booking' => true,
+                'helpful_votes' => 18,
+                'reported' => false
+            ],
+            [
+                'id' => 7,
+                'stadium_name' => 'Colombo Badminton Center',
+                'stadium_id' => 7,
+                'customer_name' => 'Priya Raj',
+                'customer_email' => 'priya@email.com',
+                'rating' => 3,
+                'review_text' => 'Average facility. Courts are okay but could use better lighting. Service is decent.',
+                'date' => '2025-01-10',
+                'status' => 'Pending',
+                'verified_booking' => false,
+                'helpful_votes' => 2,
+                'reported' => false
+            ],
+            [
+                'id' => 8,
+                'stadium_name' => 'Premier Squash Courts',
+                'stadium_id' => 8,
+                'customer_name' => 'John Silva',
+                'customer_email' => 'john@email.com',
+                'rating' => 1,
+                'review_text' => 'Terrible experience! Courts were dirty and equipment was broken. Staff was rude and unprofessional. Waste of money!',
+                'date' => '2025-01-08',
+                'status' => 'Flagged',
+                'verified_booking' => true,
+                'helpful_votes' => 0,
+                'reported' => true
+            ]
+        ],
+        'stats' => [
+            'total_reviews' => 156,
+            'published_reviews' => 142,
+            'pending_reviews' => 8,
+            'flagged_reviews' => 6,
+            'average_rating' => 4.2,
+            'this_month_reviews' => 23
+        ]
+    ];
+
+    $this->view('admin/v_reviews', $data);
+}
+
+}

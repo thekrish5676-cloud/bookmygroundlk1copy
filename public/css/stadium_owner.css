@@ -544,7 +544,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background: #f8f9fa;
+    background: #161616;
     border-radius: 12px;
 }
 
@@ -554,14 +554,14 @@
 
 .revenue-label {
     font-size: 12px;
-    color: #6c757d;
+    color: white;
     margin-bottom: 4px;
 }
 
 .revenue-value {
     font-size: 18px;
     font-weight: 700;
-    color: #212529;
+    color: white;
 }
 
 .revenue-growth {
@@ -628,7 +628,7 @@
     display: flex;
     justify-content: space-around;
     padding: 20px;
-    background: #f8f9fa;
+    background: #161616;
     border-radius: 12px;
 }
 
@@ -645,14 +645,14 @@
 
 .property-stat .stat-label {
     font-size: 12px;
-    color: #6c757d;
+    color: white;
     margin-top: 4px;
 }
 
 .package-limits {
     padding: 20px;
-    background: white;
-    border: 1px solid #dee2e6;
+    background: #161616;
+    border: 1px solid #212529;
     border-radius: 12px;
 }
 
@@ -721,7 +721,7 @@
 }
 
 .activity-item:hover {
-    background: #f8f9fa;
+    background: #218838;
 }
 
 .activity-item:last-child {

@@ -61,7 +61,11 @@ class Customer extends Controller {
                 'recent_bookings' => $this->customerModel->getRecentBookings($userId, 5),
                 'upcoming_events' => $this->customerModel->getUpcomingEvents($userId),
                 'favorite_stadiums' => $this->customerModel->getFavoriteStadiums($userId),
-                'payment_history' => $this->customerModel->getPaymentHistory($userId)
+                'payment_history' => $this->customerModel->getPaymentHistory($userId),
+                // Provide emergency contacts to the view (avoid model calls in views)
+                'emergency_contacts' => $this->customerModel->getEmergencyContacts($userId),
+                // Provide profile data so view can rely on $data instead of $_SESSION
+                'profile_data' => $this->customerModel->getProfileData($userId)
             ];
 
             // Debug: Check if view file exists
@@ -75,6 +79,121 @@ class Customer extends Controller {
         } catch (Exception $e) {
             error_log('Customer Index Error: ' . $e->getMessage());
             die('Error in Customer index: ' . $e->getMessage());
+        }
+    }
+
+    // Handle profile updates from dashboard form
+    public function updateProfile() {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                header('Location: ' . URLROOT . '/customer');
+                exit;
+            }
+
+            $userId = Auth::getUserId();
+            if (!$userId) {
+                header('Location: ' . URLROOT . '/login');
+                exit;
+            }
+
+            // Map and normalize fields from the form
+            $first_name = $_POST['first_name'] ?? '';
+            $last_name = $_POST['last_name'] ?? '';
+            $phone = $_POST['phone'] ?? '';
+            $district = $_POST['district'] ?? '';
+            // The view currently uses 'preferred_sports'
+            $sports = $_POST['preferred_sports'] ?? ($_POST['sports'] ?? '');
+            $age_group = $_POST['age_group'] ?? '';
+            $skill_level = $_POST['skill_level'] ?? '';
+
+            // Normalize age group values to match DB enum (under_18, 18_25, 26_35, above_35)
+            $age_group = str_replace('-', '_', $age_group);
+
+            $payload = [
+                'first_name' => $first_name,
+                'last_name' => $last_name,
+                'phone' => $phone,
+                'district' => $district,
+                'sports' => $sports,
+                'age_group' => $age_group,
+                'skill_level' => $skill_level,
+            ];
+
+            if ($this->customerModel->updateProfile($userId, $payload)) {
+                $_SESSION['success'] = 'Profile updated successfully!';
+            } else {
+                $_SESSION['error'] = 'Failed to update profile.';
+            }
+
+            header('Location: ' . URLROOT . '/customer#profile');
+            exit;
+        } catch (Exception $e) {
+            error_log('Customer updateProfile Error: ' . $e->getMessage());
+            $_SESSION['error'] = 'Unexpected error while updating profile.';
+            header('Location: ' . URLROOT . '/customer#profile');
+            exit;
+        }
+    }
+
+    // Create new emergency contact
+    public function addEmergencyContact() {
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                header('Location: ' . URLROOT . '/customer#emergency-contacts');
+                exit;
+            }
+
+            $userId = Auth::getUserId();
+            if (!$userId) {
+                header('Location: ' . URLROOT . '/login');
+                exit;
+            }
+
+            $data = [
+                'contact_name' => $_POST['contact_name'] ?? '',
+                'relationship' => $_POST['relationship'] ?? '',
+                'phone' => $_POST['phone'] ?? '',
+                'email' => $_POST['email'] ?? null,
+            ];
+
+            if ($this->customerModel->createEmergencyContact($userId, $data)) {
+                $_SESSION['success'] = 'Emergency contact added.';
+            } else {
+                $_SESSION['error'] = 'Failed to add emergency contact.';
+            }
+
+            header('Location: ' . URLROOT . '/customer#emergency-contacts');
+            exit;
+        } catch (Exception $e) {
+            error_log('Customer addEmergencyContact Error: ' . $e->getMessage());
+            $_SESSION['error'] = 'Unexpected error while adding contact.';
+            header('Location: ' . URLROOT . '/customer#emergency-contacts');
+            exit;
+        }
+    }
+
+    // Delete an emergency contact by id (scoped to current user)
+    public function deleteEmergencyContact($id) {
+        try {
+            $userId = Auth::getUserId();
+            if (!$userId) {
+                header('Location: ' . URLROOT . '/login');
+                exit;
+            }
+
+            if ($this->customerModel->deleteEmergencyContact($id, $userId)) {
+                $_SESSION['success'] = 'Emergency contact deleted.';
+            } else {
+                $_SESSION['error'] = 'Unable to delete emergency contact.';
+            }
+
+            header('Location: ' . URLROOT . '/customer#emergency-contacts');
+            exit;
+        } catch (Exception $e) {
+            error_log('Customer deleteEmergencyContact Error: ' . $e->getMessage());
+            $_SESSION['error'] = 'Unexpected error while deleting contact.';
+            header('Location: ' . URLROOT . '/customer#emergency-contacts');
+            exit;
         }
     }
 

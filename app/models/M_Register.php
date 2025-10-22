@@ -3,199 +3,295 @@ class M_Register {
     private $db;
 
     public function __construct(){
-        $this->db = new Database();
+        try {
+            $this->db = new Database();
+            error_log('M_Register: Database connection successful');
+        } catch (Exception $e) {
+            error_log('M_Register: Database connection error: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     // Check if email already exists
     public function emailExists($email) {
-        $this->db->query('SELECT id FROM users WHERE email = :email');
-        $this->db->bind(':email', $email);
-        $this->db->execute();
-        
-        return $this->db->rowCount() > 0;
+        try {
+            $this->db->query('SELECT id FROM users WHERE email = :email');
+            $this->db->bind(':email', $email);
+            $this->db->execute();
+            
+            $result = $this->db->rowCount() > 0;
+            error_log('M_Register: Email exists check for ' . $email . ': ' . ($result ? 'true' : 'false'));
+            return $result;
+        } catch (Exception $e) {
+            error_log('M_Register: Email exists check error: ' . $e->getMessage());
+            return false;
+        }
     }
 
     // Check if phone number already exists
     public function phoneExists($phone) {
-        $this->db->query('SELECT id FROM users WHERE phone = :phone');
-        $this->db->bind(':phone', $phone);
-        $this->db->execute();
-        
-        return $this->db->rowCount() > 0;
+        try {
+            $this->db->query('SELECT id FROM users WHERE phone = :phone');
+            $this->db->bind(':phone', $phone);
+            $this->db->execute();
+            
+            $result = $this->db->rowCount() > 0;
+            error_log('M_Register: Phone exists check for ' . $phone . ': ' . ($result ? 'true' : 'false'));
+            return $result;
+        } catch (Exception $e) {
+            error_log('M_Register: Phone exists check error: ' . $e->getMessage());
+            return false;
+        }
     }
 
     // Create a new user account
     public function createUser($userData) {
-        $this->db->query('INSERT INTO users (
-            first_name, 
-            last_name, 
-            email, 
-            phone, 
-            password, 
-            role, 
-            status, 
-            created_at
-        ) VALUES (
-            :first_name, 
-            :last_name, 
-            :email, 
-            :phone, 
-            :password, 
-            :role, 
-            :status, 
-            :created_at
-        )');
+        try {
+            error_log('M_Register: Creating user with data: ' . print_r($userData, true));
+            
+            $this->db->query('INSERT INTO users (
+                first_name, 
+                last_name, 
+                email, 
+                phone, 
+                password, 
+                role, 
+                status, 
+                created_at
+            ) VALUES (
+                :first_name, 
+                :last_name, 
+                :email, 
+                :phone, 
+                :password, 
+                :role, 
+                :status, 
+                :created_at
+            )');
 
-        // Bind parameters
-        $this->db->bind(':first_name', $userData['first_name']);
-        $this->db->bind(':last_name', $userData['last_name']);
-        $this->db->bind(':email', $userData['email']);
-        $this->db->bind(':phone', $userData['phone']);
-        $this->db->bind(':password', password_hash($userData['password'], PASSWORD_DEFAULT));
-        $this->db->bind(':role', $userData['role']);
-        $this->db->bind(':status', 'active'); // Set all accounts to active immediately
-        $this->db->bind(':created_at', date('Y-m-d H:i:s'));
+            // Bind parameters
+            $this->db->bind(':first_name', $userData['first_name']);
+            $this->db->bind(':last_name', $userData['last_name']);
+            $this->db->bind(':email', $userData['email']);
+            $this->db->bind(':phone', $userData['phone']);
+            $this->db->bind(':password', password_hash($userData['password'], PASSWORD_DEFAULT));
+            $this->db->bind(':role', $userData['role']);
+            $this->db->bind(':status', 'active'); // Set all accounts to active immediately
+            $this->db->bind(':created_at', date('Y-m-d H:i:s'));
 
-        // Execute
-        if ($this->db->execute()) {
-            // Return the newly created user ID
-            return $this->db->lastInsertId();
+            // Execute
+            if ($this->db->execute()) {
+                $userId = $this->db->lastInsertId();
+                error_log('M_Register: User created successfully with ID: ' . $userId);
+                return $userId;
+            } else {
+                error_log('M_Register: Failed to execute user creation query');
+                return false;
+            }
+        } catch (Exception $e) {
+            error_log('M_Register: Create User Error: ' . $e->getMessage());
+            error_log('M_Register: Error trace: ' . $e->getTraceAsString());
+            return false;
         }
-        return false;
     }
 
     // Create customer profile
     public function createCustomerProfile($userId, $profileData) {
-        $this->db->query('INSERT INTO customer_profiles (
-            user_id,
-            district,
-            sports,
-            age_group,
-            skill_level,
-            created_at
-        ) VALUES (
-            :user_id,
-            :district,
-            :sports,
-            :age_group,
-            :skill_level,
-            :created_at
-        )');
+        try {
+            error_log('M_Register: Creating customer profile for user ID: ' . $userId);
+            
+            $this->db->query('INSERT INTO customer_profiles (
+                user_id,
+                district,
+                sports,
+                age_group,
+                skill_level,
+                created_at
+            ) VALUES (
+                :user_id,
+                :district,
+                :sports,
+                :age_group,
+                :skill_level,
+                :created_at
+            )');
 
-        $this->db->bind(':user_id', $userId);
-        $this->db->bind(':district', $profileData['district']);
-        $this->db->bind(':sports', $profileData['sports']);
-        $this->db->bind(':age_group', $profileData['age_group']);
-        $this->db->bind(':skill_level', $profileData['skill_level']);
-        $this->db->bind(':created_at', date('Y-m-d H:i:s'));
+            $this->db->bind(':user_id', $userId);
+            $this->db->bind(':district', $profileData['district']);
+            $this->db->bind(':sports', $profileData['sports']);
+            $this->db->bind(':age_group', $profileData['age_group']);
+            $this->db->bind(':skill_level', $profileData['skill_level']);
+            $this->db->bind(':created_at', date('Y-m-d H:i:s'));
 
-        return $this->db->execute();
+            $result = $this->db->execute();
+            error_log('M_Register: Customer profile creation result: ' . ($result ? 'success' : 'failed'));
+            return $result;
+        } catch (Exception $e) {
+            error_log('M_Register: Create Customer Profile Error: ' . $e->getMessage());
+            return false;
+        }
     }
 
     // Create stadium owner profile
     public function createStadiumOwnerProfile($userId, $profileData) {
-        $this->db->query('INSERT INTO stadium_owner_profiles (
-            user_id,
-            owner_name,
-            business_name,
-            district,
-            venue_type,
-            business_registration,
-            created_at
-        ) VALUES (
-            :user_id,
-            :owner_name,
-            :business_name,
-            :district,
-            :venue_type,
-            :business_registration,
-            :created_at
-        )');
+        try {
+            error_log('M_Register: Creating stadium owner profile for user ID: ' . $userId);
+            
+            $this->db->query('INSERT INTO stadium_owner_profiles (
+                user_id,
+                owner_name,
+                business_name,
+                district,
+                venue_type,
+                business_registration,
+                created_at
+            ) VALUES (
+                :user_id,
+                :owner_name,
+                :business_name,
+                :district,
+                :venue_type,
+                :business_registration,
+                :created_at
+            )');
 
-        $this->db->bind(':user_id', $userId);
-        $this->db->bind(':owner_name', $profileData['owner_name']);
-        $this->db->bind(':business_name', $profileData['business_name']);
-        $this->db->bind(':district', $profileData['district']);
-        $this->db->bind(':venue_type', $profileData['venue_type']);
-        $this->db->bind(':business_registration', $profileData['business_reg']);
-        $this->db->bind(':created_at', date('Y-m-d H:i:s'));
+            $this->db->bind(':user_id', $userId);
+            $this->db->bind(':owner_name', $profileData['owner_name']);
+            $this->db->bind(':business_name', $profileData['business_name']);
+            $this->db->bind(':district', $profileData['district']);
+            $this->db->bind(':venue_type', $profileData['venue_type']);
+            $this->db->bind(':business_registration', $profileData['business_reg']);
+            $this->db->bind(':created_at', date('Y-m-d H:i:s'));
 
-        return $this->db->execute();
+            $result = $this->db->execute();
+            error_log('M_Register: Stadium owner profile creation result: ' . ($result ? 'success' : 'failed'));
+            return $result;
+        } catch (Exception $e) {
+            error_log('M_Register: Create Stadium Owner Profile Error: ' . $e->getMessage());
+            return false;
+        }
     }
 
-    // Create coach profile
+    // Create coach profile - FIXED
     public function createCoachProfile($userId, $profileData) {
-        $this->db->query('INSERT INTO coach_profiles (
-            user_id,
-            specialization,
-            experience,
-            certification,
-            coaching_type,
-            district,
-            availability,
-            created_at
-        ) VALUES (
-            :user_id,
-            :specialization,
-            :experience,
-            :certification,
-            :coaching_type,
-            :district,
-            :availability,
-            :created_at
-        )');
+        try {
+            error_log('M_Register: Creating coach profile for user ID: ' . $userId);
+            error_log('M_Register: Coach profile data: ' . print_r($profileData, true));
+            
+            $this->db->query('INSERT INTO coach_profiles (
+                user_id,
+                specialization,
+                experience,
+                certification,
+                coaching_type,
+                district,
+                availability,
+                created_at
+            ) VALUES (
+                :user_id,
+                :specialization,
+                :experience,
+                :certification,
+                :coaching_type,
+                :district,
+                :availability,
+                :created_at
+            )');
 
-        $this->db->bind(':user_id', $userId);
-        $this->db->bind(':specialization', $profileData['specialization']);
-        $this->db->bind(':experience', $profileData['experience']);
-        $this->db->bind(':certification', $profileData['certification']);
-        $this->db->bind(':coaching_type', $profileData['coaching_type']);
-        $this->db->bind(':district', $profileData['district']);
-        $this->db->bind(':availability', $profileData['availability']);
-        $this->db->bind(':created_at', date('Y-m-d H:i:s'));
+            $this->db->bind(':user_id', $userId);
+            $this->db->bind(':specialization', $profileData['specialization']);
+            $this->db->bind(':experience', $profileData['experience']);
+            $this->db->bind(':certification', $profileData['certification']);
+            $this->db->bind(':coaching_type', $profileData['coaching_type']);
+            $this->db->bind(':district', $profileData['district']);
+            $this->db->bind(':availability', $profileData['availability']);
+            $this->db->bind(':created_at', date('Y-m-d H:i:s'));
 
-        return $this->db->execute();
+            $result = $this->db->execute();
+            
+            if (!$result) {
+                error_log('M_Register: Failed to create coach profile');
+            } else {
+                error_log('M_Register: Successfully created coach profile');
+            }
+            
+            return $result;
+        } catch (Exception $e) {
+            error_log('M_Register: Create Coach Profile Error: ' . $e->getMessage());
+            error_log('M_Register: Error details: ' . $e->getTraceAsString());
+            return false;
+        }
     }
 
-    // Create rental owner profile
+    // Create rental owner profile - FIXED
     public function createRentalOwnerProfile($userId, $profileData) {
-        $this->db->query('INSERT INTO rental_owner_profiles (
-            user_id,
-            owner_name,
-            business_name,
-            district,
-            business_type,
-            equipment_categories,
-            delivery_service,
-            created_at
-        ) VALUES (
-            :user_id,
-            :owner_name,
-            :business_name,
-            :district,
-            :business_type,
-            :equipment_categories,
-            :delivery_service,
-            :created_at
-        )');
+        try {
+            error_log('M_Register: Creating rental owner profile for user ID: ' . $userId);
+            error_log('M_Register: Rental owner profile data: ' . print_r($profileData, true));
 
-        $this->db->bind(':user_id', $userId);
-        $this->db->bind(':owner_name', $profileData['owner_name']);
-        $this->db->bind(':business_name', $profileData['business_name']);
-        $this->db->bind(':district', $profileData['district']);
-        $this->db->bind(':business_type', $profileData['business_type']);
-        $this->db->bind(':equipment_categories', $profileData['equipment_categories']);
-        $this->db->bind(':delivery_service', $profileData['delivery_service']);
-        $this->db->bind(':created_at', date('Y-m-d H:i:s'));
+            $this->db->query('INSERT INTO rental_owner_profiles (
+                user_id,
+                owner_name,
+                business_name,
+                district,
+                business_type,
+                equipment_categories,
+                delivery_service,
+                created_at
+            ) VALUES (
+                :user_id,
+                :owner_name,
+                :business_name,
+                :district,
+                :business_type,
+                :equipment_categories,
+                :delivery_service,
+                :created_at
+            )');
 
-        return $this->db->execute();
+            $this->db->bind(':user_id', $userId);
+            $this->db->bind(':owner_name', $profileData['owner_name']);
+            $this->db->bind(':business_name', $profileData['business_name']);
+            $this->db->bind(':district', $profileData['district']);
+            $this->db->bind(':business_type', $profileData['business_type']);
+            $this->db->bind(':equipment_categories', $profileData['equipment_categories']);
+            $this->db->bind(':delivery_service', $profileData['delivery_service']);
+            $this->db->bind(':created_at', date('Y-m-d H:i:s'));
+
+            $result = $this->db->execute();
+            
+            if (!$result) {
+                error_log('M_Register: Failed to create rental owner profile');
+            } else {
+                error_log('M_Register: Successfully created rental owner profile');
+            }
+            
+            return $result;
+        } catch (Exception $e) {
+            error_log('M_Register: Create Rental Owner Profile Error: ' . $e->getMessage());
+            error_log('M_Register: Error details: ' . $e->getTraceAsString());
+            return false;
+        }
     }
 
     // Send welcome email (placeholder)
     public function sendWelcomeEmail($email, $name, $role) {
         // TODO: Implement email functionality
         // For now, just return true
+        error_log('M_Register: Welcome email would be sent to: ' . $email . ' for role: ' . $role);
         return true;
+    }
+
+    // Delete user (for rollback if profile creation fails)
+    public function deleteUser($userId) {
+        try {
+            $this->db->query('DELETE FROM users WHERE id = :id');
+            $this->db->bind(':id', $userId);
+            return $this->db->execute();
+        } catch (Exception $e) {
+            error_log('M_Register: Delete User Error: ' . $e->getMessage());
+            return false;
+        }
     }
 
     // Get all dropdown data methods
@@ -358,114 +454,4 @@ class M_Register {
             'paid' => 'Paid Delivery Service'
         ];
     }
-
-    // Additional utility methods
-
-    // Generate verification token
-    public function generateVerificationToken($userId) {
-        $token = bin2hex(random_bytes(32));
-        
-        $this->db->query('UPDATE users SET 
-            email_verification_token = :token 
-            WHERE id = :user_id');
-        
-        $this->db->bind(':token', $token);
-        $this->db->bind(':user_id', $userId);
-        
-        if ($this->db->execute()) {
-            return $token;
-        }
-        return false;
-    }
-
-    // Verify email with token
-    public function verifyEmail($token) {
-        $this->db->query('UPDATE users SET 
-            email_verified = 1,
-            email_verification_token = NULL,
-            status = "active"
-            WHERE email_verification_token = :token');
-        
-        $this->db->bind(':token', $token);
-        
-        return $this->db->execute() && $this->db->rowCount() > 0;
-    }
-
-    // Get user by verification token
-    public function getUserByVerificationToken($token) {
-        $this->db->query('SELECT * FROM users WHERE email_verification_token = :token');
-        $this->db->bind(':token', $token);
-        
-        return $this->db->single();
-    }
-
-    // Update user status
-    public function updateUserStatus($userId, $status) {
-        $this->db->query('UPDATE users SET status = :status WHERE id = :user_id');
-        $this->db->bind(':status', $status);
-        $this->db->bind(':user_id', $userId);
-        
-        return $this->db->execute();
-    }
-
-    // Get user profile by ID and role
-    public function getUserProfile($userId, $role) {
-        switch($role) {
-            case 'customer':
-                $this->db->query('SELECT u.*, cp.* FROM users u 
-                    LEFT JOIN customer_profiles cp ON u.id = cp.user_id 
-                    WHERE u.id = :user_id');
-                break;
-            case 'stadium_owner':
-                $this->db->query('SELECT u.*, sop.* FROM users u 
-                    LEFT JOIN stadium_owner_profiles sop ON u.id = sop.user_id 
-                    WHERE u.id = :user_id');
-                break;
-            case 'coach':
-                $this->db->query('SELECT u.*, cp.* FROM users u 
-                    LEFT JOIN coach_profiles cp ON u.id = cp.user_id 
-                    WHERE u.id = :user_id');
-                break;
-            case 'rental_owner':
-                $this->db->query('SELECT u.*, rop.* FROM users u 
-                    LEFT JOIN rental_owner_profiles rop ON u.id = rop.user_id 
-                    WHERE u.id = :user_id');
-                break;
-            default:
-                $this->db->query('SELECT * FROM users WHERE id = :user_id');
-                break;
-        }
-        
-        $this->db->bind(':user_id', $userId);
-        return $this->db->single();
-    }
-
-    // Check if username exists (for future use)
-    public function usernameExists($username) {
-        $this->db->query('SELECT id FROM users WHERE username = :username');
-        $this->db->bind(':username', $username);
-        $this->db->execute();
-        
-        return $this->db->rowCount() > 0;
-    }
-
-    // Get registration statistics
-    public function getRegistrationStats() {
-        $stats = [];
-        
-        // Total users by role
-        $this->db->query('SELECT role, COUNT(*) as count FROM users GROUP BY role');
-        $results = $this->db->resultSet();
-        
-        foreach($results as $result) {
-            $stats[$result->role] = $result->count;
-        }
-        
-        // Recent registrations (last 30 days)
-        $this->db->query('SELECT COUNT(*) as count FROM users WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)');
-        $stats['recent_registrations'] = $this->db->single()->count;
-        
-        return $stats;
-    }
 }
-?>

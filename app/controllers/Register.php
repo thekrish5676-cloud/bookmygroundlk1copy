@@ -6,6 +6,7 @@ class Register extends Controller {
     {
         try {
             $this->registerModel = $this->model('M_Register');
+            error_log('Register Controller: Model loaded successfully');
         } catch (Exception $e) {
             error_log('Register Controller Constructor Error: ' . $e->getMessage());
             die('Error loading registration model: ' . $e->getMessage());
@@ -98,6 +99,7 @@ class Register extends Controller {
 
             // Handle form submission
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                error_log('Coach registration POST received');
                 $data = $this->processRegistration($data, 'coach');
             }
 
@@ -139,76 +141,87 @@ class Register extends Controller {
     private function processRegistration($data, $role) {
         try {
             error_log('Processing registration for role: ' . $role);
+            error_log('POST data received: ' . print_r($_POST, true));
             
             // Get form data based on role
-            if ($role === 'stadium_owner') {
-                $formData = [
-                    'role' => $role,
-                    'first_name' => trim($_POST['owner_name'] ?? $_POST['owner-name'] ?? ''), // Map owner_name to first_name
-                    'last_name' => trim($_POST['business_name'] ?? $_POST['business-name'] ?? ''), // Map business_name to last_name for user table
-                    'email' => trim($_POST['email'] ?? ''),
-                    'phone' => trim($_POST['phone'] ?? ''),
-                    'password' => $_POST['password'] ?? '',
-                    'confirm_password' => $_POST['confirm_password'] ?? $_POST['confirm-password'] ?? '',
-                    
-                    // Stadium owner specific fields
-                    'owner_name' => trim($_POST['owner_name'] ?? $_POST['owner-name'] ?? ''),
-                    'business_name' => trim($_POST['business_name'] ?? $_POST['business-name'] ?? ''),
-                    'district' => trim($_POST['district'] ?? ''),
-                    'venue_type' => $_POST['venue_type'] ?? $_POST['venue-type'] ?? '',
-                    'business_reg' => trim($_POST['business_reg'] ?? $_POST['business-reg'] ?? ''),
-                ];
-            } elseif ($role === 'rental_owner') {
-                $formData = [
-                    'role' => $role,
-                    'first_name' => trim($_POST['owner_name'] ?? $_POST['owner-name'] ?? ''), // Map owner_name to first_name
-                    'last_name' => trim($_POST['business_name'] ?? $_POST['business-name'] ?? ''), // Map business_name to last_name for user table
-                    'email' => trim($_POST['email'] ?? ''),
-                    'phone' => trim($_POST['phone'] ?? ''),
-                    'password' => $_POST['password'] ?? '',
-                    'confirm_password' => $_POST['confirm_password'] ?? $_POST['confirm-password'] ?? '',
-                    
-                    // Rental owner specific fields
-                    'owner_name' => trim($_POST['owner_name'] ?? $_POST['owner-name'] ?? ''),
-                    'business_name' => trim($_POST['business_name'] ?? $_POST['business-name'] ?? ''),
-                    'district' => trim($_POST['district'] ?? ''),
-                    'business_type' => $_POST['business_type'] ?? $_POST['business-type'] ?? '',
-                    'equipment_categories' => $_POST['equipment_categories'] ?? $_POST['equipment-categories'] ?? '',
-                    'delivery_service' => $_POST['delivery_service'] ?? $_POST['delivery-service'] ?? '',
-                ];
-            } else {
-                // For customer and coach roles, use standard field names
-                $formData = [
-                    'role' => $role,
-                    'first_name' => trim($_POST['first_name'] ?? $_POST['first-name'] ?? ''),
-                    'last_name' => trim($_POST['last_name'] ?? $_POST['last-name'] ?? ''),
-                    'email' => trim($_POST['email'] ?? ''),
-                    'phone' => trim($_POST['phone'] ?? ''),
-                    'password' => $_POST['password'] ?? '',
-                    'confirm_password' => $_POST['confirm_password'] ?? $_POST['confirm-password'] ?? ''
-                ];
+            $formData = [
+                'role' => $role
+            ];
 
-                // Add role-specific fields
-                switch($role) {
-                    case 'customer':
-                        $formData['district'] = trim($_POST['district'] ?? '');
-                        $formData['sports'] = $_POST['sports'] ?? '';
-                        $formData['age_group'] = $_POST['age_group'] ?? $_POST['age-group'] ?? '';
-                        $formData['skill_level'] = $_POST['skill_level'] ?? $_POST['skill-level'] ?? '';
-                        break;
-
-                    case 'coach':
-                        $formData['specialization'] = $_POST['specialization'] ?? '';
-                        $formData['experience'] = $_POST['experience'] ?? '';
-                        $formData['certification'] = $_POST['certification'] ?? '';
-                        $formData['coaching_type'] = $_POST['coaching_type'] ?? $_POST['coaching-type'] ?? '';
-                        $formData['district'] = trim($_POST['district'] ?? '');
-                        $formData['availability'] = $_POST['availability'] ?? '';
-                        break;
-                }
+            // Get basic fields differently for each role
+            switch($role) {
+                case 'customer':
+                    $formData['first_name'] = trim($_POST['first_name'] ?? $_POST['first-name'] ?? '');
+                    $formData['last_name'] = trim($_POST['last_name'] ?? $_POST['last-name'] ?? '');
+                    break;
+                    
+                case 'stadium_owner':
+                    // For stadium owner, we get owner_name and split it into first_name/last_name
+                    $ownerName = trim($_POST['owner_name'] ?? $_POST['owner-name'] ?? '');
+                    $nameParts = explode(' ', $ownerName, 2);
+                    $formData['first_name'] = $nameParts[0] ?? '';
+                    // FIXED: Ensure last_name is never empty
+                    $formData['last_name'] = !empty($nameParts[1]) ? $nameParts[1] : $nameParts[0];
+                    $formData['owner_name'] = $ownerName; // Keep for profile creation
+                    break;
+                    
+                case 'coach':
+                    $formData['first_name'] = trim($_POST['first_name'] ?? $_POST['first-name'] ?? '');
+                    $formData['last_name'] = trim($_POST['last_name'] ?? $_POST['last-name'] ?? '');
+                    break;
+                    
+                case 'rental_owner':
+                    // For rental owner, we get owner_name and split it into first_name/last_name
+                    $ownerName = trim($_POST['owner_name'] ?? $_POST['owner-name'] ?? '');
+                    $nameParts = explode(' ', $ownerName, 2);
+                    $formData['first_name'] = $nameParts[0] ?? '';
+                    // FIXED: Ensure last_name is never empty
+                    $formData['last_name'] = !empty($nameParts[1]) ? $nameParts[1] : $nameParts[0];
+                    $formData['owner_name'] = $ownerName; // Keep for profile creation
+                    break;
             }
 
-            error_log('Form data collected: ' . print_r($formData, true));
+            // Common fields for all roles
+            $formData['email'] = trim($_POST['email'] ?? '');
+            $formData['phone'] = trim($_POST['phone'] ?? '');
+            $formData['password'] = $_POST['password'] ?? '';
+            $formData['confirm_password'] = $_POST['confirm_password'] ?? $_POST['confirm-password'] ?? '';
+
+            // Add role-specific fields
+            switch($role) {
+                case 'customer':
+                    $formData['district'] = trim($_POST['district'] ?? '');
+                    $formData['sports'] = $_POST['sports'] ?? '';
+                    $formData['age_group'] = $_POST['age_group'] ?? $_POST['age-group'] ?? '';
+                    $formData['skill_level'] = $_POST['skill_level'] ?? $_POST['skill-level'] ?? '';
+                    break;
+
+                case 'stadium_owner':
+                    $formData['business_name'] = trim($_POST['business_name'] ?? $_POST['business-name'] ?? '');
+                    $formData['district'] = trim($_POST['district'] ?? '');
+                    $formData['venue_type'] = $_POST['venue_type'] ?? $_POST['venue-type'] ?? '';
+                    $formData['business_reg'] = trim($_POST['business_reg'] ?? $_POST['business-reg'] ?? '');
+                    break;
+
+                case 'coach':
+                    $formData['specialization'] = $_POST['specialization'] ?? '';
+                    $formData['experience'] = $_POST['experience'] ?? '';
+                    $formData['certification'] = $_POST['certification'] ?? '';
+                    $formData['coaching_type'] = $_POST['coaching_type'] ?? $_POST['coaching-type'] ?? '';
+                    $formData['district'] = trim($_POST['district'] ?? '');
+                    $formData['availability'] = $_POST['availability'] ?? '';
+                    break;
+
+                case 'rental_owner':
+                    $formData['business_name'] = trim($_POST['business_name'] ?? $_POST['business-name'] ?? '');
+                    $formData['district'] = trim($_POST['district'] ?? '');
+                    $formData['business_type'] = $_POST['business_type'] ?? $_POST['business-type'] ?? '';
+                    $formData['equipment_categories'] = $_POST['equipment_categories'] ?? $_POST['equipment-categories'] ?? '';
+                    $formData['delivery_service'] = $_POST['delivery_service'] ?? $_POST['delivery-service'] ?? '';
+                    break;
+            }
+
+            error_log('Form data prepared: ' . print_r($formData, true));
 
             // Validate form data
             $validation = $this->validateForm($formData, $role);
@@ -271,7 +284,10 @@ class Register extends Controller {
                     header('Location: ' . URLROOT . '/register/success');
                     exit;
                 } else {
-                    $data['error'] = 'Account created but profile setup failed. Please contact support.';
+                    // If profile creation failed, delete the user to maintain consistency
+                    error_log('Profile creation failed, rolling back user creation');
+                    $this->registerModel->deleteUser($userId);
+                    $data['error'] = 'Registration failed. Please check all required fields and try again.';
                 }
             } else {
                 $data['error'] = 'Registration failed. Please try again.';
@@ -283,7 +299,8 @@ class Register extends Controller {
         } catch (Exception $e) {
             error_log('ProcessRegistration Error: ' . $e->getMessage());
             error_log('Error trace: ' . $e->getTraceAsString());
-            $data['error'] = 'Registration failed due to a technical error. Please try again.';
+            $data['error'] = 'Registration failed due to a technical error. Please check the error logs for details.';
+            $data['form_data'] = $_POST; // Keep original POST data
             return $data;
         }
     }
@@ -292,21 +309,12 @@ class Register extends Controller {
         try {
             $errors = [];
 
-            // Common validations - adjust field names based on role
-            if ($role === 'stadium_owner' || $role === 'rental_owner') {
-                if (empty($data['owner_name'])) {
-                    $errors[] = 'Owner name is required';
-                }
-                if (empty($data['business_name'])) {
-                    $errors[] = 'Business name is required';
-                }
-            } else {
-                if (empty($data['first_name'])) {
-                    $errors[] = 'First name is required';
-                }
-                if (empty($data['last_name'])) {
-                    $errors[] = 'Last name is required';
-                }
+            // Common validations
+            if (empty($data['first_name'])) {
+                $errors[] = 'First name is required';
+            }
+            if (empty($data['last_name'])) {
+                $errors[] = 'Last name is required';
             }
 
             if (empty($data['email'])) {
@@ -349,6 +357,12 @@ class Register extends Controller {
                     break;
 
                 case 'stadium_owner':
+                    if (empty($data['owner_name'])) {
+                        $errors[] = 'Owner name is required';
+                    }
+                    if (empty($data['business_name'])) {
+                        $errors[] = 'Business name is required';
+                    }
                     if (empty($data['district'])) {
                         $errors[] = 'District is required';
                     }
@@ -382,6 +396,12 @@ class Register extends Controller {
                     break;
 
                 case 'rental_owner':
+                    if (empty($data['owner_name'])) {
+                        $errors[] = 'Owner name is required';
+                    }
+                    if (empty($data['business_name'])) {
+                        $errors[] = 'Business name is required';
+                    }
                     if (empty($data['district'])) {
                         $errors[] = 'District is required';
                     }
@@ -413,4 +433,3 @@ class Register extends Controller {
         $this->view('signup/v_success', $data);
     }
 }
-?>

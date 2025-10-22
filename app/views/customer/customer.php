@@ -176,53 +176,56 @@
                             <div class="customer-profile-details">
                                 <div class="customer-profile-field">
                                     <label>First Name *</label>
-                                    <input type="text" name="first_name" value="<?php echo $_SESSION['customer_first_name'] ?? ''; ?>" placeholder="Enter your first name" class="customer-profile-input" required>
+                                    <input type="text" name="first_name" value="<?php echo htmlspecialchars($data['profile_data']['first_name'] ?? ''); ?>" placeholder="Enter your first name" class="customer-profile-input" required>
                                 </div>
                                 <div class="customer-profile-field">
                                     <label>Last Name *</label>
-                                    <input type="text" name="last_name" value="<?php echo $_SESSION['customer_last_name'] ?? ''; ?>" placeholder="Enter your last name" class="customer-profile-input" required>
+                                    <input type="text" name="last_name" value="<?php echo htmlspecialchars($data['profile_data']['last_name'] ?? ''); ?>" placeholder="Enter your last name" class="customer-profile-input" required>
                                 </div>
                                 <div class="customer-profile-field">
                                     <label>Email (Read Only)</label>
-                                    <input type="email" value="<?php echo $_SESSION['customer_email'] ?? ''; ?>" class="customer-profile-input" readonly>
+                                    <input type="email" value="<?php echo htmlspecialchars($data['profile_data']['email'] ?? ''); ?>" class="customer-profile-input" readonly>
                                 </div>
                                 <div class="customer-profile-field">
                                     <label>Phone *</label>
-                                    <input type="tel" name="phone" value="<?php echo $_SESSION['customer_phone'] ?? ''; ?>" placeholder="Enter your phone number" class="customer-profile-input" required>
+                                    <input type="tel" name="phone" value="<?php echo htmlspecialchars($data['profile_data']['phone'] ?? ''); ?>" placeholder="Enter your phone number" class="customer-profile-input" required>
                                 </div>
                                 <div class="customer-profile-field">
                                     <label>District *</label>
-                                    <input type="text" name="district" value="<?php echo $_SESSION['customer_district'] ?? ''; ?>" placeholder="Enter your district" class="customer-profile-input" required>
+                                    <input type="text" name="district" value="<?php echo htmlspecialchars($data['profile_data']['location'] ?? ''); ?>" placeholder="Enter your district" class="customer-profile-input" required>
                                 </div>
                                 <div class="customer-profile-field">
                                     <label>Preferred Sports *</label>
                                     <select name="preferred_sports" class="customer-profile-select" required>
                                         <option value="">Select primary sport</option>
-                                        <option value="football" <?php echo ($_SESSION['customer_sports'] ?? '') == 'football' ? 'selected' : ''; ?>>Football</option>
-                                        <option value="cricket" <?php echo ($_SESSION['customer_sports'] ?? '') == 'cricket' ? 'selected' : ''; ?>>Cricket</option>
-                                        <option value="badminton" <?php echo ($_SESSION['customer_sports'] ?? '') == 'badminton' ? 'selected' : ''; ?>>Badminton</option>
-                                        <option value="tennis" <?php echo ($_SESSION['customer_sports'] ?? '') == 'tennis' ? 'selected' : ''; ?>>Tennis</option>
-                                        <option value="other" <?php echo ($_SESSION['customer_sports'] ?? '') == 'other' ? 'selected' : ''; ?>>Other</option>
+                                        <?php $sportSel = $data['profile_data']['favorite_sports'] ?? ''; ?>
+                                        <option value="football" <?php echo ($sportSel == 'football') ? 'selected' : ''; ?>>Football</option>
+                                        <option value="cricket" <?php echo ($sportSel == 'cricket') ? 'selected' : ''; ?>>Cricket</option>
+                                        <option value="badminton" <?php echo ($sportSel == 'badminton') ? 'selected' : ''; ?>>Badminton</option>
+                                        <option value="tennis" <?php echo ($sportSel == 'tennis') ? 'selected' : ''; ?>>Tennis</option>
+                                        <option value="other" <?php echo ($sportSel == 'other') ? 'selected' : ''; ?>>Other</option>
                                     </select>
                                 </div>
                                 <div class="customer-profile-field">
                                     <label>Age Group *</label>
                                     <select name="age_group" class="customer-profile-select" required>
                                         <option value="">Select age group</option>
-                                        <option value="under-18" <?php echo ($_SESSION['customer_age_group'] ?? '') == 'under-18' ? 'selected' : ''; ?>>Under 18</option>
-                                        <option value="18-25" <?php echo ($_SESSION['customer_age_group'] ?? '') == '18-25' ? 'selected' : ''; ?>>18-25 years</option>
-                                        <option value="26-35" <?php echo ($_SESSION['customer_age_group'] ?? '') == '26-35' ? 'selected' : ''; ?>>26-35 years</option>
-                                        <option value="above-35" <?php echo ($_SESSION['customer_age_group'] ?? '') == 'above-35' ? 'selected' : ''; ?>>Above 35</option>
+                                        <?php $ageSel = $data['profile_data']['age_group'] ?? ''; ?>
+                                        <option value="under-18" <?php echo ($ageSel == 'under_18') ? 'selected' : ''; ?>>Under 18</option>
+                                        <option value="18-25" <?php echo ($ageSel == '18_25') ? 'selected' : ''; ?>>18-25 years</option>
+                                        <option value="26-35" <?php echo ($ageSel == '26_35') ? 'selected' : ''; ?>>26-35 years</option>
+                                        <option value="above-35" <?php echo ($ageSel == 'above_35') ? 'selected' : ''; ?>>Above 35</option>
                                     </select>
                                 </div>
                                 <div class="customer-profile-field">
                                     <label>Skill Level *</label>
                                     <select name="skill_level" class="customer-profile-select" required>
                                         <option value="">Select skill level</option>
-                                        <option value="beginner" <?php echo ($_SESSION['customer_skill_level'] ?? '') == 'beginner' ? 'selected' : ''; ?>>Beginner</option>
-                                        <option value="intermediate" <?php echo ($_SESSION['customer_skill_level'] ?? '') == 'intermediate' ? 'selected' : ''; ?>>Intermediate</option>
-                                        <option value="advanced" <?php echo ($_SESSION['customer_skill_level'] ?? '') == 'advanced' ? 'selected' : ''; ?>>Advanced</option>
-                                        <option value="professional" <?php echo ($_SESSION['customer_skill_level'] ?? '') == 'professional' ? 'selected' : ''; ?>>Professional</option>
+                                        <?php $skillSel = $data['profile_data']['skill_level'] ?? ''; ?>
+                                        <option value="beginner" <?php echo ($skillSel == 'beginner') ? 'selected' : ''; ?>>Beginner</option>
+                                        <option value="intermediate" <?php echo ($skillSel == 'intermediate') ? 'selected' : ''; ?>>Intermediate</option>
+                                        <option value="advanced" <?php echo ($skillSel == 'advanced') ? 'selected' : ''; ?>>Advanced</option>
+                                        <option value="professional" <?php echo ($skillSel == 'professional') ? 'selected' : ''; ?>>Professional</option>
                                     </select>
                                 </div>
                             </div>
@@ -266,10 +269,8 @@
                     <div class="customer-contacts-list">
                         <h3>📋 My Emergency Contacts</h3>
                         <div class="customer-bookings-grid">
-                            <?php
-                            $customerModel = new M_Customer();
-                            $emergency_contacts = $customerModel->getEmergencyContacts($_SESSION['customer_id']);
-                            
+                            <?php 
+                            $emergency_contacts = $data['emergency_contacts'] ?? [];
                             if($emergency_contacts && count($emergency_contacts) > 0):
                                 foreach($emergency_contacts as $contact):
                             ?>
@@ -281,7 +282,7 @@
                                     <div class="customer-contact-details">
                                         <p><strong>📞 Phone:</strong> <?php echo $contact->phone; ?></p>
                                         <p><strong>📧 Email:</strong> <?php echo $contact->email ?? 'N/A'; ?></p>
-                                        <p><strong>📅 Added:</strong> <?php echo date('M d, Y', strtotime($contact->created_at)); ?></p>
+                                        <p><strong>📅 Added:</strong> <?php echo isset($contact->created_at) ? date('M d, Y', strtotime($contact->created_at)) : ''; ?></p>
                                     </div>
                                     <a href="<?php echo URLROOT; ?>/customer/deleteEmergencyContact/<?php echo $contact->id; ?>" 
                                        class="customer-delete-contact-btn" 

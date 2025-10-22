@@ -2025,7 +2025,7 @@ body {
 .price-amount {
     font-size: 48px;
     font-weight: 700;
-    color:#03B200;
+    color:#000000;
 }
 
 .price-period {
@@ -2957,7 +2957,7 @@ body {
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(45deg, #03B200, #00cc00, #03B200);
+    
     border-radius: 16px;
     opacity: 0;
     transition: opacity 0.3s ease;

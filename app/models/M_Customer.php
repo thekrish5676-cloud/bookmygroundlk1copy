@@ -7,15 +7,14 @@ class M_Customer {
             $this->db = new Database();
         } catch (Exception $e) {
             error_log('Database connection error in M_Customer: ' . $e->getMessage());
-            // Don't die here, let methods handle the error
+            // allow methods to return safe defaults
         }
     }
 
-    // Get customer dashboard stats
-    public function getCustomerStats($customer_id) {
+    // Get customer dashboard stats (placeholder until bookings/payments/reviews exist)
+    public function getCustomerStats($user_id) {
         try {
             if (!$this->db) {
-                // Return default stats if database is not available
                 return [
                     'active_bookings' => 0,
                     'stadiums_visited' => 0,
@@ -24,12 +23,12 @@ class M_Customer {
                 ];
             }
 
-            // For now, return sample data since bookings table might not exist yet
+            // If bookings/payments tables are not ready yet, return demo values
             return [
-                'active_bookings' => 12,
-                'stadiums_visited' => 8,
-                'total_spent' => 2450,
-                'rating_given' => 4.8
+                'active_bookings' => 0,
+                'stadiums_visited' => 0,
+                'total_spent' => 0,
+                'rating_given' => 0
             ];
 
         } catch (Exception $e) {
@@ -43,140 +42,58 @@ class M_Customer {
         }
     }
 
-    // Get customer's recent bookings
-    public function getRecentBookings($customer_id, $limit = 5) {
+    // Get customer's recent bookings (placeholder until bookings table exists)
+    public function getRecentBookings($user_id, $limit = 5) {
         try {
-            // Return sample data for now
-            return [
-                [
-                    'id' => 1,
-                    'stadium' => 'Central Football Arena',
-                    'date' => '2025-01-25',
-                    'time' => '6:00 PM - 8:00 PM',
-                    'duration' => '2 hours',
-                    'amount' => 800,
-                    'status' => 'Confirmed'
-                ],
-                [
-                    'id' => 2,
-                    'stadium' => 'Badminton Court Pro',
-                    'date' => '2025-01-28',
-                    'time' => '4:00 PM - 6:00 PM',
-                    'duration' => '2 hours',
-                    'amount' => 600,
-                    'status' => 'Pending'
-                ],
-                [
-                    'id' => 3,
-                    'stadium' => 'Tennis Excellence Center',
-                    'date' => '2025-01-20',
-                    'time' => '7:00 PM - 9:00 PM',
-                    'duration' => '2 hours',
-                    'amount' => 1200,
-                    'status' => 'Completed'
-                ]
-            ];
+            return [];
         } catch (Exception $e) {
             error_log('Error in getRecentBookings: ' . $e->getMessage());
             return [];
         }
     }
 
-    // Get all customer bookings
-    public function getAllBookings($customer_id) {
+    // Get all customer bookings (placeholder)
+    public function getAllBookings($user_id) {
         try {
-            return $this->getRecentBookings($customer_id, 10); // Return more bookings
+            return [];
         } catch (Exception $e) {
             error_log('Error in getAllBookings: ' . $e->getMessage());
             return [];
         }
     }
 
-    // Get customer's favorite stadiums
-    public function getFavoriteStadiums($customer_id) {
+    // Get customer's favorite stadiums (can be derived later; placeholder now)
+    public function getFavoriteStadiums($user_id) {
         try {
-            return [
-                [
-                    'id' => 1,
-                    'name' => 'Central Football Arena',
-                    'location' => 'Colombo, Sri Lanka',
-                    'last_visited' => 'Jan 25, 2025',
-                    'total_bookings' => 5,
-                    'rating' => 4.8,
-                    'sport' => 'Football'
-                ],
-                [
-                    'id' => 2,
-                    'name' => 'Badminton Court Pro',
-                    'location' => 'Kandy, Sri Lanka',
-                    'last_visited' => 'Jan 28, 2025',
-                    'total_bookings' => 3,
-                    'rating' => 4.6,
-                    'sport' => 'Badminton'
-                ]
-            ];
+            return [];
         } catch (Exception $e) {
             error_log('Error in getFavoriteStadiums: ' . $e->getMessage());
             return [];
         }
     }
 
-    // Get customer's payment history
-    public function getPaymentHistory($customer_id) {
+    // Get customer's payment history (placeholder)
+    public function getPaymentHistory($user_id) {
         try {
-            return [
-                [
-                    'id' => 'PAY-2025-001',
-                    'date' => '2025-01-25',
-                    'stadium' => 'Central Football Arena',
-                    'method' => 'Credit Card',
-                    'amount' => 800,
-                    'status' => 'Completed'
-                ],
-                [
-                    'id' => 'PAY-2025-002',
-                    'date' => '2025-01-28',
-                    'stadium' => 'Badminton Court Pro',
-                    'method' => 'Debit Card',
-                    'amount' => 600,
-                    'status' => 'Pending'
-                ]
-            ];
+            return [];
         } catch (Exception $e) {
             error_log('Error in getPaymentHistory: ' . $e->getMessage());
             return [];
         }
     }
 
-    // Get customer's upcoming events
-    public function getUpcomingEvents($customer_id) {
+    // Get customer's upcoming events (placeholder)
+    public function getUpcomingEvents($user_id) {
         try {
-            return [
-                [
-                    'id' => 1,
-                    'title' => 'Football Match - Central Arena',
-                    'date' => '25',
-                    'month' => 'JAN',
-                    'time' => '6:00 PM - 8:00 PM',
-                    'type' => 'Personal Booking'
-                ],
-                [
-                    'id' => 2,
-                    'title' => 'Badminton Practice - Court Pro',
-                    'date' => '28',
-                    'month' => 'JAN',
-                    'time' => '4:00 PM - 6:00 PM',
-                    'type' => 'Personal Booking'
-                ]
-            ];
+            return [];
         } catch (Exception $e) {
             error_log('Error in getUpcomingEvents: ' . $e->getMessage());
             return [];
         }
     }
 
-    // Get customer profile data
-    public function getProfileData($customer_id) {
+    // Get customer profile data (users + customer_profiles)
+    public function getProfileData($user_id) {
         try {
             if (!$this->db) {
                 return $this->getDefaultProfileData();
@@ -186,7 +103,7 @@ class M_Customer {
                 FROM users u
                 LEFT JOIN customer_profiles cp ON u.id = cp.user_id
                 WHERE u.id = :id');
-            $this->db->bind(':id', $customer_id);
+            $this->db->bind(':id', $user_id);
             
             $profile = $this->db->single();
             
@@ -195,15 +112,12 @@ class M_Customer {
                     'first_name' => $profile->first_name ?? 'User',
                     'last_name' => $profile->last_name ?? 'Name',
                     'email' => $profile->email ?? 'user@example.com',
-                    'phone' => $profile->phone ?? 'Not set',
-                    'location' => $profile->district ?? 'Not set',
-                    'favorite_sports' => $profile->sports ?? 'Not set',
-                    'age_group' => $profile->age_group ?? 'Not set',
-                    'skill_level' => $profile->skill_level ?? 'Not set',
-                    'member_since' => isset($profile->created_at) ? date('F Y', strtotime($profile->created_at)) : 'January 2025',
-                    'total_bookings' => 12,
-                    'favorite_venues' => 3,
-                    'loyalty_points' => 245
+                    'phone' => $profile->phone ?? '',
+                    'location' => $profile->district ?? '',
+                    'favorite_sports' => $profile->sports ?? '',
+                    'age_group' => $profile->age_group ?? '',
+                    'skill_level' => $profile->skill_level ?? '',
+                    'member_since' => isset($profile->created_at) ? date('F Y', strtotime($profile->created_at)) : ''
                 ];
             }
             
@@ -219,38 +133,60 @@ class M_Customer {
         return [
             'first_name' => 'User',
             'last_name' => 'Name',
-            'email' => 'user@example.com',
-            'phone' => 'Not set',
-            'location' => 'Not set',
-            'favorite_sports' => 'Not set',
-            'age_group' => 'Not set',
-            'skill_level' => 'Not set',
-            'member_since' => 'January 2025',
-            'total_bookings' => 0,
-            'favorite_venues' => 0,
-            'loyalty_points' => 0
+            'email' => '',
+            'phone' => '',
+            'location' => '',
+            'favorite_sports' => '',
+            'age_group' => '',
+            'skill_level' => '',
+            'member_since' => ''
         ];
     }
 
-    // Update customer profile
-    public function updateProfile($customer_id, $profile_data) {
+    // Update profile: users + upsert into customer_profiles
+    public function updateProfile($user_id, $profile_data) {
         try {
             if (!$this->db) {
                 return false;
             }
 
+            // Update basic user fields
             $this->db->query('UPDATE users SET
                 first_name = :first_name,
                 last_name = :last_name,
                 phone = :phone,
                 updated_at = NOW()
                 WHERE id = :id');
-            
-            $this->db->bind(':first_name', $profile_data['first_name']);
-            $this->db->bind(':last_name', $profile_data['last_name']);
-            $this->db->bind(':phone', $profile_data['phone']);
-            $this->db->bind(':id', $customer_id);
-            
+            $this->db->bind(':first_name', $profile_data['first_name'] ?? '');
+            $this->db->bind(':last_name', $profile_data['last_name'] ?? '');
+            $this->db->bind(':phone', $profile_data['phone'] ?? '');
+            $this->db->bind(':id', $user_id);
+            $this->db->execute();
+
+            // Check if customer_profiles exists for user
+            $this->db->query('SELECT id FROM customer_profiles WHERE user_id = :uid');
+            $this->db->bind(':uid', $user_id);
+            $exists = $this->db->single();
+
+            if ($exists) {
+                $this->db->query('UPDATE customer_profiles SET 
+                    district = :district,
+                    sports = :sports,
+                    age_group = :age_group,
+                    skill_level = :skill_level,
+                    updated_at = NOW()
+                    WHERE user_id = :uid');
+            } else {
+                $this->db->query('INSERT INTO customer_profiles (user_id, district, sports, age_group, skill_level, created_at)
+                    VALUES (:uid, :district, :sports, :age_group, :skill_level, NOW())');
+            }
+
+            $this->db->bind(':uid', $user_id);
+            $this->db->bind(':district', $profile_data['district'] ?? '');
+            $this->db->bind(':sports', $profile_data['sports'] ?? '');
+            $this->db->bind(':age_group', $profile_data['age_group'] ?? '');
+            $this->db->bind(':skill_level', $profile_data['skill_level'] ?? '');
+
             return $this->db->execute();
         } catch (Exception $e) {
             error_log('Error in updateProfile: ' . $e->getMessage());
@@ -258,8 +194,48 @@ class M_Customer {
         }
     }
 
-    // Get customer profile (alias for backward compatibility)
-    public function getProfile($customer_id) {
-        return $this->getProfileData($customer_id);
+    // Emergency contacts CRUD aligned to users table
+    public function createEmergencyContact($user_id, $data) {
+        try {
+            $this->db->query('INSERT INTO emergency_contacts (user_id, contact_name, relationship, phone, email, created_at) 
+                              VALUES (:user_id, :name, :relationship, :phone, :email, NOW())');
+            $this->db->bind(':user_id', $user_id);
+            $this->db->bind(':name', $data['contact_name'] ?? '');
+            $this->db->bind(':relationship', $data['relationship'] ?? '');
+            $this->db->bind(':phone', $data['phone'] ?? '');
+            $this->db->bind(':email', $data['email'] ?? null);
+            return $this->db->execute();
+        } catch (Exception $e) {
+            error_log('Error in createEmergencyContact: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getEmergencyContacts($user_id) {
+        try {
+            $this->db->query('SELECT * FROM emergency_contacts WHERE user_id = :uid ORDER BY created_at DESC');
+            $this->db->bind(':uid', $user_id);
+            return $this->db->resultSet();
+        } catch (Exception $e) {
+            error_log('Error in getEmergencyContacts: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function deleteEmergencyContact($id, $user_id) {
+        try {
+            $this->db->query('DELETE FROM emergency_contacts WHERE id = :id AND user_id = :uid');
+            $this->db->bind(':id', $id);
+            $this->db->bind(':uid', $user_id);
+            return $this->db->execute();
+        } catch (Exception $e) {
+            error_log('Error in deleteEmergencyContact: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    // Backward-compatible alias
+    public function getProfile($user_id) {
+        return $this->getProfileData($user_id);
     }
 }

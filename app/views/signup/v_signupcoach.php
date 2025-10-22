@@ -1,13 +1,14 @@
 <?php require APPROOT.'/views/inc/components/header.php'; ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <title>Coach SignUp | BookMyGround.com</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up as Coach - BookMyGround</title>
-  <link rel="stylesheet" href="style.css">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/style.css">
+  <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/styledinesh.css">
 </head>
 <body>
   <!-- Coach Sign Up Section -->
@@ -43,36 +44,72 @@
         <div class="auth-options">
           <p class="auth-text">Already have an account?</p>
           <div class="auth-buttons">
-            <a href="login.html" class="hero-btn primary">Sign In</a>
-            <a href="signup.html" class="hero-btn">Back to Options</a>
+            <a href="<?php echo URLROOT; ?>/login" class="hero-btn primary">Sign In</a>
+            <a href="<?php echo URLROOT; ?>/register" class="hero-btn">Back to Options</a>
           </div>
         </div>
       </div>
 
       <!-- Right Side - Sign Up Form -->
       <div class="signup-form-container">
-        <form class="signup-form">
+        <?php if(isset($data['error']) && !empty($data['error'])): ?>
+          <div class="error-message" style="background: rgba(255, 0, 0, 0.1); border: 1px solid #ff4444; color: #ff6666; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
+            <?php echo $data['error']; ?>
+          </div>
+        <?php endif; ?>
+
+        <?php if(isset($data['success']) && !empty($data['success'])): ?>
+          <div class="success-message" style="background: rgba(0, 255, 0, 0.1); border: 1px solid #28a745; color: #28a745; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
+            <?php echo $data['success']; ?>
+          </div>
+        <?php endif; ?>
+
+        <form class="signup-form" method="POST" action="<?php echo URLROOT; ?>/register/coach">
           <h2 class="signup-heading">Create Coach Account</h2>
           
           <div class="form-row">
             <div class="form-group">
               <label for="first-name" class="signup-label">First Name</label>
-              <input type="text" id="first-name" name="first-name" class="signup-input" placeholder="First name" required>
+              <input type="text" 
+                     id="first-name" 
+                     name="first_name" 
+                     class="signup-input" 
+                     placeholder="First name" 
+                     value="<?php echo isset($data['form_data']['first_name']) ? $data['form_data']['first_name'] : ''; ?>"
+                     required>
             </div>
             <div class="form-group">
               <label for="last-name" class="signup-label">Last Name</label>
-              <input type="text" id="last-name" name="last-name" class="signup-input" placeholder="Last name" required>
+              <input type="text" 
+                     id="last-name" 
+                     name="last_name" 
+                     class="signup-input" 
+                     placeholder="Last name" 
+                     value="<?php echo isset($data['form_data']['last_name']) ? $data['form_data']['last_name'] : ''; ?>"
+                     required>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label for="email" class="signup-label">Email</label>
-              <input type="email" id="email" name="email" class="signup-input" placeholder="Your email" required>
+              <input type="email" 
+                     id="email" 
+                     name="email" 
+                     class="signup-input" 
+                     placeholder="Your email" 
+                     value="<?php echo isset($data['form_data']['email']) ? $data['form_data']['email'] : ''; ?>"
+                     required>
             </div>
             <div class="form-group">
               <label for="phone" class="signup-label">Phone Number</label>
-              <input type="tel" id="phone" name="phone" class="signup-input" placeholder="Contact number" required>
+              <input type="tel" 
+                     id="phone" 
+                     name="phone" 
+                     class="signup-input" 
+                     placeholder="Contact number" 
+                     value="<?php echo isset($data['form_data']['phone']) ? $data['form_data']['phone'] : ''; ?>"
+                     required>
             </div>
           </div>
 
@@ -80,24 +117,23 @@
             <div class="form-group">
               <label for="specialization" class="signup-label">Sports Specialization</label>
               <select id="specialization" name="specialization" class="signup-input" required>
-                <option value="" disabled selected>Select primary sport</option>
-                <option value="football">Football</option>
-                <option value="cricket">Cricket</option>
-                <option value="basketball">Badminton</option>
-                <option value="tennis">Tennis</option>
-                <option value="swimming">Swimming</option>
-                <option value="other">Other</option>
-
+                <option value="" disabled <?php echo !isset($data['form_data']['specialization']) ? 'selected' : ''; ?>>Select primary sport</option>
+                <?php foreach($data['sports'] as $key => $sport): ?>
+                <option value="<?php echo $key; ?>" <?php echo isset($data['form_data']['specialization']) && $data['form_data']['specialization'] == $key ? 'selected' : ''; ?>>
+                  <?php echo $sport; ?>
+                </option>
+                <?php endforeach; ?>
               </select>
             </div>
             <div class="form-group">
               <label for="experience" class="signup-label">Years of Experience</label>
               <select id="experience" name="experience" class="signup-input" required>
-                <option value="" disabled selected>Select experience</option>
-                <option value="1-3">1-3 years</option>
-                <option value="4-6">4-6 years</option>
-                <option value="7-10">7-10 years</option>
-                <option value="10+">10+ years</option>
+                <option value="" disabled <?php echo !isset($data['form_data']['experience']) ? 'selected' : ''; ?>>Select experience</option>
+                <?php foreach($data['experience_levels'] as $key => $experience_level): ?>
+                <option value="<?php echo $key; ?>" <?php echo isset($data['form_data']['experience']) && $data['form_data']['experience'] == $key ? 'selected' : ''; ?>>
+                  <?php echo $experience_level; ?>
+                </option>
+                <?php endforeach; ?>
               </select>
             </div>
           </div>
@@ -106,20 +142,23 @@
             <div class="form-group">
               <label for="certification" class="signup-label">Certification Level</label>
               <select id="certification" name="certification" class="signup-input" required>
-                <option value="" disabled selected>Select certification</option>
-                <option value="basic">Basic Certification</option>
-                <option value="intermediate">Intermediate Level</option>
-                <option value="advanced">Advanced Level</option>
-                <option value="professional">Professional License</option>
+                <option value="" disabled <?php echo !isset($data['form_data']['certification']) ? 'selected' : ''; ?>>Select certification</option>
+                <?php foreach($data['certification_levels'] as $key => $certification_level): ?>
+                <option value="<?php echo $key; ?>" <?php echo isset($data['form_data']['certification']) && $data['form_data']['certification'] == $key ? 'selected' : ''; ?>>
+                  <?php echo $certification_level; ?>
+                </option>
+                <?php endforeach; ?>
               </select>
             </div>
             <div class="form-group">
               <label for="coaching-type" class="signup-label">Coaching Type</label>
-              <select id="coaching-type" name="coaching-type" class="signup-input" required>
-                <option value="" disabled selected>Select type</option>
-                <option value="individual">Individual Training</option>
-                <option value="group">Group Sessions</option>
-                <option value="both">Both Individual & Group</option>
+              <select id="coaching-type" name="coaching_type" class="signup-input" required>
+                <option value="" disabled <?php echo !isset($data['form_data']['coaching_type']) ? 'selected' : ''; ?>>Select type</option>
+                <?php foreach($data['coaching_types'] as $key => $coaching_type): ?>
+                <option value="<?php echo $key; ?>" <?php echo isset($data['form_data']['coaching_type']) && $data['form_data']['coaching_type'] == $key ? 'selected' : ''; ?>>
+                  <?php echo $coaching_type; ?>
+                </option>
+                <?php endforeach; ?>
               </select>
             </div>
           </div>
@@ -127,15 +166,24 @@
           <div class="form-row">
             <div class="form-group">
               <label for="district" class="signup-label">District</label>
-              <input type="text" id="district" name="district" class="signup-input" placeholder="Your district" required>
+              <select id="district" name="district" class="signup-input" required>
+                <option value="" disabled <?php echo !isset($data['form_data']['district']) ? 'selected' : ''; ?>>Select your district</option>
+                <?php foreach($data['cities'] as $city): ?>
+                <option value="<?php echo $city; ?>" <?php echo isset($data['form_data']['district']) && $data['form_data']['district'] == $city ? 'selected' : ''; ?>>
+                  <?php echo $city; ?>
+                </option>
+                <?php endforeach; ?>
+              </select>
             </div>
             <div class="form-group">
               <label for="availability" class="signup-label">Availability</label>
               <select id="availability" name="availability" class="signup-input" required>
-                <option value="" disabled selected>Select availability</option>
-                <option value="full-time">Full Time</option>
-                <option value="part-time">Part Time</option>
-                <option value="weekends">Weekends Only</option>
+                <option value="" disabled <?php echo !isset($data['form_data']['availability']) ? 'selected' : ''; ?>>Select availability</option>
+                <?php foreach($data['availability_options'] as $key => $availability_option): ?>
+                <option value="<?php echo $key; ?>" <?php echo isset($data['form_data']['availability']) && $data['form_data']['availability'] == $key ? 'selected' : ''; ?>>
+                  <?php echo $availability_option; ?>
+                </option>
+                <?php endforeach; ?>
               </select>
             </div>
           </div>
@@ -143,18 +191,69 @@
           <div class="form-row">
             <div class="form-group">
               <label for="password" class="signup-label">Password</label>
-              <input type="password" id="password" name="password" class="signup-input" placeholder="Create password" required>
+              <input type="password" 
+                     id="password" 
+                     name="password" 
+                     class="signup-input" 
+                     placeholder="Create password" 
+                     required>
             </div>
             <div class="form-group">
               <label for="confirm-password" class="signup-label">Confirm Password</label>
-              <input type="password" id="confirm-password" name="confirm-password" class="signup-input" placeholder="Confirm password" required>
+              <input type="password" 
+                     id="confirm-password" 
+                     name="confirm_password" 
+                     class="signup-input" 
+                     placeholder="Confirm password" 
+                     required>
             </div>
           </div>
 
           <button type="submit" class="signup-button">Create Coach Account</button>
-      </form>
+          
+          <p class="login-info">
+            By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+          </p>
+        </form>
+      </div>
     </div>
   </section>
+
+  <style>
+    .error-message, .success-message {
+      animation: shake 0.5s ease-in-out;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    
+    .signup-button {
+      background: linear-gradient(135deg, #03B200, #029800);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+    }
+    
+    .signup-button:hover {
+      background: linear-gradient(135deg, #03c900, #02af00);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(3, 178, 0, 0.2);
+    }
+    
+    .signup-button:active {
+      transform: translateY(0);
+    }
+  </style>
 </body>
 </html>
 <?php require APPROOT.'/views/inc/components/footer.php'; ?>

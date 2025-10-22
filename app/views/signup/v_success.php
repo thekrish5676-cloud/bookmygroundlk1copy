@@ -11,25 +11,6 @@
 </head>
 <body>
 
-  <!-- Success Hero Section -->
-  <section class="login-hero">
-    <div class="hero-text">
-      <p class="sign-in-dis">
-        <span class="green">WELCOME</span> TO THE TEAM<br>
-        <span class="description">
-          Your registration was successful! Get ready to take your sports 
-          journey to the next level with <span class="green">BookMyGround!</span>
-        </span>
-      </p>
-      <div class="hero-buttons">
-        <a href="<?php echo URLROOT; ?>/login" class="hero-btn primary">Sign In Now</a>
-        <a href="<?php echo URLROOT; ?>" class="hero-btn">Explore Platform</a>
-      </div>
-    </div>
-    <div class="hero-image">
-      <img src="<?php echo URLROOT; ?>/images/login/basketball_player.png" id="basketball" alt="Basketball Player">
-    </div>
-  </section>
 
   <!-- Success Content Section -->
   <section class="login-content-section">
@@ -125,100 +106,7 @@
     </div>
   </section>
 
-  <style>
-    .success-content {
-      text-align: center;
-    }
-    
-    .success-steps {
-      margin: 30px 0;
-    }
-    
-    .step-item {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      margin-bottom: 25px;
-      padding: 15px;
-      background: #f8f9fa;
-      border-radius: 10px;
-      text-align: left;
-    }
-    
-    .step-number {
-      width: 40px;
-      height: 40px;
-      background: #03B200;
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-    
-    .step-content h3 {
-      margin: 0 0 5px 0;
-      color: #282222;
-      font-size: 16px;
-    }
-    
-    .step-content p {
-      margin: 0;
-      color: #666;
-      font-size: 14px;
-    }
-    
-    .quick-actions {
-      margin: 30px 0;
-    }
-    
-    .quick-actions h3 {
-      color: #282222;
-      margin-bottom: 20px;
-    }
-    
-    .action-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    
-    .action-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 12px 20px;
-      background: #f8f9fa;
-      color: #282222;
-      text-decoration: none;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-      border: 2px solid #e9ecef;
-    }
-    
-    .action-btn:hover {
-      background: #03B200;
-      color: white;
-      border-color: #03B200;
-      transform: translateY(-2px);
-    }
-    
-    @media (max-width: 768px) {
-      .step-item {
-        flex-direction: column;
-        text-align: center;
-        gap: 15px;
-      }
-      
-      .step-content {
-        text-align: center;
-      }
-    }
-  </style>
+  
 </body>
 </html>
 

@@ -1,4 +1,3 @@
-
 <?php require APPROOT.'/views/inc/components/header.php'; ?>
 
 <!-- Hero Section -->
@@ -143,7 +142,7 @@
                             </a>
                         </h3>
                         <div class="stadium-price">
-                            <span class="currency">₹</span>
+                            <span class="currency">LKR</span>
                             <span class="amount"><?php echo number_format($stadium->price); ?></span>
                             <span class="period">per hour</span>
                         </div>

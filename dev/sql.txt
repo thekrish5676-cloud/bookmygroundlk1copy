@@ -467,3 +467,67 @@ INSERT INTO stadium_owner_profiles (user_id, owner_name, business_name, district
 -- Test credentials:
 -- Email: owner@test.com
 -- Password:
+
+
+
+
+Rental Owner Issue Fix:
+
+-- Fix rental_owner_profiles table structure
+DROP TABLE IF EXISTS rental_owner_profiles;
+
+CREATE TABLE rental_owner_profiles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    owner_name VARCHAR(255) NOT NULL,
+    business_name VARCHAR(255) NOT NULL,
+    district VARCHAR(100) NOT NULL,
+    business_type VARCHAR(100) NOT NULL,
+    equipment_categories VARCHAR(255) NOT NULL,
+    delivery_service ENUM('yes', 'no', 'conditional', 'paid') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
+
+coaches table issue fixing 
+DROP TABLE IF EXISTS coach_profiles;
+
+CREATE TABLE coach_profiles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    specialization VARCHAR(100) NOT NULL,
+    experience ENUM('1_3', '4_6', '7_10', '11_15', '15_plus') NOT NULL,
+    certification ENUM('none', 'basic', 'intermediate', 'advanced', 'professional', 'international') NOT NULL,
+    coaching_type ENUM('individual', 'group', 'team', 'both', 'all') NOT NULL,
+    district VARCHAR(100) NOT NULL,
+    availability ENUM('full_time', 'part_time', 'weekends', 'evenings', 'flexible') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
+-- Emergency contacts minimal schema for current users table
+-- Run this against your bookmyground database
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+CREATE TABLE IF NOT EXISTS emergency_contacts (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  contact_name VARCHAR(255) NOT NULL,
+  relationship VARCHAR(100) NOT NULL,
+  phone VARCHAR(50) NOT NULL,
+  email VARCHAR(255) NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_emergency_contacts_user
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+SET FOREIGN_KEY_CHECKS = 1;

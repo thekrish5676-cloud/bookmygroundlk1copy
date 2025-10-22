@@ -109,34 +109,6 @@
                         </div>
                     </div>
                     
-                    <!-- Analytics -->
-                    <div class="feature-item">
-                        <span class="feature-icon">📊</span>
-                        <div class="feature-content">
-                            <span class="feature-title">Analytics</span>
-                            <span class="feature-value"><?php echo $package->features->analytics; ?></span>
-                        </div>
-                    </div>
-                    
-                    <!-- Additional Features for Gold -->
-                    <?php if($package->name === 'Gold'): ?>
-                    <div class="feature-item">
-                        <span class="feature-icon">👨‍💼</span>
-                        <div class="feature-content">
-                            <span class="feature-title">Account Manager</span>
-                            <span class="feature-value">Dedicated support</span>
-                        </div>
-                    </div>
-                    
-                    <div class="feature-item">
-                        <span class="feature-icon">🔌</span>
-                        <div class="feature-content">
-                            <span class="feature-title">API Access</span>
-                            <span class="feature-value">Full integration</span>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-                    
                     <!-- Marketing Tools for Standard & Gold -->
                     <?php if($package->features->marketing_tools): ?>
                     <div class="feature-item">

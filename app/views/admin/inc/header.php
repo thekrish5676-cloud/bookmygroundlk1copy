@@ -43,6 +43,18 @@
                         </a>
                     </li>
                     <li>
+                        <a href="<?php echo URLROOT; ?>/admin/packages" class="nav-link">
+                            <span class="nav-icon">📦</span>
+                            <span class="nav-text">Packages</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?php echo URLROOT; ?>/admin/listings" class="nav-link">
+                            <span class="nav-icon">🏟️</span>
+                            <span class="nav-text">Stadium Listings</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="<?php echo URLROOT; ?>/admin/payouts" class="nav-link">
                             <span class="nav-icon">💰</span>
                             <span class="nav-text">Payouts</span>
@@ -60,6 +72,19 @@
                             <span class="nav-icon">📢</span>
                             <span class="nav-text">Advertisements</span>
                             <span class="badge">3</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?php echo URLROOT; ?>/admin/reviews" class="nav-link">
+                            <span class="nav-icon">⭐</span>
+                            <span class="nav-text">Stadium Reviews</span>
+                            <span class="badge">12</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?php echo URLROOT; ?>/admin/newsletter" class="nav-link">
+                            <span class="nav-icon">📧</span>
+                            <span class="nav-text">Email Newsletter</span>
                         </a>
                     </li>
                     <li>
