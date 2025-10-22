@@ -2789,6 +2789,11 @@ body {
     object-fit: contain;
     filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
 }
+.hero-buttons1 a,
+    .hero-buttons1 a:hover,
+    .hero-buttons1 a:focus {
+    text-decoration: none;
+}
 
 /* Responsive Design */
 @media (max-width: 1200px) {
@@ -3390,7 +3395,7 @@ body {
 }
 
 .large-card .service-image {
-    height: 60%;
+    height: 80%;
     overflow: hidden;
 }
 
@@ -3496,6 +3501,9 @@ body {
     letter-spacing: 0.5px;
     background: transparent;
     align-self: flex-start;
+}
+.service-btn1{
+    display: none !important;
 }
 
 .service-btn:hover {

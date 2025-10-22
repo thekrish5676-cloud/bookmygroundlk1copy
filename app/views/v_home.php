@@ -15,8 +15,8 @@
                         Individual Coaching Sessions & Publish Your Advertisements
                     </p>
                     <div class="hero-buttons1">
-                        <button class="btn btn-primary">BOOK STADIUM</button>
-                        <button class="btn btn-secondary">RENT SPORT GEARS</button>
+                        <a href="http://localhost/bookmygroundlk/stadiums" class="btn btn-primary">BOOK STADIUM</a>
+                        <a href="http://localhost/bookmygroundlk/rental" class="btn btn-secondary">RENT SPORT GEARS</a>
                     </div>
                 </div>
                 
@@ -318,7 +318,7 @@
                 <div class="service-content">
                     <h3>Participate For Practice Sessions</h3>
                     <p>Sport Coaches can List their Practising Events And Players can Participate to the sport sessions by filling form.</p>
-                    <a href="<?php echo URLROOT; ?>/coaches" class="service-btn">
+                    <a href="<?php echo URLROOT; ?>/coaches" class="service-btn1">
                         Publish Your Practice Sessions
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"/>
